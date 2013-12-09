@@ -43,7 +43,7 @@
                      @{ @"Title" : @"Notifications", @"StoryboardID" : @"NotificationsVC" },
                      @{ @"Title" : @"Settings", @"StoryboardID" : @"SettingsVC" },
                      @{ @"Title" : @"Add a Moment", @"StoryboardID" : @"AddAMomentVC" },
-                     @{ @"Title" : @"SelectMedia", @"StoryboardID" : @"SelectMediaVC" },
+                     @{ @"Title" : @"Select Media", @"StoryboardID" : @"SelectMediaVC" },
                      @{ @"Title" : @"Current Collaborators", @"StoryboardID" : @"CurrentCollaboratorsVC" },
 
                      @{ @"Title" : @"Select Date", @"StoryboardID" : @"SelectDateVC" },
