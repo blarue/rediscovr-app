@@ -557,6 +557,7 @@
 				26D1C91B184F9637003DCF89 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		26D1C91C184F9637003DCF89 /* Build configuration list for PBXNativeTarget "RediscovrTests" */ = {
 			isa = XCConfigurationList;
@@ -565,6 +566,7 @@
 				26D1C91E184F9637003DCF89 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
