@@ -50,6 +50,9 @@
 	<link rel="stylesheet" href="static/stylesheets/theme.css">
 	<!-- App Stylesheet -->
 	<link rel="stylesheet" href="static/stylesheets/app.css?v=1">
+	<!-- Maps from Mapbox -->
+	<script src="static/javascripts/mapbox.js"></script>
+	<link rel="stylesheet" href="static/stylesheets/mapbox.css?v=1">
 </head>
 
 <body>
@@ -63,7 +66,7 @@
 					<div style='text-align:center;font-size:12px;'><img src='img/lock-icon@2x.png'/> &nbsp; Rediscovr is 100% private. People only see what you specifically share with them.</div>
 				</div>
 <!--				<div class='splash links'><a href='#' data-view-section="signup-email" class='link'>Sign Up</a> or <a href='#' data-view-section="login" class='link'>Log In</a> with email instead.</div> -->
-				<div class='splash links'><a href='#' data-view-section="signup-email" class='link'>Sign Up</a> or <a href='#' data-view-section="add-moment" class='link'>Log In</a> with email instead.</div>
+				<div class='splash links'><a href='#' data-view-section="signup-email" class='link'>Sign Up</a> or <a href='#' data-view-section="add-moment-location" class='link'>Log In</a> with email instead.</div>
 			</div> 
 		</article>
 	</section>
@@ -149,6 +152,7 @@
 				'static/sections/signup-google.html', 
 				'static/sections/login.html', 
 				'static/sections/home.html', 
+				'static/sections/moments.html', 
 				'static/sections/profile.html', 
 				'static/sections/people.html', 
 				'static/sections/person.html', 
@@ -157,14 +161,12 @@
 				'static/sections/add-moment.html',
 				'static/sections/add-moment-reminder-frequency.html',
 				'static/sections/add-moment-reminder-end.html',
+				'static/sections/add-moment-location.html',
 			],
 			history: false
 		});
-		// var el = document.getElementById("settings-article");
-		// el.addEventListener('scroll', function() {
-		// 	document.getElementById("settings-firstname").blur();
-		// });
 	</script>
 	<script src="static/javascripts/app.js"></script>
+	<script src="static/javascripts/mapping.js"></script>
 </body>
 </html>

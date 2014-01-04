@@ -87,6 +87,76 @@ Lungo.Events.init({
 		});
 	},
 
+	// Testing doing something... anything on section load.
+	// 'load section#add-moment': function(event) {
+	// 	Lungo.Notification.confirm({
+	// 		icon: 'user',
+	// 		title: 'Lorem ipsum dolor sit amet, consectetur adipisicing.',
+	// 		description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo amet nulla dolorum hic eum debitis dolorem expedita? Commodi molestiae tempora totam explicabo sed deserunt cum iusto eos perspiciatis ea in.',
+	// 		accept: {
+	// 			icon: 'checkmark',
+	// 			label: 'Accept',
+	// 			callback: function(){ alert("Yes!"); }
+	// 		},
+	// 		cancel: {
+	// 			icon: 'close',
+	// 			label: 'Cancel',
+	// 			callback: function(){ alert("No!"); }
+	// 		}
+	// 	});
+	// },
+
+	'load section#add-moment': function(event) {
+		Lungo.dom("#moment-form-title").get(0).value = rediscovr.currentmoment.moment_title;
+		Lungo.dom("#moment-form-desc").get(0).value = rediscovr.currentmoment.moment_desc;
+		Lungo.dom("#moment-form-location").get(0).value = rediscovr.currentmoment.moment_location;
+		Lungo.dom("#moment-form-date").get(0).value = rediscovr.currentmoment.date_happened;
+		Lungo.dom("#moment-form-time").get(0).value = rediscovr.currentmoment.time_happened;
+		Lungo.dom("#moment-form-reminder-frequency").text = rediscovr.currentmoment.reminder_frequency;
+		Lungo.dom("#moment-form-reminder-end").text = rediscovr.currentmoment.reminder_end;
+	},
+
+	// Reminder frequency panel.
+	'tap #reminder-frequency-article button': function() {
+		Lungo.dom("#reminder-frequency-article button.dark").children(".icon").remove();
+		Lungo.dom("#reminder-frequency-article button.dark").toggleClass("dark").toggleClass("light");
+		Lungo.dom(this).toggleClass('dark');
+		Lungo.dom("#reminder-frequency-article button.dark").append("<span class='icon ok'></span>");
+		rediscovr.currentmoment.reminder_frequency = Lungo.dom(this).children('abbr').html();
+		Lungo.dom("#moment-form-reminder-frequency").text(rediscovr.currentmoment.reminder_frequency);
+	},
+
+	// Reminder end panel.
+	'tap #reminder-end-article button': function() {
+		Lungo.dom("#reminder-end-article button.dark").children(".icon").remove();
+		Lungo.dom("#reminder-end-article button.dark").toggleClass("dark").toggleClass("light");
+		Lungo.dom(this).toggleClass('dark');
+		Lungo.dom("#reminder-end-article button.dark").append("<span class='icon ok'></span>");
+		rediscovr.currentmoment.reminder_end = Lungo.dom(this).children('abbr').html();
+		Lungo.dom("#moment-form-reminder-end").text(rediscovr.currentmoment.reminder_end);
+	},
+
+	'load section#add-moment-location': function(event) {
+		Lungo.dom("#location-searchbox").on("blur", function() {
+			rediscovr.mapping.query = Lungo.dom("#location-searchbox").get(0).value;
+			rediscovr.mapping.search();
+		});
+		navigator.geolocation.getCurrentPosition(
+			function(position) {
+				rediscovr.mapping = rediscovr.mapping || {};
+				rediscovr.mapping.latitude = position.coords.latitude;
+				rediscovr.mapping.longitude = position.coords.longitude;
+				rediscovr.mapping.map = L.mapbox.map('map', 'chrismcq.gn2ake2f', {tileLayer:{detectRetina:true}}).setView([rediscovr.mapping.latitude, rediscovr.mapping.longitude], 14);
+				rediscovr.mapping.map.markerLayer.on('layeradd', function(e) {
+					var marker = e.layer,
+					feature = marker.feature;
+					marker.setIcon(L.icon(feature.properties.icon));
+				});
+				// Perform generic search.
+				rediscovr.mapping.search();
+			}
+		);
+	},
 
 	'touch article#notification a[data-action=normal]': function() {
 		Lungo.Notification.show('user', 'Title', 2);
@@ -141,23 +211,20 @@ Lungo.Events.init({
 
 Lungo.ready(function() {
 
-	// Reminder frequency panel.
-	Lungo.dom("#reminder-frequency-article button").tap(function(event) {
-		Lungo.dom("#reminder-frequency-article button.dark").children(".icon").remove();
-		Lungo.dom("#reminder-frequency-article button.dark").toggleClass("dark").toggleClass("light");
-		Lungo.dom(this).toggleClass('dark');
-		Lungo.dom("#reminder-frequency-article button.dark").append("<span class='icon ok'></span>");
-	});
-
-
-	// Reminder end panel.
-	Lungo.dom("#reminder-end-article button").tap(function(event) {
-		Lungo.dom("#reminder-end-article button.dark").children(".icon").remove();
-		Lungo.dom("#reminder-end-article button.dark").toggleClass("dark").toggleClass("light");
-		Lungo.dom(this).toggleClass('dark');
-		Lungo.dom("#reminder-end-article button.dark").append("<span class='icon ok'></span>");
-	});
-
+	// Set up the rediscovr object and current moment within it.
+	if (typeof rediscovr == "undefined") {
+		rediscovr = {};
+	}
+	if (rediscovr.currentmoment == undefined) {
+		rediscovr.currentmoment = {};
+	}
+	rediscovr.currentmoment.moment_title       = "Rockin' Out!";
+	rediscovr.currentmoment.moment_desc        = "Rockin' Out! Woo hoo hoo!";
+	rediscovr.currentmoment.moment_location    = "Philadelphia, PA";
+	rediscovr.currentmoment.date_happened      = "2013-12-10";
+	rediscovr.currentmoment.time_happened      = "12:15";
+	rediscovr.currentmoment.reminder_frequency = "Monthly";
+	rediscovr.currentmoment.reminder_end       = "Never";
 
 	// DB Stuff
 	var shortname = 'rediscovr';
