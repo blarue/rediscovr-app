@@ -154,6 +154,24 @@ Lungo.Events.init({
 				});
 				// Perform generic search.
 				rediscovr.mapping.search();
+				// Refresh results on map zoom.
+				rediscovr.mapping.map.addEventListener("zoomend", function() {
+					rediscovr.mapping.search();
+				});
+				// Refresh results on map move.
+				rediscovr.mapping.map.addEventListener("moveend", function() {
+					rediscovr.mapping.moveTimeout = window.setTimeout(
+						function() {
+							rediscovr.mapping.search();
+							delete rediscovr.mapping.moveTimeout;
+						}, 1000);
+				});
+				// Refresh results on map move.
+				rediscovr.mapping.map.addEventListener("movestart", function() {
+					if (typeof rediscovr.mapping.moveTimeout == "number") {
+						window.clearTimeout(rediscovr.mapping.moveTimeout);
+					}
+				});
 			}
 		);
 	},
@@ -235,9 +253,15 @@ Lungo.ready(function() {
 
 	db.transaction(
 		function(transaction) {
-			transaction.executeSql('CREATE TABLE IF NOT EXISTS `moments`(`id` INTEGER UNSIGNED NOT NULL PRIMARY KEY AUTOINCREMENT, `title` VARCHAR(55) NOT NULL, `desc` TEXT NULL, `date_happened` DATETIME, `location` VARCHAR(100) NOT NULL, `reminder` VARCHAR(15) NOT NULL DEFAULT \'Never\', `reminder_end` VARCHAR(15) NOT NULL DEFAULT \'Never\');', [], nullDataHandler, killTransaction);
+			transaction.executeSql('CREATE TABLE IF NOT EXISTS `moments`(`id` INTEGER UNSIGNED NOT NULL PRIMARY KEY AUTOINCREMENT, `title` VARCHAR(55) NOT NULL, `desc` TEXT NULL, `date_happened` DATETIME, `location` VARCHAR(100) NOT NULL, `reminder` VARCHAR(15) NOT NULL DEFAULT \'Never\', `reminder_end` VARCHAR(15) NOT NULL DEFAULT \'Never\');', [], rediscovr.utilities.nullDataHandler, rediscovr.utilities.nullDataHandler);
 		}
 	);
+
+	rediscovr.utilities = {
+		nullDataHandler: function() {
+			// Do nothing.
+		}
+	};
 
 	/*
 	db.transaction(
