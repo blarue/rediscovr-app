@@ -2,9 +2,66 @@ var rediscovr = rediscovr || {};
 
 rediscovr.mapping = {
 	query: "",
+	defaultZoom: 13,
+	account: 'chrismcq.gn2ake2f',
 
 	getBounds: function() {
 		this.bounds = rediscovr.mapping.map.getBounds();		
+	},
+
+	addMap: function() {
+		console.log("Requesting GPS...");
+		navigator.geolocation.getCurrentPosition(
+			function(position) {
+				rediscovr.mapping.latitude = position.coords.latitude;
+				rediscovr.mapping.longitude = position.coords.longitude;
+				console.log("Requesting map from Mapbox...");
+				rediscovr.mapping.map = L.mapbox.map('map', rediscovr.mapping.account, {
+					tileLayer:{detectRetina:true}
+				}).setView([rediscovr.mapping.latitude, rediscovr.mapping.longitude], rediscovr.mapping.defaultZoom);
+				console.log("Adding marker layer to map...");
+				rediscovr.mapping.map.markerLayer.on('layeradd', function(e) {
+					var marker = e.layer,
+					feature = marker.feature;
+					marker.setIcon(L.icon(feature.properties.icon));
+				});
+				console.log("Performing generic search...");
+				// Perform generic search.
+				rediscovr.mapping.search();
+				// Cancel any refresh timeout on zoomstart.
+				rediscovr.mapping.map.addEventListener("zoomstart", function() {
+					if (typeof rediscovr.mapping.moveTimeout == "number") {
+						window.clearTimeout(rediscovr.mapping.moveTimeout);
+						delete rediscovr.mapping.moveTimeout;
+					}
+				});
+				// Refresh results on map zoom.
+				rediscovr.mapping.map.addEventListener("zoomend", function() {
+					rediscovr.mapping.moveTimeout = window.setTimeout(
+						function() {
+							rediscovr.mapping.search();
+							delete rediscovr.mapping.moveTimeout;
+						}, 1000
+					);
+				});
+				// Cancel any refresh timeout on movestart.
+				rediscovr.mapping.map.addEventListener("movestart", function() {
+					if (typeof rediscovr.mapping.moveTimeout == "number") {
+						window.clearTimeout(rediscovr.mapping.moveTimeout);
+						delete rediscovr.mapping.moveTimeout;
+					}
+				});
+				// Refresh results on map move.
+				rediscovr.mapping.map.addEventListener("moveend", function() {
+					rediscovr.mapping.moveTimeout = window.setTimeout(
+						function() {
+							rediscovr.mapping.search();
+							delete rediscovr.mapping.moveTimeout;
+						}, 1000
+					);
+				});
+			}
+		);
 	},
 
 	resizeResultsBox: function() {
@@ -78,11 +135,11 @@ rediscovr.mapping = {
 						// 	distance = response.response.venues[i].location.distance / 1609.34;
 						// 	distance = distance.toFixed(2).toString() + " mi";
 						// }
-						var new_li = "<li class='thumb search-4sq'>";
+						var new_li = "<li id='venue-" + response.response.venues[i].id + "' class='thumb search-4sq' data-view-section='back'>";
 						if (response.response.venues[i].categories.length && response.response.venues[i].categories[0].icon != "undefined") {
 							new_li += "<img src='" + response.response.venues[i].categories[0].icon.prefix + 'bg_64' + response.response.venues[i].categories[0].icon.suffix + "'/>";
 						}
-						new_li += "<div>";
+						new_li += "<div class='venueDetails'>";
 						if (response.response.venues[i].categories.length && response.response.venues[i].categories[0].shortName != "undefined") {
 							new_li += "<div class='on-right text tiny'>" + response.response.venues[i].categories[0].shortName + "</div>";
 						}
@@ -92,14 +149,29 @@ rediscovr.mapping = {
 						// 	"</div>" +
 						// "</li>";
 						// Street/Cross-street
-						new_li += "<strong class='text bold'>" + response.response.venues[i].name + "</strong>" +
-								"<span class='text tiny'>" + response.response.venues[i].location.address + " (" + response.response.venues[i].location.crossStreet + ")</span>" +
-							"</div>" +
-						"</li>";
+
+						// Add venue name
+						new_li += "<strong class='text bold venueName'>" + response.response.venues[i].name + "</strong>";
+
+						// Add venue location. Specifically if possible.
+						if (response.response.venues[i].location.address != undefined) {
+							new_li += "<span class='text tiny'>" + response.response.venues[i].location.address;
+							if (response.response.venues[i].location.crossStreet != undefined) {
+								new_li += " (" + response.response.venues[i].location.crossStreet + ")</span>";
+							}
+						} else if (response.response.venues[i].location.city != undefined) {
+							new_li += "<span class='text tiny'>" + response.response.venues[i].location.city;
+							if (response.response.venues[i].location.state != undefined) {
+								new_li += ", " + response.response.venues[i].location.state + "</span>";
+							}
+						}
+						new_li += "</div></li>";
+
 						Lungo.dom("#fourSq-results-list").append(new_li);
 						Lungo.dom(".search-4sq").on("tap", function() {
-							//alert("tap");
-							//console.log(this.children.("div").children.("div").text());
+							console.log("Choosing " + Lungo.dom(this).children(".venueDetails").children(".venueName").text());
+							rediscovr.currentmoment.moment_location = Lungo.dom(this).children(".venueDetails").children(".venueName").text();
+							Lungo.dom("#moment-form-location").get(0).value = rediscovr.currentmoment.moment_location;
 						});
 						if (response.response.venues[i].categories.length && response.response.venues[i].categories[0].icon != "undefined") {
 							geojson.push({"type": "Feature",

@@ -4,7 +4,7 @@
 			<span>Cancel</span>
 		</nav>
 		<nav class="on-right">
-			<span style="font-size:.94em;border:2px solid #ffffff;border-radius:5px;padding:.3em 1em;">Post</span>
+			<span id="moment-form-post-button" style="font-size:.94em;border:2px solid #ffffff;border-radius:5px;padding:.3em 1em;">Post</span>
 		</nav>
 	</header>
 	<article id="settings-article" class="indenteds scroll">
@@ -28,7 +28,7 @@
 			<fieldset class="radius shadow">
 				<div style="clear:both;">
 					<img src='img/location2-icon@2x.png' class="formlabel"/>
-					<input id="moment-form-location" type="text" style="color:#6c9dc6;" placeholder="Outer Sunset, San Francisco, CA" value="Outer Sunset, San Francisco, CA"/>
+					<input id="moment-form-location" type="text" style="color:#6c9dc6;" data-view-section="add-moment-location" placeholder="Outer Sunset, San Francisco, CA" value="Outer Sunset, San Francisco, CA"/>
 				</div>
 			</fieldset>
 			<fieldset class="radius shadow">
@@ -44,7 +44,7 @@
 			<fieldset class="radius shadow" style="margin-top:.4em;">
 				<div>
 					<img src='img/image-icon@2x.png' class="formlabel"/>
-					<input type="file" accept="image/*" capture="camera" multiple="true"/>
+					<input id="moment-form-upload-files" type="file" accept="image/*" capture="camera" multiple="true"/>
 					<span style='color:#6c9dc6;'>Upload Image / Video</span>
 				</div>
 			</fieldset>

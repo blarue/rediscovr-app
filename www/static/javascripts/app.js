@@ -35,6 +35,18 @@ var App = (function(lng, undefined) {
 
 App.carousel = {prev: null, next: null};
 
+App.generateUid = function (prefix, separator) {
+	var timestamp = new Date().getTime();
+	var prefix = prefix || "general";
+	var delim = separator || "-";
+
+	function S4() {
+		return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+	}
+
+	return (prefix + delim + timestamp + delim + S4() + S4() + S4());
+};
+
 Lungo.Events.init({
 	'load section#layoutevents'     : App.sectionTrigger,
 
@@ -136,44 +148,28 @@ Lungo.Events.init({
 		Lungo.dom("#moment-form-reminder-end").text(rediscovr.currentmoment.reminder_end);
 	},
 
+	'tap #moment-form-post-button': function() {
+		var s3upload = s3upload != null ? s3upload : new S3Upload({
+			file_dom_selector: 'moment-form-upload-files',
+			s3_sign_put_url: 'http://192.241.156.130/s3_allow.php',
+			onProgress: function(percent, message) { // Use this for live upload progress bars
+				console.log('Upload progress: ', percent, message);
+			},
+			onFinishS3Put: function(public_url) { // Get the URL of the uploaded file
+				console.log('Upload finished: ', public_url);
+			},
+			onError: function(status) {
+				console.log('Upload error: ', status);
+			}
+		});
+	},
+
 	'load section#add-moment-location': function(event) {
 		Lungo.dom("#location-searchbox").on("blur", function() {
 			rediscovr.mapping.query = Lungo.dom("#location-searchbox").get(0).value;
 			rediscovr.mapping.search();
 		});
-		navigator.geolocation.getCurrentPosition(
-			function(position) {
-				rediscovr.mapping = rediscovr.mapping || {};
-				rediscovr.mapping.latitude = position.coords.latitude;
-				rediscovr.mapping.longitude = position.coords.longitude;
-				rediscovr.mapping.map = L.mapbox.map('map', 'chrismcq.gn2ake2f', {tileLayer:{detectRetina:true}}).setView([rediscovr.mapping.latitude, rediscovr.mapping.longitude], 14);
-				rediscovr.mapping.map.markerLayer.on('layeradd', function(e) {
-					var marker = e.layer,
-					feature = marker.feature;
-					marker.setIcon(L.icon(feature.properties.icon));
-				});
-				// Perform generic search.
-				rediscovr.mapping.search();
-				// Refresh results on map zoom.
-				rediscovr.mapping.map.addEventListener("zoomend", function() {
-					rediscovr.mapping.search();
-				});
-				// Refresh results on map move.
-				rediscovr.mapping.map.addEventListener("moveend", function() {
-					rediscovr.mapping.moveTimeout = window.setTimeout(
-						function() {
-							rediscovr.mapping.search();
-							delete rediscovr.mapping.moveTimeout;
-						}, 1000);
-				});
-				// Refresh results on map move.
-				rediscovr.mapping.map.addEventListener("movestart", function() {
-					if (typeof rediscovr.mapping.moveTimeout == "number") {
-						window.clearTimeout(rediscovr.mapping.moveTimeout);
-					}
-				});
-			}
-		);
+		rediscovr.mapping.addMap();
 	},
 
 	'touch article#notification a[data-action=normal]': function() {
