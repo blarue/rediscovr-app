@@ -118,175 +118,6 @@ App.utilities = {
 	
 }
 
-App.database = {
-	// DB Stuff
-	shortname: 'moments', 
-	version: '1.0', 
-	displayname: 'moments', 
-	maxsize: 65536,
-	db: {},
-
-	open: function() {
-		this.db = openDatabase(this.shortname, this.version, this.displayname, this.maxsize);
-		this.createTables();
-	},
-
-	createTables: function() {
-		console.log("Trying to create table.");
-		console.log(typeof this.db);
-		// Moment table
-		var moment_definition = "\
-			CREATE TABLE IF NOT EXISTS `moment`(\
-				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
-				`title` TEXT NOT NULL, \
-				`desc` TEXT NULL, \
-				`date_happened` DATE, \
-				`time_happened` TIME, \
-				`location` TEXT NOT NULL, \
-				`reminder` TEXT NOT NULL DEFAULT 'Never', \
-				`reminder_end` TEXT NOT NULL DEFAULT 'Never', \
-				`owner` TEXT NOT NULL DEFAULT 'self' \
-			);";
-		// Image table
-		var image_definition = "\
-			CREATE TABLE IF NOT EXISTS `image`(\
-				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
-				`name` TEXT NOT NULL, \
-				`type` TEXT NOT NULL DEFAULT 'Moment', \
-				`owner` TEXT NOT NULL DEFAULT 'self' \
-			);";
-		// Moment/Image map table.
-		var moment_image_definition = "\
-			CREATE TABLE IF NOT EXISTS `moment_image`(\
-				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
-				`moment_id` INTEGER NOT NULL, \
-				`image_id` INTEGER NOT NULL, \
-				`primary` INTEGER NOT NULL DEFAULT 1 \
-			);";
-		this.db.transaction(
-			function(transaction) {
-				transaction.executeSql(moment_definition, [], App.database.nullDataHandler, App.database.errorHandler);
-				transaction.executeSql(image_definition, [], App.database.nullDataHandler, App.database.errorHandler);
-				transaction.executeSql(moment_image_definition, [], App.database.nullDataHandler, App.database.errorHandler);
-			}
-		);
-	},
-
-	addMoment: function(d) {
-		var data_array = [d.title, d.description, d.date, d.time, d.location, d.reminder_frequency, d.reminder_end, d.owner];
-		var query = "INSERT INTO `moment` (`title`, `desc`, `date_happened`, `time_happened`, `location`, `reminder`, `reminder_end`, `owner`) \
-					VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-		this.db.transaction(
-			function(transaction) {
-				transaction.executeSql(query, data_array, App.database.handleInsertedMoment, App.database.errorHandler);
-				transaction.executeSql('SELECT last_insert_rowid() AS `moment_id`;', [], App.database.getInsertedMomentId, App.database.errorHandler);
-			}
-		);
-		if (rediscovr.currentmoment.images.length) {
-			for (var i = 0; i < rediscovr.currentmoment.images.length; i++) {
-				var data_array = {
-					name: rediscovr.currentmoment.images[i],
-					type: 'moment',
-					owner: 'self'
-				}
-				App.database.addImage(data_array);
-			}
-		}
-		Lungo.Notification.show(
-			"check",                //Icon
-			"Success",              //Title
-			3,                      //Seconds
-			App.database.nullDataHandler       //Callback function
-		);
-	},
-	
-	addImage: function(d) {
-		var data_array = [d.name, d.type, d.owner];
-		var query = "INSERT INTO `image` (`name`, `type`, `owner`) \
-					VALUES (?, ?, ?);";
-		this.db.transaction(
-			function(transaction) {
-				transaction.executeSql(query, data_array, App.database.nullDataHandler, App.database.errorHandler);
-				transaction.executeSql('SELECT last_insert_rowid() AS `image_id`;', [], App.database.getInsertedImageId, App.database.errorHandler);
-			}
-		);
-	},
-
-	associateImage: function(d) {
-		var data_array = [d.moment_id, d.image_id, d.primary];
-		var query = "INSERT INTO `moment_image` (`moment_id`, `image_id`, `primary`) \
-					VALUES (?, ?, ?);";
-		this.db.transaction(
-			function(transaction) {
-				transaction.executeSql(query, data_array, App.database.nullDataHandler, App.database.errorHandler);
-			}
-		);
-	},
-
-	getMoments: function(mine, limit) {
-		this.db.transaction(
-			function(transaction) {
-				transaction.executeSql('SELECT * FROM `moment`;', [], App.database.logMoment(transaction, results), App.database.errorHandler);
-			}
-		);
-	},
-
-	logMoment: function(transaction, results) {
-		for (var i=0; i < results.rows.length; i++) {
-			var string = '';
-			var row = results.rows.item(i);
-			string += row.title + ', ';
-			string += row.desc + ', ';
-			string += row.date_happened + ', ';
-			string += row.location + ', ';
-			string += row.reminder + ', ';
-			string += row.reminder_end + ', ';
-			console.log(string);
-		}
-	},
-
-	errorHandler: function(transaction, error) {
-		// error.message is a human-readable string.
-		// error.code is a numeric error code
-		console.log('Oops.  Error was '+error.message+' (Code '+error.code+')');
-
-		// Handle errors here
-		var we_think_this_error_is_fatal = true;
-		if (we_think_this_error_is_fatal) return true;
-		return false;
-	},
-
-	nullDataHandler: function(transaction, results) {
-		// Do nothing.
-		console.log(results);
-		Lungo.Notification.hide();
-	},
-
-	handleInsertedMoment: function(transaction, results) {
-		console.log(results.insertId);
-		rediscovr.currentmoment.moment_id = results.insertId;
-	},
-
-	handleInsertedImage: function(transaction, results) {
-		var image_id = results.insertId;
-		console.log(rediscovr.currentmoment.moment_id + ', ' + image_id);
-		
-		var data_array = {
-			moment_id: rediscovr.currentmoment.moment_id,
-			image_id: image_id,
-			primary: 1
-		};
-		this.associateImage(data_array);
-	},
-
-	// When passed as the error handler, this silently causes a transaction to fail.
-	killTransaction: function(transaction, error) {
-		return true;
-	}
-}
-
-
-
 Lungo.ready(function() {
 
 	// Initialize DB.
@@ -450,20 +281,23 @@ Lungo.Events.init({
 		var s3upload = s3upload != null ? s3upload : new S3Upload({
 			file_dom_selector: 'moment-form-upload-files',
 			s3_sign_put_url: 'http://192.241.156.130/s3_allow.php',
+
 			onProgress: function(percent, message) { // Use this for live upload progress bars
+				Lungo.Notification.html('<h1>Hello World</h1>', "Close");
 				console.log('Upload progress: ', percent, message);
 			},
 			onFinishS3Put: function(public_url) { // Get the URL of the uploaded file
 				console.log('Upload finished: ', public_url);
 				rediscovr.currentmoment.images.push(public_url);
+				// Save moment.
+				Lungo.Notification.hide();
+				App.Moment.post();
 			},
 			onError: function(status) {
 				console.log('Upload error: ', status);
+				Lungo.Notification.hide();
 			}
 		});
-
-		// Save moment.
-		App.Moment.post();
 	},
 
 	'load section#add-moment-location': function(event) {

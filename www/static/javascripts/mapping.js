@@ -11,6 +11,8 @@ rediscovr.mapping = {
 
 	addMap: function() {
 		console.log("Requesting GPS...");
+		// We might want to go with this...
+		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true
 		navigator.geolocation.getCurrentPosition(
 			function(position) {
 				rediscovr.mapping.latitude = position.coords.latitude;
