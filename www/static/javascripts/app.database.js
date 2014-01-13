@@ -14,6 +14,20 @@ App.database = {
 	createTables: function() {
 		console.log("Trying to create table.");
 		console.log(typeof this.db);
+		// User table
+		var user_definition = "\
+			CREATE TABLE IF NOT EXISTS `user`(\
+				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
+				`email` TEXT NOT NULL, \
+				`firstName` TEXT NULL, \
+				`lastName` TEXT NULL, \
+				`city` TEXT NULL, \
+				`state` TEXT NULL, \
+				`country` TEXT NULL, \
+				`user_image` TEXT NULL, \
+				`current_user` INTEGER NOT NULL DEFAULT 0 \
+			);";
+
 		// Moment table
 		var moment_definition = "\
 			CREATE TABLE IF NOT EXISTS `moment`(\
@@ -45,9 +59,31 @@ App.database = {
 			);";
 		this.db.transaction(
 			function(transaction) {
+				transaction.executeSql(user_definition, [], App.database.nullDataHandler, App.database.errorHandler);
 				transaction.executeSql(moment_definition, [], App.database.nullDataHandler, App.database.errorHandler);
 				transaction.executeSql(image_definition, [], App.database.nullDataHandler, App.database.errorHandler);
 				transaction.executeSql(moment_image_definition, [], App.database.nullDataHandler, App.database.errorHandler);
+			}
+		);
+	},
+
+	addUser: function(d) {
+		console.log("Adding logged in user to local DB.");
+		console.log(d);
+		d.current_user = (d.current_user != undefined && d.current_user) ? 1 : 0;
+
+		if (d.user_id != undefined) {
+			var data_array = [d.user_id, d.email, d.firstName, d.lastName, d.city, d.state, d.country, d.user_image, d.current_user];
+			var query = "INSERT INTO `user` (`id`, `email`, `firstName`, `lastName`, `city`, `state`, `country`, `user_image`, `current_user`) \
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		} else {
+			var data_array = [d.email, d.firstName, d.lastName, d.city, d.state, d.country, d.image, d.current_user];
+			var query = "INSERT INTO `user` (`email`, `firstName`, `lastName`, `city`, `state`, `country`, `user_image`, `current_user`) \
+					VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+		}		
+		this.db.transaction(
+			function(transaction) {
+				transaction.executeSql(query, data_array, App.database.handleInsertedUser, App.database.errorHandler);
 			}
 		);
 	},
@@ -82,6 +118,17 @@ App.database = {
 		this.db.transaction(
 			function(transaction) {
 				transaction.executeSql(query, data_array, App.database.handleAssociatedImage, App.database.errorHandler);
+			}
+		);
+	},
+
+	getCurrentUser: function(ref) {
+		//Query DB for logged in user.
+		var query = "SELECT * FROM `user` WHERE `current_user` = 1";
+		console.log(query);
+		this.db.transaction(
+			function(transaction) {
+				transaction.executeSql(query, [], ref.handleGetUserDB, App.database.errorHandler);
 			}
 		);
 	},

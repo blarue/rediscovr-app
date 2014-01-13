@@ -99,6 +99,8 @@ body > section.signup > article > div.signup-form { text-align:center;margin-top
 body > section.signup > article > div > fieldset { padding: .7em .5em; margin-left:20px; margin-right:20px; }
 body > section.signup > article > div > fieldset > img.formlabel { display: inline; width: 24px; }
 body > section.signup > article > div > fieldset > input[type="text"] { width:85%;}
+body > section.signup > article > div > fieldset > input[type="email"] { width:85%;}
+body > section.signup > article > div > fieldset > input[type="password"] { width:85%;}
 
 body > section#walkthrough-share { background: url('../../img/bg_walkthrough1.jpg'); background-size: 100%; }
 body > section#walkthrough-keep { background: url('../../img/bg_walkthrough2.jpg'); background-size: 100%; }
@@ -116,7 +118,7 @@ body > section.home > article > div.day-header > div.day-name { color: #ff679b; 
 body > section.home > article > div.day-header > div.day-alarm { margin-right:.7em; }
 body > section.home > article > div.day-header > div.day-alarm > img { height: 18px; margin-right:.7em; }
 body > section.home > article > div.add-moment-button { text-align:center; margin-top:1em; }
-body > section.home > article > div.add-moment-button > img { height: 50%; }
+body > section.home > article > div.add-moment-button img { height: 126px; }
 
 body > section > article.moments { background-color:#FFFFFF; color:#4e4d52; }
 body > section > article.moments > div.profile-img { margin-left:.7em; margin-top:.7em; }

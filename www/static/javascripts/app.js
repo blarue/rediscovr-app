@@ -34,6 +34,7 @@ var App = (function(lng, undefined) {
 })(Lungo);
 
 App.carousel = {prev: null, next: null};
+var pushNotification;
 
 // Algorithm for generating unique IDs. Pass in a prefix like 'moment'.
 App.generateUid = function (prefix, separator) {
@@ -120,9 +121,18 @@ App.utilities = {
 
 Lungo.ready(function() {
 
+
+	App.user_id = "26";
+	App.last_update = "1388534400";
+
 	// Initialize DB.
 	App.database.open();
-
+	
+	// Create instance of user for the current user.
+	App.current_user = new App.user();
+	// Check if there is a logged in user.
+	App.current_user.getLoggedInUser();
+	
 	// Set up the rediscovr object and current moment within it.
 	if (typeof rediscovr == "undefined") {
 		rediscovr = {};
@@ -130,15 +140,17 @@ Lungo.ready(function() {
 	if (rediscovr.currentmoment == undefined) {
 		rediscovr.currentmoment = {};
 	}
-	rediscovr.currentmoment.moment_title       = "Rockin' Out!";
-	rediscovr.currentmoment.moment_desc        = "Rockin' Out! Woo hoo hoo!";
-	rediscovr.currentmoment.moment_location    = "Philadelphia, PA";
-	rediscovr.currentmoment.date_happened      = "2013-12-10";
-	rediscovr.currentmoment.time_happened      = "12:15";
-	rediscovr.currentmoment.reminder_frequency = "Monthly";
-	rediscovr.currentmoment.reminder_end       = "Never";
+	// rediscovr.currentmoment.moment_title       = "Rockin' Out!";
+	// rediscovr.currentmoment.moment_desc        = "Rockin' Out! Woo hoo hoo!";
+	// rediscovr.currentmoment.moment_location    = "Philadelphia, PA";
+	// rediscovr.currentmoment.date_happened      = "2013-12-10";
+	// rediscovr.currentmoment.time_happened      = "12:15";
+	// rediscovr.currentmoment.reminder_frequency = "Monthly";
+	// rediscovr.currentmoment.reminder_end       = "Never";
 
-
+	pushNotification = window.plugins.pushNotification;
+	// Change webview background color (dropdowns etc) from PhoneGap default (black) to white.
+	window.plugins.webviewcolor.change('#FFFFFF');
 	/*
 
 	*/
@@ -255,6 +267,11 @@ Lungo.Events.init({
 		Lungo.dom("#moment-form-reminder-end").text(rediscovr.currentmoment.reminder_end);
 	},
 
+	// Login
+	'tap #login-done': function() {
+		App.current_user.loginUser();
+	},
+
 	// Reminder frequency panel.
 	'tap #reminder-frequency-article button': function() {
 		Lungo.dom("#reminder-frequency-article button.dark").children(".icon").remove();
@@ -280,18 +297,20 @@ Lungo.Events.init({
 		rediscovr.currentmoment.images = [];
 		var s3upload = s3upload != null ? s3upload : new S3Upload({
 			file_dom_selector: 'moment-form-upload-files',
-			s3_sign_put_url: 'http://192.241.156.130/s3_allow.php',
+			s3_sign_put_url: 'http://ben.rediscovr.me/api/fileupload',
 
 			onProgress: function(percent, message) { // Use this for live upload progress bars
-				Lungo.Notification.html('<h1>Hello World</h1>', "Close");
+				//Lungo.Notification.html('<h1>Hello World</h1>', "Close");
 				console.log('Upload progress: ', percent, message);
 			},
 			onFinishS3Put: function(public_url) { // Get the URL of the uploaded file
 				console.log('Upload finished: ', public_url);
-				rediscovr.currentmoment.images.push(public_url);
+				var url_parts = public_url.split("/");
+				rediscovr.currentmoment.images.push({url_hash: url_parts[url_parts.length - 1]});
 				// Save moment.
 				Lungo.Notification.hide();
-				App.Moment.post();
+				var m = new App.moment();
+				m.addMoment();
 			},
 			onError: function(status) {
 				console.log('Upload error: ', status);
@@ -334,53 +353,102 @@ Lungo.Events.init({
 
 	},
 
-	'touch article#notification a[data-action=normal]': function() {
-		Lungo.Notification.show('user', 'Title', 2);
-	},
+	// 'touch article#notification a[data-action=normal]': function() {
+	// 	Lungo.Notification.show('user', 'Title', 2);
+	// },
 
-	'touch article#notification a[data-action=loading]': function() {
-		Lungo.Notification.show();
-		setTimeout(Lungo.Notification.hide, 3000);
-	},
+	// 'touch article#notification a[data-action=loading]': function() {
+	// 	Lungo.Notification.show();
+	// 	setTimeout(Lungo.Notification.hide, 3000);
+	// },
 
-	'touch article#notification a[data-action=success]': function() {
-		Lungo.Notification.success('Title', 'Description', 'ok', 2);
-	},
+	// 'touch article#notification a[data-action=success]': function() {
+	// 	Lungo.Notification.success('Title', 'Description', 'ok', 2);
+	// },
 
-	'touch article#notification a[data-action=error]': function() {
-		Lungo.Notification.error('Title', 'Description', 'remove', 2);
-	},
+	// 'touch article#notification a[data-action=error]': function() {
+	// 	Lungo.Notification.error('Title', 'Description', 'remove', 2);
+	// },
 
-	'touch article#notification a[data-action=confirm]': function() {
-		Lungo.Notification.confirm({
-			icon: 'user',
-			title: 'Lorem ipsum dolor sit amet, consectetur adipisicing.',
-			description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo amet nulla dolorum hic eum debitis dolorem expedita? Commodi molestiae tempora totam explicabo sed deserunt cum iusto eos perspiciatis ea in.',
-			accept: {
-				icon: 'checkmark',
-				label: 'Accept',
-				callback: function(){ alert("Yes!"); }
-			},
-			cancel: {
-				icon: 'close',
-				label: 'Cancel',
-				callback: function(){ alert("No!"); }
-			}
-		});
-	},
+	// 'touch article#notification a[data-action=confirm]': function() {
+	// 	Lungo.Notification.confirm({
+	// 		icon: 'user',
+	// 		title: 'Lorem ipsum dolor sit amet, consectetur adipisicing.',
+	// 		description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo amet nulla dolorum hic eum debitis dolorem expedita? Commodi molestiae tempora totam explicabo sed deserunt cum iusto eos perspiciatis ea in.',
+	// 		accept: {
+	// 			icon: 'checkmark',
+	// 			label: 'Accept',
+	// 			callback: function(){ alert("Yes!"); }
+	// 		},
+	// 		cancel: {
+	// 			icon: 'close',
+	// 			label: 'Cancel',
+	// 			callback: function(){ alert("No!"); }
+	// 		}
+	// 	});
+	// },
 
-	'touch article#notification a[data-action=html]': function() {
-		Lungo.Notification.html('<h1>Hello World</h1>', "Close");
-	},
+	// 'touch article#notification a[data-action=html]': function() {
+	// 	Lungo.Notification.html('<h1>Hello World</h1>', "Close");
+	// },
 
-	'touch article#notification a[data-action=chaining]': function() {
-		Lungo.Notification.show('user', 'user', 2, function() {
-			Lungo.Notification.error('Title 2', 'Description 2', 'remove',  2, function() {
-				Lungo.Notification.show('cog', 'cog', 2, function() {
-					Lungo.Notification.html('<h1>Hello World</h1>', "Close");
-				});
-			});
-		});
-	}
+	// 'touch article#notification a[data-action=chaining]': function() {
+	// 	Lungo.Notification.show('user', 'user', 2, function() {
+	// 		Lungo.Notification.error('Title 2', 'Description 2', 'remove',  2, function() {
+	// 			Lungo.Notification.show('cog', 'cog', 2, function() {
+	// 				Lungo.Notification.html('<h1>Hello World</h1>', "Close");
+	// 			});
+	// 		});
+	// 	});
+	// }
 
 });
+
+function onNotificationAPN (event) {
+    if ( event.alert )
+    {
+        navigator.notification.alert(event.alert);
+    }
+
+    if ( event.sound )
+    {
+        var snd = new Media(event.sound);
+        snd.play();
+    }
+
+    if ( event.badge )
+    {
+        pushNotification.setApplicationIconBadgeNumber(successHandler, errorHandler, event.badge);
+    }
+}
+function tokenHandler (result) {
+    // Your iOS push server needs to know the token before it can push to this device
+    // here is where you might want to send it the token for later use.
+    alert('device token = ' + result);
+}
+function successHandler (result) {
+    alert('result = ' + result);
+}
+if ( device.platform == 'android' || device.platform == 'Android' )
+{
+    pushNotification.register(
+        successHandler,
+        errorHandler, {
+            "senderID":"replace_with_sender_id",
+            "ecb":"onNotificationGCM"
+        });
+}
+else
+{
+    pushNotification.register(
+        tokenHandler,
+        errorHandler, {
+            "badge":"true",
+            "sound":"true",
+            "alert":"true",
+            "ecb":"onNotificationAPN"
+        });
+}
+function errorHandler (error) {
+    alert('error = ' + error);
+}

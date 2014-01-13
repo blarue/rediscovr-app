@@ -10,8 +10,20 @@ App.api = function() {
 	}
 
 	return {
-	 	addUser: function(ref) {
-	 		console.log("Running addUser");
+		loginUser: function(ref) {
+			console.log("Running loginUser");
+			if (ref.validateLogin() === true) {
+				console.log("Validates. " + config.url + "login" + $$.serializeParameters(ref.details, "?"));
+				$$.get(config.url + "login", ref.details, function(data) {
+					ref.handleLogin(data);
+				}, "json");
+			} else {
+				console.log("User doesn't validate.");
+			}
+		},
+
+		addUser: function(ref) {
+			console.log("Running addUser");
 			if (ref.validate() === true) {
 				console.log("Validates. " + config.url + "user  " + JSON.stringify(ref.details));
 				$$.post(config.url + "user", JSON.stringify(ref.details), function(data) {
@@ -34,8 +46,12 @@ App.api = function() {
 			}
 		},
 
-		getMoments: function() {
-
+		getMoments: function(ref) {
+			console.log("Running getMoments");
+			console.log(config.url + "moment" + $$.serializeParameters(ref.details, "?"));
+			$$.get(config.url + "moment", ref.details, function(data) {
+				ref.handleGet(data);
+			}, "json");
 		}
 	}
 }

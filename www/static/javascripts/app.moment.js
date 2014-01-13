@@ -24,23 +24,40 @@ App.moment = function() {
 			if (data.moment_id != undefined && data.moment_id != null) {
 				this.details.moment_id = data.moment_id;
 				// Do something to show moment added.
+				this.post();
 			}
 		},
 
 		gatherDetails: function() {
 			// Pull values from form to details object.
-			this.details = {
-				user: "26",
-				title: "Snozberries", 
-				text: "We are the music makers. We are the dreamers of the dream.", 
-				location: "Philadelphia, PA", 
-				date: "2013-12-15",
-				images: [
-					{url_hash: "moment-1389334722529-1aec6640bd58.jpg"},
-					{url_hash: "moment-1389329773842-f1c9a64f614e.jpg"}
-				]
-			}
+			this.details.user = App.current_user.details.user_id,
+			this.details.title = rediscovr.currentmoment.moment_title = Lungo.dom("#moment-form-title").val();
+			this.details.text = rediscovr.currentmoment.moment_desc = Lungo.dom("#moment-form-desc").val();
+			this.details.location = rediscovr.currentmoment.moment_location = Lungo.dom("#moment-form-location").val();
+			this.details.date = rediscovr.currentmoment.date_happened = Lungo.dom("#moment-form-date").val();
+			this.details.time = rediscovr.currentmoment.time_happened = Lungo.dom("#moment-form-time").val();
+			this.details.reminder_frequency = rediscovr.currentmoment.reminder_frequency = Lungo.dom("#moment-form-reminder-frequency").text();
+			this.details.reminder_end = rediscovr.currentmoment.reminder_end = Lungo.dom("#moment-form-reminder-end").text();
+			this.details.images = rediscovr.currentmoment.images;
 		},
+
+		post: function() {
+			var post_data = {
+				user: this.details.user,
+				title: this.details.title,
+				description: this.details.text,
+				date: this.details.date,
+				time: this.details.time,
+				location: this.details.location,
+				reminder_frequency: this.details.reminder_frequency,
+				reminder_end: this.details.reminder_end,
+				images: this.details.images,
+				owner: 'self',
+				collaborators: this.details.collaborators
+			};
+			App.database.addMoment(post_data);
+		},
+
 
 		validate: function() {
 			if (this.details.user == null) {
