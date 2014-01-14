@@ -3,7 +3,7 @@
 			<nav class="on-left" data-view-section="back">
 				<img src="img/back-button@2x.png" />
 			</nav>
-			<nav class="on-right">
+			<nav id="signup-done" class="on-right">
 				<img src="img/done-button@2x.png" />
 			</nav>
 		</header>
@@ -14,19 +14,35 @@
 			<div class="signup-form form">
 				<fieldset class="radius shadow">
 					<img src="img/user-icon@2x.png" class="formlabel"/>
-					<input type="text" placeholder="Full Name"/>
+					<input id="signup-firstname" type="text" placeholder="First Name"/>
+				</fieldset>
+				<fieldset class="radius shadow">
+					<img src="img/user-icon@2x.png" class="formlabel"/>
+					<input id="signup-lastname" type="text" placeholder="Last Name"/>
 				</fieldset>
 				<fieldset class="radius shadow">
 					<img src="img/email-icon@2x.png" class="formlabel"/>
-					<input type="text" placeholder="Email Address"/>
+					<input id="signup-emailadd" type="email" placeholder="Email Address"/>
+				</fieldset>
+				<fieldset class="radius shadow">
+					<img src="img/email-icon@2x.png" class="formlabel"/>
+					<input id="signup-password" type="password" placeholder="Password"/>
 				</fieldset>
 				<fieldset class="radius shadow">
 					<img src="img/location-icon@2x.png" class="formlabel"/>
-					<input type="text" placeholder="Location"/>
+					<input id="signup-city" type="text" placeholder="City"/>
+				</fieldset>
+				<fieldset class="radius shadow">
+					<img src="img/location-icon@2x.png" class="formlabel"/>
+					<input id="signup-state" type="text" placeholder="State"/>
+				</fieldset>
+				<fieldset class="radius shadow">
+					<img src="img/location-icon@2x.png" class="formlabel"/>
+					<input id="signup-country" type="text" placeholder="Country"/>
 				</fieldset>
 				<fieldset class="radius shadow">
 					<img src="img/phone-icon@2x.png" class="formlabel"/>
-					<input type="text" placeholder="Phone (Optional)"/>
+					<input id="signup-phone" type="text" placeholder="Phone (Optional)"/>
 				</fieldset>
 			</div> 
 		</article>

@@ -132,11 +132,11 @@ body > section > article.moments > div.user-stats > div.user-stats-section.last 
 body > section > article.moments > div.user-stats > div.user-stats-section > span.user-stat-title { font-size:1em; }
 body > section > article.moments > div.user-stats > div.user-stats-section > span.user-stat-stat { font-size:1.1em; font-weight:bold; color:#f9708c; }
 
-body > section > article.moments > div.moment-item { width:100%; margin:0; padding:0; }
+body > section > article.moments > div.moment-item { width:100%; margin:0; padding:0; border-bottom: 1px solid #eeeeee; }
 body > section > article.moments > div.moment-item > div.moment-item-header { width:100%; margin:.7em; padding:0; margin-bottom: 0; }
 body > section > article.moments > div.moment-item > div.moment-item-header > div.moment-header { padding-top:.6em; }
-body > section > article.moments > div.moment-item > div.moment-item-header > div.moment-header > span.moment-title { display:block; color:#656565; font-size:1.1em; }
-body > section > article.moments > div.moment-item > div.moment-item-header > div.moment-header > span.moment-location { display:block; color:#6499cf; font-size:.9em; }
+body > section > article.moments > div.moment-item > div.moment-item-header > div.moment-header > span.moment-title { display:block; color:#656565; font-size:1.25em; }
+body > section > article.moments > div.moment-item > div.moment-item-header > div.moment-header > span.moment-location { display:block; color:#999999; font-size:.95em; }
 body > section > article.moments > div.moment-item > div.moment-image { clear:both; width:100%; }
 body > section > article.moments > div.moment-item > div.moment-image.one-image  { display:inline-block; width:100%; }
 body > section > article.moments > div.moment-item > div.moment-image.one-half   { display:inline-block; width:50%; }
@@ -206,6 +206,11 @@ div.num-collaborations > span.num {
 .hilite {
 	color: #f9708c;
 	font-weight: bold;
+}
+
+.clearfix {
+	font-size: .01em;
+	clear: both;
 }
 
 /* Hidden file upload form */

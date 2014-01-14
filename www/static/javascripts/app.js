@@ -58,13 +58,6 @@ Lungo.ready(function() {
 	// Initialize DB.
 	App.database.open();
 	
-	console.log("Device width: " + document.documentElement.clientWidth);
-	console.log("Body width: " + Lungo.dom("body").width());
-
-	if (document.documentElement.clientWidth != Lungo.dom("body").width()) {
-		alert("What!!!?!");
-	}
-
 	// Create instance of user for the current user.
 	App.current_user = new App.user();
 	// Check if there is a logged in user.
@@ -148,6 +141,11 @@ Lungo.Events.init({
 	// Login
 	'tap #login-done': function() {
 		App.current_user.loginUser();
+	},
+
+	// Signup
+	'tap #signup-done': function() {
+		App.current_user.addUser();
 	},
 
 	// Reminder frequency panel.

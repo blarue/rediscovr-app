@@ -50,7 +50,7 @@ App.moments = function() {
 													<span class=\"moment-title\">" + data.moments[i].title + "</span>\
 													<span class=\"moment-location\">" + data.moments[i].location + "</span>\
 												</div>\
-												<div style=\"clear:both;\">&nbsp;</div>\
+												<div class=\"clearfix\">&nbsp;</div>\
 											</div>";
 						for (var img = 0; img < data.moments[i].images.length; img++) {
 							moment_item += "<div class=\"moment-image " + imgdiv_class + "\">\
@@ -70,6 +70,8 @@ App.moments = function() {
 					}
 					Lungo.Router.section("moments");
 				}
+			} else {
+				Lungo.Router.section("home");
 			}
 		},
 

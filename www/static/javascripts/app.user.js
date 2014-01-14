@@ -41,7 +41,7 @@ App.user = function() {
 				// Do something to show user added.
 				Lungo.Notification.success('Success', 'Your login was a great success!', 'ok', 2, function() {
 					Lungo.Notification.hide();
-					Lungo.Router.section("home")
+					Lungo.Router.section("home");
 				});
 			} else if (data.Error != undefined) {
 				Lungo.Notification.error('Error', data.Error, 'remove', 3);
@@ -116,13 +116,26 @@ App.user = function() {
 			console.log("API: " + data.message);
 			if (data.user_id != undefined && data.user_id != null) {
 				this.details.user_id = data.user_id;
-				// Do something to show user added.
+				this.details.current_user = 1;
+				App.database.addUser(this.details);
+					// Do something to show user added.
+				Lungo.Router.section("home");
 			}
 		},
 
 		gatherDetails: function() {
 			// Pull values from form to details object.
-			this.details = {email:"christy.mchugh@thecrack.com",password:"123xyz", firstName:"Chris", lastName:"McHugh", city:"Philadelphia", state:"PA", country:"US", phone:"(610) 223-1886", image_url:"http://tinyurl.com/dfshdk"};
+			this.details = {
+				email: Lungo.dom("#signup-emailadd").val(),
+				password: Lungo.dom("#signup-password").val(),
+				firstName: Lungo.dom("#signup-firstname").val(),
+				lastName: Lungo.dom("#signup-lastname").val(),
+				city: Lungo.dom("#signup-city").val(),
+				state: Lungo.dom("#signup-state").val(),
+				country: Lungo.dom("#signup-country").val(),
+				phone: Lungo.dom("#signup-phone").val(),
+				image_url: "http://tinyurl.com/dfshdk"
+			};
 
 		},
 
