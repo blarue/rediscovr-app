@@ -68,7 +68,7 @@ rediscovr.mapping = {
 
 	resizeResultsBox: function() {
 		// Viewport height
-		var vp_height = document.documentElement.clientHeight;;
+		var vp_height = document.documentElement.clientHeight;
 		// Div offset height
 		var div_top = Lungo.dom("#fourSq-results").get(0).offsetTop;
 		// Set height

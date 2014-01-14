@@ -72,12 +72,9 @@ App.user = function() {
 				App.current_user.details.phone = data.phone;
 				App.current_user.details.user_image = data.user_image;
 				console.log("App.current_user.details.user_id:" + App.current_user.details.user_id);
-				Lungo.Notification.success('Success', 'Welcome back ' + App.current_user.details.firstName + '!', 'ok', 2, function() {
-					Lungo.Notification.hide();
-					Lungo.Router.section("home")
-				});
 				// Get moments?
-
+				this.moments = new App.moments();
+				this.moments.getMoments();
 			}
 		},
 

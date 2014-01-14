@@ -36,6 +36,10 @@ var App = (function(lng, undefined) {
 App.carousel = {prev: null, next: null};
 var pushNotification;
 
+App.config = {
+	image_prefix: "http://s3.amazonaws.com/etch-images/"
+};
+
 // Algorithm for generating unique IDs. Pass in a prefix like 'moment'.
 App.generateUid = function (prefix, separator) {
 	var timestamp = new Date().getTime();
@@ -49,85 +53,18 @@ App.generateUid = function (prefix, separator) {
 	return (prefix + delim + timestamp + delim + S4() + S4() + S4());
 };
 
-// Moment adding, editing and displaying.
-App.Moment = {
-	title: '',
-	description: '',
-	date: '',
-	time: '',
-	location: '',
-	reminder_frequency: '',
-	reminder_end: '',
-	images: [],
-	collaborators: [],
-
-	gather: function() {
-		this.title = rediscovr.currentmoment.moment_title = Lungo.dom("#moment-form-title").val();
-		this.description = rediscovr.currentmoment.moment_desc = Lungo.dom("#moment-form-desc").val();
-		this.location = rediscovr.currentmoment.moment_location = Lungo.dom("#moment-form-location").val();
-		this.date = rediscovr.currentmoment.date_happened = Lungo.dom("#moment-form-date").val();
-		this.time = rediscovr.currentmoment.time_happened = Lungo.dom("#moment-form-time").val();
-		this.reminder_frequency = rediscovr.currentmoment.reminder_frequency = Lungo.dom("#moment-form-reminder-frequency").text();
-		this.reminder_end = rediscovr.currentmoment.reminder_end = Lungo.dom("#moment-form-reminder-end").text();
-		this.images = rediscovr.currentmoment.images;
-	},
-
-	post: function() {
-		this.gather();
-		var post_data = {
-			user: App.user_key,
-			title: this.title,
-			description: this.description,
-			date: this.date,
-			time: this.time,
-			location: this.location,
-			reminder_frequency: this.reminder_frequency,
-			reminder_end: this.reminder_end,
-			images: this.images,
-			owner: 'self',
-			collaborators: this.collaborators
-		};
-		App.database.addMoment(post_data);
-		
-		// // Make AJAX call.
-		// $$.ajax({
-		// 	type: 'POST',
-		// 	url: 'https://api.etched.com/moment/add',
-		// 	data: post_data,
-		// 	dataType: 'json', //'json', 'xml', 'html', or 'text'
-		// 	async: true,
-		// 	success: function(response) {
-		// 		if (typeof response === "undefined") {
-		// 			console.log("Response empty.");
-		// 			return false;
-		// 		}
-		// 		if (
-		// 			response.meta === undefined || 
-		// 			response.meta.code === undefined || 
-		// 			response.response === undefined || 
-		// 			response.response.venues === undefined
-		// 		) {
-		// 			console.log("Response malformed.");
-		// 			return false;
-		// 		}
-		// 		if (response.meta.code == '200' && response.response.venues.length) {
-
-	}
-}
-
-App.utilities = {
-	
-}
-
 Lungo.ready(function() {
-
-
-	App.user_id = "26";
-	App.last_update = "1388534400";
 
 	// Initialize DB.
 	App.database.open();
 	
+	console.log("Device width: " + document.documentElement.clientWidth);
+	console.log("Body width: " + Lungo.dom("body").width());
+
+	if (document.documentElement.clientWidth != Lungo.dom("body").width()) {
+		alert("What!!!?!");
+	}
+
 	// Create instance of user for the current user.
 	App.current_user = new App.user();
 	// Check if there is a logged in user.
@@ -140,50 +77,10 @@ Lungo.ready(function() {
 	if (rediscovr.currentmoment == undefined) {
 		rediscovr.currentmoment = {};
 	}
-	// rediscovr.currentmoment.moment_title       = "Rockin' Out!";
-	// rediscovr.currentmoment.moment_desc        = "Rockin' Out! Woo hoo hoo!";
-	// rediscovr.currentmoment.moment_location    = "Philadelphia, PA";
-	// rediscovr.currentmoment.date_happened      = "2013-12-10";
-	// rediscovr.currentmoment.time_happened      = "12:15";
-	// rediscovr.currentmoment.reminder_frequency = "Monthly";
-	// rediscovr.currentmoment.reminder_end       = "Never";
 
 	pushNotification = window.plugins.pushNotification;
 	// Change webview background color (dropdowns etc) from PhoneGap default (black) to white.
 	window.plugins.webviewcolor.change('#FFFFFF');
-	/*
-
-	*/
-
-	// Lungo.Aside.show();
-	// Lungo.Router.section("notification");
-
-	// Lungo.Notification.show();
-	// Lungo.Notification.show("home", "Please wait...");
-	// Lungo.Notification.show("magic");
-
-	// Lungo.Notification.show("Please wait", "user", 2, function(){ alert(1); });
-
-	// Lungo.Notification.error('Lorem ipsum dolor sit amet', "    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis veritatis similique sed qui doloribus inventore doloremque temporibus ab totam...", 'remove');
-	// Lungo.Notification.success('Lorem ipsum dolor sit amet', "    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis veritatis similique sed qui doloribus inventore doloremque temporibus ab totam...", 'ok');
-	// Lungo.Notification.confirm({
-	//     icon: 'user',
-	//     title: 'Lorem ipsum dolor sit amet, consectetur adipisicing.',
-	//     description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo amet nulla dolorum hic eum debitis dolorem expedita? Commodi molestiae tempora totam explicabo sed deserunt cum iusto eos perspiciatis ea in.',
-	//     accept: {
-	//         icon: 'checkmark',
-	//         label: 'Accept',
-	//         callback: function(){ alert("Yes!"); }
-	//     },
-	//     cancel: {
-	//         icon: 'close',
-	//         label: 'Cancel',
-	//         callback: function(){ alert("No!"); }
-	//     }
-	// });
-	// Lungo.Notification.html("<h1 class='title'>Title</h1><article>aslkdkals</article><a href='#' class='button large anchor' >Seleccionar</a>", "Cancelar");
-	// Lungo.Notification.push("Lorem ipsum dolor sit amet", "home");
-
 });
 
 Lungo.Events.init({
@@ -237,25 +134,6 @@ Lungo.Events.init({
 			}
 		});
 	},
-
-	// Testing doing something... anything on section load.
-	// 'load section#add-moment': function(event) {
-	// 	Lungo.Notification.confirm({
-	// 		icon: 'user',
-	// 		title: 'Lorem ipsum dolor sit amet, consectetur adipisicing.',
-	// 		description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo amet nulla dolorum hic eum debitis dolorem expedita? Commodi molestiae tempora totam explicabo sed deserunt cum iusto eos perspiciatis ea in.',
-	// 		accept: {
-	// 			icon: 'checkmark',
-	// 			label: 'Accept',
-	// 			callback: function(){ alert("Yes!"); }
-	// 		},
-	// 		cancel: {
-	// 			icon: 'close',
-	// 			label: 'Cancel',
-	// 			callback: function(){ alert("No!"); }
-	// 		}
-	// 	});
-	// },
 
 	'load section#add-moment': function(event) {
 		Lungo.dom("#moment-form-title").val(rediscovr.currentmoment.moment_title);
@@ -351,56 +229,7 @@ Lungo.Events.init({
 		navigator.contacts.find(filter, contact_results, contact_error, options);
 		*/
 
-	},
-
-	// 'touch article#notification a[data-action=normal]': function() {
-	// 	Lungo.Notification.show('user', 'Title', 2);
-	// },
-
-	// 'touch article#notification a[data-action=loading]': function() {
-	// 	Lungo.Notification.show();
-	// 	setTimeout(Lungo.Notification.hide, 3000);
-	// },
-
-	// 'touch article#notification a[data-action=success]': function() {
-	// 	Lungo.Notification.success('Title', 'Description', 'ok', 2);
-	// },
-
-	// 'touch article#notification a[data-action=error]': function() {
-	// 	Lungo.Notification.error('Title', 'Description', 'remove', 2);
-	// },
-
-	// 'touch article#notification a[data-action=confirm]': function() {
-	// 	Lungo.Notification.confirm({
-	// 		icon: 'user',
-	// 		title: 'Lorem ipsum dolor sit amet, consectetur adipisicing.',
-	// 		description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nemo amet nulla dolorum hic eum debitis dolorem expedita? Commodi molestiae tempora totam explicabo sed deserunt cum iusto eos perspiciatis ea in.',
-	// 		accept: {
-	// 			icon: 'checkmark',
-	// 			label: 'Accept',
-	// 			callback: function(){ alert("Yes!"); }
-	// 		},
-	// 		cancel: {
-	// 			icon: 'close',
-	// 			label: 'Cancel',
-	// 			callback: function(){ alert("No!"); }
-	// 		}
-	// 	});
-	// },
-
-	// 'touch article#notification a[data-action=html]': function() {
-	// 	Lungo.Notification.html('<h1>Hello World</h1>', "Close");
-	// },
-
-	// 'touch article#notification a[data-action=chaining]': function() {
-	// 	Lungo.Notification.show('user', 'user', 2, function() {
-	// 		Lungo.Notification.error('Title 2', 'Description 2', 'remove',  2, function() {
-	// 			Lungo.Notification.show('cog', 'cog', 2, function() {
-	// 				Lungo.Notification.html('<h1>Hello World</h1>', "Close");
-	// 			});
-	// 		});
-	// 	});
-	// }
+	}
 
 });
 
