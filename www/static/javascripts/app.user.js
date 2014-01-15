@@ -180,6 +180,47 @@ App.user = function() {
 			} else {
 				return true;
 			}
+		},
+
+		getCollaborators: function() {
+			this.details = {
+				user: App.current_user.details.user_id
+			}
+			var api = new App.api();
+			api.getCollaborators(this);
+		},
+
+		handleGetCollaborators: function(data) {
+			console.log(data);
+			console.log("API: " + data.message);
+			if (data.collaborators != undefined && data.collaborators != null) {
+				var c = data.collaborators;
+				for (var i = 0; i < c.length; i++) {
+					var new_li = "<li class=\"arrow\" data-view-section=\"person\">\
+						<div class=\"user-avatar avatar-medium avatar-shadow\">\
+							<img src=\"" + App.config.image_prefix + c.user_image + "\"/>\
+						</div>\
+						<div>\
+							<strong class=\"text bold\">" + c.first_name + c.last_name + "</strong>\
+							<span class=\"text tiny\">" + c.city + c.ctate + "</span>\
+							<br/>\
+							<div class=\"num-collaborations\">\
+								<span class=\"num\">32</span>\
+								<span> collaborations</span>\
+							</div>\
+						</div>\
+					</li>";
+					Lungo.dom("#people-article-ul").append(new_li);
+					delete new_li;
+				}
+				// this.details.user_id = data.user_id;
+				// this.details.current_user = 1;
+				// App.database.addUser(this.details);
+				
+				// Do something to show user added.
+				Lungo.Router.section("people");
+			}
+			
 		}
 	}
 }

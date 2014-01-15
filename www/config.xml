@@ -8,7 +8,16 @@
         PhoneGap Team
     </author>
     <feature name="http://api.phonegap.com/1.0/device" />
-    
+    <feature name="Camera">
+        <param name="ios-package" value="CDVCamera" />
+    </feature>
+    <feature name="WebViewColor">
+        <param name="ios-package" value="WebViewColor" />
+    </feature>
+    <feature name="Contacts">
+        <param name="ios-package" value="CDVContacts" />
+    </feature>
+
     <preference name="EnableViewportScale" value="true"/>
     <preference name="phonegap-version" value="3.1.0" />
     <preference name="permissions" value="none" />
@@ -44,7 +53,10 @@
     <gap:splash gap:platform="ios" height="1024" src="res/screen/ios/screen-ipad-portrait.png" width="768" />
     <gap:splash gap:platform="ios" height="768" src="res/screen/ios/screen-ipad-landscape.png" width="1024" />
 
-    <gap:plugin name="com.phonegap.plugins.pushplugin" />
+    <gap:plugin name="com.phonegap.plugins.pushplugin" version="2.1.1" />
     <gap:plugin name="nl.x-services.plugins.ioswebviewcolor" />
+    <gap:plugin name="org.apache.cordova.camera" version="0.2.3" />
+    <gap:plugin name="org.apache.cordova.contacts" />
+
     <access origin="*" />
 </widget>

@@ -138,6 +138,12 @@ Lungo.Events.init({
 		Lungo.dom("#moment-form-reminder-end").text(rediscovr.currentmoment.reminder_end);
 	},
 
+	// List of people load event.
+	'load section#people': function(event) {
+		var c = new App.user();
+		c.getCollaborators();
+	},
+
 	// Login
 	'tap #login-done': function() {
 		App.current_user.loginUser();
@@ -146,6 +152,10 @@ Lungo.Events.init({
 	// Signup
 	'tap #signup-done': function() {
 		App.current_user.addUser();
+	},
+
+	'tap #moment-capture-button button': function() {
+		App.photo.getPhoto(pictureSource.PHOTOLIBRARY);
 	},
 
 	// Reminder frequency panel.
