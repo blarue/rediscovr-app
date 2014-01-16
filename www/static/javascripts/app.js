@@ -237,6 +237,25 @@ Lungo.Events.init({
 	},
 
 	'load section#add-moment-select-contacts': function(event) {
+		function onSuccess(contacts) {
+		    alert('Found ' + contacts.length + ' contacts.');
+		    Lungo.dom("#select-contacts-list").html("");
+		    for (var i = 0; i < contacts.length; i++) {
+		    	Lungo.dom("#select-contacts-list").append("<li>" + JSON.stringify(contacts[i]) + "</li>");
+		    }
+		};
+
+		function onError(contactError) {
+		    alert('onError!');
+		};
+
+		// find all contacts with 'Bob' in any name field
+		var options      = new ContactFindOptions();
+		options.filter   = "McHugh";
+		options.multiple = true;
+		var fields       = ["displayName", "name"];
+		navigator.contacts.find(fields, onSuccess, onError, options);
+
 		/*
 		var options = [];
 		var filter = ["displayName", "addresses"];

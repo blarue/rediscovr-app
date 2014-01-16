@@ -1,4 +1,4 @@
-App.contacts = {
+App.contact = {
 	onSuccess: function(contacts) {
 		alert('Found ' + contacts.length + ' contacts.');
 	},
@@ -13,6 +13,10 @@ App.contacts = {
 		options.filter   = "McHugh";
 		options.multiple = true;
 		var fields       = ["displayName", "name"];
-		navigator.contacts.find(fields, this.onSuccess, this.onError, options);
+		try {
+			navigator.contacts.find(fields, App.contacts.onSuccess, App.contacts.onError, options);
+		} catch (e) {
+			alert(JSON.stringify(e));
+		}
 	}
 }
