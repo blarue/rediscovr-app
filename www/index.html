@@ -1,48 +1,30 @@
-<!doctype html>
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
 <html>
-<head>
-    <meta charset="utf-8">
-    <title>rediscovr</title>
-    <meta name="description" content="">
-    <meta name="author" content="Chris McHugh">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="format-detection" content="telephone=no">
-    <meta http-equiv="cleartype" content="on">
-
-    <!-- iPhone -->
-    <link href="http://cdn.tapquo.com/lungo/icon-57.png" sizes="57x57" rel="apple-touch-icon">
-    <link href="http://cdn.tapquo.com/lungo/startup-image-320x460.png" media="(device-width: 320px) and (device-height: 480px)
-             and (-webkit-device-pixel-ratio: 1)" rel="apple-touch-startup-image">
-
-    <!-- iPhone (Retina) -->
-    <link href="http://cdn.tapquo.com/lungo/icon-114.png" sizes="114x114" rel="apple-touch-icon">
-    <link href="http://cdn.tapquo.com/lungo/startup-image-640x920.png" media="(device-width: 320px) and (device-height: 480px)
-             and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
-
-    <!-- iPhone 5 -->
-    <link href="http://cdn.tapquo.com/lungo/startup-image-640x1096.png" media="(device-width: 320px) and (device-height: 568px)
-             and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
-
-    <!-- iPad -->
-    <link href="http://cdn.tapquo.com/lungo/icon-72.png" sizes="72x72" rel="apple-touch-icon">
-    <link href="http://cdn.tapquo.com/lungo/startup-image-768x1004.png" media="(device-width: 768px) and (device-height: 1024px)
-             and (orientation: portrait)
-             and (-webkit-device-pixel-ratio: 1)" rel="apple-touch-startup-image">
-    <link href="http://cdn.tapquo.com/lungo/startup-image-748x1024.png" media="(device-width: 768px) and (device-height: 1024px)
-             and (orientation: landscape)
-             and (-webkit-device-pixel-ratio: 1)" rel="apple-touch-startup-image">
-
-    <!-- iPad (Retina) -->
-    <link href="http://cdn.tapquo.com/lungo/icon-144.png" sizes="144x144" rel="apple-touch-icon">
-    <link href="http://cdn.tapquo.com/lungo/startup-image-1536x2008.png" media="(device-width: 768px) and (device-height: 1024px)
-             and (orientation: portrait)
-             and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
-    <link href="http://cdn.tapquo.com/lungo/startup-image-1496x2048.png" media="(device-width: 768px) and (device-height: 1024px)
-             and (orientation: landscape)
-             and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-densitydpi=device-dpi" />
+<!--        <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
+        <title>Hello World</title>
 
     <!-- Main Stylesheet -->
     <link rel="stylesheet" href="package/lungo/lungo.css">
@@ -53,21 +35,117 @@
     <!-- Maps from Mapbox -->
     <script src="static/javascripts/mapbox.js"></script>
     <link rel="stylesheet" href="static/stylesheets/mapbox.css?v=1">
-</head>
 
-<body>
+<script type="text/javascript">
+
+    var pictureSource;   // picture source
+    var destinationType; // sets the format of returned value
+
+    // Wait for device API libraries to load
+    //
+    document.addEventListener("deviceready",onDeviceReady,false);
+
+    // device APIs are available
+    //
+    function onDeviceReady() {
+        pictureSource=navigator.camera.PictureSourceType;
+        destinationType=navigator.camera.DestinationType;
+    }
+
+    // Called when a photo is successfully retrieved
+    //
+    function onPhotoDataSuccess(imageData) {
+      // Uncomment to view the base64-encoded image data
+      // console.log(imageData);
+
+      // Get image handle
+      //
+      var smallImage = document.getElementById('smallImage');
+
+      // Unhide image elements
+      //
+      smallImage.style.display = 'block';
+
+      // Show the captured photo
+      // The in-line CSS rules are used to resize the image
+      //
+      smallImage.src = "data:image/jpeg;base64," + imageData;
+    }
+
+    // Called when a photo is successfully retrieved
+    //
+    function onPhotoURISuccess(imageURI) {
+      // Uncomment to view the image file URI
+      // console.log(imageURI);
+
+      // Get image handle
+      //
+      var largeImage = document.getElementById('largeImage');
+
+      // Unhide image elements
+      //
+      largeImage.style.display = 'block';
+
+      // Show the captured photo
+      // The in-line CSS rules are used to resize the image
+      //
+      largeImage.src = imageURI;
+    }
+
+    // A button will call this function
+    //
+    function capturePhoto() {
+      // Take picture using device camera and retrieve image as base64-encoded string
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
+        destinationType: destinationType.DATA_URL });
+    }
+
+    // A button will call this function
+    //
+    function capturePhotoEdit() {
+      // Take picture using device camera, allow edit, and retrieve image as base64-encoded string
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+        destinationType: destinationType.DATA_URL });
+    }
+
+    // A button will call this function
+    //
+    function getPhoto(source) {
+      // Retrieve image file location from specified source
+      navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50,
+        destinationType: destinationType.FILE_URI,
+        sourceType: source });
+    }
+
+    // Called if something bad happens.
+    //
+    function onFail(message) {
+      alert('Failed because: ' + message);
+    }
+
+    </script>
+  </head>
+  <body>
+
     <section id="main" data-transition="slide" data-aside="features" class="drag">
         <article id="main-article" class="signup scroll">
             <div class='splash'>
+<!--
+    <button style="color:#ffffff" onclick="capturePhoto();">Capture Photo</button> <br>
+    <button style="color:#ffffff" onclick="capturePhotoEdit();">Capture Editable Photo</button> <br>
+    <button style="color:#ffffff" onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
+    <button style="color:#ffffff" onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button><br>
+    <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
+    <img style="display:none;" id="largeImage" src="" />
+-->
                 <img src='img/etched-logo@2x.png' class="splash logo centered"/>
                 <div class='splash subtitle'>your favorite moments</div>
                 <a href="#" data-view-section="signup-google"><img src='img/connect-with-google@2x.png' class="splash connect centered"/></a>
                 <div class="splash privacy">
-                    <div style='text-align:center;font-size:12px;'><img src='img/lock-icon@2x.png'/> &nbsp; Rediscovr is 100% private. People only see what you specifically share with them.</div>
+			<div style='text-align:center;font-size:12px;'><img src='img/lock-icon@2x.png'/> &nbsp; Rediscovr is 100% private. People only see what you specifically share with them.</div>
                 </div>
-                <div class='splash links'><a href='#' data-view-section="signup-email" class='link'>Sign Up</a> or <a href='#' data-view-section="login" class='link'>Log In</a> with email instead.</div>
-<!--            <div class='splash links'><a href='#' data-view-section="signup-email" class='link'>Sign Up</a> or <a href='#' data-view-section="moments" class='link'>Log In</a> with email instead.</div> -->
-            </div> 
+		<div class='splash links'><a href='#' data-view-section="signup-email" class='link'>Sign Up</a> or <a href='#' data-view-section="login" class='link'>Log In</a> with email instead.</div>
+            </div>
         </article>
     </section>
 
@@ -95,67 +173,25 @@
         </header>
     </section>
 
-    <section id="signup" data-transition="slide" data-aside="features" class="drag">
-        <header style='display:none;'>
-            <nav>
-                <a href="#" data-view-aside="features" data-icon="menu"></a>
-            </nav>
-            <img src="static/images/logo.png" class="title centered">
-            <nav class="on-right">
-                <a href="#"><abbr class="text tiny ">v33</abbr></a>
-            </nav>
-        </header>
+        <script type="text/javascript" src="phonegap.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
 
-        <nav data-control="groupbar" data-article="icon-symbol icon-media icon-toolbar icon-social icon-item">
-            <a href="#" data-view-article="icon-symbol" data-label="Symbol" data-async="static/articles/icon-symbol.html"></a>
-            <a href="#" data-view-article="icon-media" data-label="Media" data-async="static/articles/icon-media.html"></a>
-            <a href="#" data-view-article="icon-toolbar" data-label="Toolbar" data-async="static/articles/icon-toolbar.html"></a>
-            <a href="#" data-view-article="icon-social" data-label="Social"  data-async="static/articles/icon-social.html"></a>
-            <a href="#" data-view-article="icon-item" data-label="Item" data-async="static/articles/icon-item.html"></a>
-        </nav>
-
-        <nav data-control="groupbar" data-article="list list-indented list-examples">
-            <a href="#" data-view-article="list" data-icon="checkmark" data-label="Normal"></a>
-            <a href="#" data-view-article="list-indented" data-label="Indented"></a>
-            <a href="#" data-view-article="list-examples" data-label="Examples"></a>
-        </nav>
-
-        <article id="main-article" class="signup scroll">
-            <div class='splash'>
-                <img src='img/splash-logo@2x.png' class="splash logo centered"/>
-                <div class='splash subtitle'>your favorite moments</div>
-                <a href="#" data-view-article="signup-google"><img src='img/connect-with-google@2x.png' class="splash connect centered"/></a>
-                <div class="splash privacy">
-                    <div style='text-align:center;font-size:12px;'><img src='img/lock-icon@2x.png'/> &nbsp; Rediscovr is 100% private. People only see what you specifically share with them.</div>
-                </div>
-                <div class='splash links'><a href='#' class='link'>Sign Up</a> or <a href='#' class='link'>Log In</a> with email instead.</div>
-            </div> 
-        </article>
-        <article id="signup-google" class="list indenteds scroll">
-            <div class='signup'>
-                Signup
-            </div>
-        </article>
-    </section>
-
-    <!-- Lungo dependencies -->
-    <script src="components/quojs/quo.debug.js"></script>
-    <script src="package/lungo/lungo.js"></script>
-    <!-- LungoJS - Sandbox App -->
+<script src="components/quojs/quo.debug.js"></script>
+<script src="package/lungo/lungo.js"></script>
     <script>
         Lungo.init({
             name: 'rediscovr',
             version: '0.0.1',
             resources: [
-                'static/asides/left-sidebar.html', 
-                'static/sections/signup-email.html', 
-                'static/sections/signup-google.html', 
-                'static/sections/login.html', 
-                'static/sections/home.html', 
-                'static/sections/moments.html', 
-                'static/sections/profile.html', 
-                'static/sections/people.html', 
-                'static/sections/person.html', 
+                'static/asides/left-sidebar.html',
+                'static/sections/signup-email.html',
+                'static/sections/signup-google.html',
+                'static/sections/login.html',
+                'static/sections/home.html',
+                'static/sections/moments.html',
+                'static/sections/profile.html',
+                'static/sections/people.html',
+                'static/sections/person.html',
                 'static/sections/notifications.html',
                 'static/sections/settings.html',
                 'static/sections/add-moment.html',
@@ -167,8 +203,7 @@
             history: false
         });
     </script>
-    <script src="static/javascripts/app.js"></script>
-    <script src="static/javascripts/app.api.js"></script>
+    <script src="static/javascripts/app.js"></script> 
     <script src="static/javascripts/app.database.js"></script>
     <script src="static/javascripts/app.user.js"></script>
     <script src="static/javascripts/app.moment.js"></script>
@@ -178,5 +213,10 @@
     <script src="static/javascripts/mapping.js"></script>
     <script src="static/javascripts/s3upload.js"></script>
     <script src="static/javascripts/PushNotification.js"></script>
-</body>
+<!--    <script src="static/javascripts/mapbox.js"></script> -->
+
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+    </body>
 </html>

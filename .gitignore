@@ -18,4 +18,6 @@ profile
 DerivedData
 .idea/
 *.hmap
+platforms
+plugins
 www.zip

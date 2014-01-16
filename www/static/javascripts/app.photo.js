@@ -1,6 +1,4 @@
 App.photo = {
-	
-	
 // navigator.camera.getPicture(this.onCaptureSuccess, this.onCaptureFail, {
 //     allowEdit: true,
 //     correctOrientation: true,

@@ -62,7 +62,7 @@ Lungo.ready(function() {
 	App.current_user = new App.user();
 	// Check if there is a logged in user.
 	App.current_user.getLoggedInUser();
-	
+
 	// Set up the rediscovr object and current moment within it.
 	if (typeof rediscovr == "undefined") {
 		rediscovr = {};
@@ -74,6 +74,7 @@ Lungo.ready(function() {
 	pushNotification = window.plugins.pushNotification;
 	// Change webview background color (dropdowns etc) from PhoneGap default (black) to white.
 	window.plugins.webviewcolor.change('#FFFFFF');
+
 });
 
 Lungo.Events.init({
@@ -154,8 +155,16 @@ Lungo.Events.init({
 		App.current_user.addUser();
 	},
 
-	'tap #moment-capture-button button': function() {
-		App.photo.getPhoto(pictureSource.PHOTOLIBRARY);
+	'tap #moment-capture-button': function() {
+		try {
+			navigator.camera.getPicture(function() {alert("Yayy")}, function() {alert("Nooo")}, {
+				quality: 50, 
+				destinationType: Camera.DestinationType.FILE_URI, 
+				sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+			});
+		} catch (e) {
+			alert(JSON.stringify(e));
+		}
 	},
 
 	// Reminder frequency panel.
