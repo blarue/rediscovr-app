@@ -36,24 +36,21 @@
     <script src="static/javascripts/mapbox.js"></script>
     <link rel="stylesheet" href="static/stylesheets/mapbox.css?v=1">
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
     var pictureSource;   // picture source
     var destinationType; // sets the format of returned value
 
     // Wait for device API libraries to load
-    //
     document.addEventListener("deviceready",onDeviceReady,false);
 
     // device APIs are available
-    //
     function onDeviceReady() {
         pictureSource=navigator.camera.PictureSourceType;
         destinationType=navigator.camera.DestinationType;
     }
 
     // Called when a photo is successfully retrieved
-    //
     function onPhotoDataSuccess(imageData) {
       // Uncomment to view the base64-encoded image data
       // console.log(imageData);
@@ -130,14 +127,12 @@
     <section id="main" data-transition="slide" data-aside="features" class="drag">
         <article id="main-article" class="signup scroll">
             <div class='splash'>
-<!--
     <button style="color:#ffffff" onclick="capturePhoto();">Capture Photo</button> <br>
     <button style="color:#ffffff" onclick="capturePhotoEdit();">Capture Editable Photo</button> <br>
     <button style="color:#ffffff" onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
     <button style="color:#ffffff" onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button><br>
     <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
     <img style="display:none;" id="largeImage" src="" />
--->
                 <img src='img/etched-logo@2x.png' class="splash logo centered"/>
                 <div class='splash subtitle'>your favorite moments</div>
                 <a href="#" data-view-section="signup-google"><img src='img/connect-with-google@2x.png' class="splash connect centered"/></a>
@@ -204,6 +199,7 @@
         });
     </script>
     <script src="static/javascripts/app.js"></script> 
+    <script src="static/javascripts/app.api.js"></script> 
     <script src="static/javascripts/app.database.js"></script>
     <script src="static/javascripts/app.user.js"></script>
     <script src="static/javascripts/app.moment.js"></script>
