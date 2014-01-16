@@ -155,17 +155,31 @@ Lungo.Events.init({
 		App.current_user.addUser();
 	},
 
-	'tap #moment-capture-button': function() {
-		try {
-			navigator.camera.getPicture(function() {alert("Yayy")}, function() {alert("Nooo")}, {
-				quality: 50, 
-				destinationType: Camera.DestinationType.FILE_URI, 
-				sourceType: Camera.PictureSourceType.PHOTOLIBRARY
-			});
-		} catch (e) {
-			alert(JSON.stringify(e));
-		}
+	'tap #moment-form-upload-files': function() {
+		Lungo.dom("#moment-form-upload-files").on("change", App.photo.getPics);
 	},
+
+	// 'tap #moment-capture-button': function() {
+	// 	try {
+	// 		navigator.camera.getPicture(function(imageData) {
+	// 				// var fs = Lungo.dom("#moment-form-upload-files").get(0).files;
+	// 				// for (var i = 0; i < fs.length; i++) {
+	// 				// 	var chosen_images = "<img style=\"display:inline-block;width:40px;height:40px;margin-right:.3em;margin-bottom:.3em;\" src=\"" + imageData + "\" />";
+	// 				// 	Lungo.dom("#add-moment-selected-images").append(chosen_images);	
+	// 				// }
+	// 			}, 
+	// 			function() {
+	// 				alert("Nooo")
+	// 			}, {
+	// 				quality: 50, 
+	// 				destinationType: Camera.DestinationType.FILE_URI, 
+	// 				sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+	// 			}
+	// 		);
+	// 	} catch (e) {
+	// 		alert(JSON.stringify(e));
+	// 	}
+	// },
 
 	// Reminder frequency panel.
 	'tap #reminder-frequency-article button': function() {
