@@ -236,12 +236,47 @@ Lungo.Events.init({
 		rediscovr.mapping.addMap();
 	},
 
+	'tap #select-contacts-list li': function() {
+		rediscovr.currentmoment.collaborators = [{
+			name: Lungo.dom(this).children('div').children('strong').text(),
+			email: Lungo.dom(this).children('div').children('span').text()
+		}];
+		Lungo.dom("#add-moment-invite").text(rediscovr.currentmoment.collaborators[0].name);
+		Lungo.Router.back();
+	},
+
 	'load section#add-moment-select-contacts': function(event) {
 		function onSuccess(contacts) {
-		    alert('Found ' + contacts.length + ' contacts.');
+		    //alert('Found ' + contacts.length + ' contacts.');
 		    Lungo.dom("#select-contacts-list").html("");
+		    var new_li;
+		    var has_email = true;
+		    var c = contacts;
 		    for (var i = 0; i < contacts.length; i++) {
-		    	Lungo.dom("#select-contacts-list").append("<li>" + JSON.stringify(contacts[i]) + "</li>");
+		    	has_email = true;
+		    	new_li = "<li class=\"\">\
+		    		<!--<div class=\"user-avatar avatar-medium avatar-shadow\">\
+						<img src=\"" + App.config.image_prefix + "\"/>\
+					</div>-->\
+					<div>\
+						<strong class=\"text bold\">" + c[i].name.formatted + "</strong>";
+						
+				if (c[i].emails != undefined && c[i].emails != null && c[i].emails.length) {
+					for (var j = 0; j < c[i].emails.length; j++) {
+						var email_add = "";
+						if (c[i].emails[j].pref == true || (j == (c[i].emails.length - 1) && !email_add.length)) {
+							email_add = "<span class=\"text tiny\">" + c[i].emails[j].value + "</span>";
+						}
+					}
+					new_li += email_add;
+				} else {
+					has_email = false;
+				}
+				new_li += "</div>\
+					</li>";
+				if (has_email) {
+			    	Lungo.dom("#select-contacts-list").append(new_li);
+			    }
 		    }
 		};
 
@@ -251,9 +286,9 @@ Lungo.Events.init({
 
 		// find all contacts with 'Bob' in any name field
 		var options      = new ContactFindOptions();
-		options.filter   = "McHugh";
+		options.filter   = "";
 		options.multiple = true;
-		var fields       = ["displayName", "name"];
+		var fields       = ["displayName", "name", "emails"];
 		navigator.contacts.find(fields, onSuccess, onError, options);
 
 		/*

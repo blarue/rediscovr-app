@@ -198,14 +198,14 @@ App.user = function() {
 				for (var i = 0; i < c.length; i++) {
 					var new_li = "<li class=\"arrow\" data-view-section=\"person\">\
 						<div class=\"user-avatar avatar-medium avatar-shadow\">\
-							<img src=\"" + App.config.image_prefix + c.user_image + "\"/>\
+							<img src=\"" + App.config.image_prefix + c[i].user_image + "\"/>\
 						</div>\
 						<div>\
-							<strong class=\"text bold\">" + c.first_name + c.last_name + "</strong>\
-							<span class=\"text tiny\">" + c.city + c.ctate + "</span>\
+							<strong class=\"text bold\">" + c[i].first_name + " " + c[i].last_name + "</strong>\
+							<span class=\"text tiny\">" + c[i].city + ", " + c[i].ctate + "</span>\
 							<br/>\
 							<div class=\"num-collaborations\">\
-								<span class=\"num\">32</span>\
+								<span class=\"num\">" + c[i].collaborations + "</span>\
 								<span> collaborations</span>\
 							</div>\
 						</div>\

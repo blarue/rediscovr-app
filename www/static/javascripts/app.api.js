@@ -57,7 +57,7 @@ App.api = function() {
 		getCollaborators: function(ref) {
 			console.log("Running getCollaborators");
 			console.log(config.url + "collaborator" + $$.serializeParameters(ref.details, "?"));
-			$$.get(config.url + "moment", ref.details, function(data) {
+			$$.get(config.url + "collaborator", ref.details, function(data) {
 				ref.handleGetCollaborators(data);
 			}, "json");	
 		}
