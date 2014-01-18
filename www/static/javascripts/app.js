@@ -72,9 +72,6 @@ Lungo.ready(function() {
 	}
 
 	pushNotification = window.plugins.pushNotification;
-	// Change webview background color (dropdowns etc) from PhoneGap default (black) to white.
-	window.plugins.webviewcolor.change('#FFFFFF');
-
 });
 
 Lungo.Events.init({
@@ -130,13 +127,26 @@ Lungo.Events.init({
 	},
 
 	'load section#add-moment': function(event) {
-		Lungo.dom("#moment-form-title").val(rediscovr.currentmoment.moment_title);
-		Lungo.dom("#moment-form-desc").val(rediscovr.currentmoment.moment_desc);
-		Lungo.dom("#moment-form-location").val(rediscovr.currentmoment.moment_location);
-		Lungo.dom("#moment-form-date").val(rediscovr.currentmoment.date_happened);
-		Lungo.dom("#moment-form-time").val(rediscovr.currentmoment.time_happened);
-		Lungo.dom("#moment-form-reminder-frequency").text(rediscovr.currentmoment.reminder_frequency);
-		Lungo.dom("#moment-form-reminder-end").text(rediscovr.currentmoment.reminder_end);
+		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true
+
+		console.log("Requesting GPS...");
+		// We might want to go with this...
+		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true
+		navigator.geolocation.getCurrentPosition(
+			function(position) {
+				var url = "http://maps.googleapis.com/maps/api/geocode/json";
+				var req = {
+					latlng: position.coords.latitude + "," + position.coords.longitude,
+					sensor: "true"
+				}
+				alert(data.status);
+				$$.get(url, req, function(data) {
+					if (data != undefined && data.length && data.status == "OK") {
+						Lungo.dom("#moment-form-location").val(data.results[0].formatted_address);
+					}
+				}, "json");
+			}
+		);
 	},
 
 	// List of people load event.
@@ -254,10 +264,18 @@ Lungo.Events.init({
 		    var c = contacts;
 		    for (var i = 0; i < contacts.length; i++) {
 		    	has_email = true;
+		    	var user_img = "img/user2-icon@2x.png";
+		    	if (c[i].photos != undefined && c[i].photos != null && c[i].photos.length) {
+					for (var j = 0; j < c[i].photos.length; j++) {
+			    		if (c[i].photos[j].pref == true || (j == (c[i].photos.length - 1) && user_img == "img/user2-icon@2x.png")) {
+							user_img = c[i].photos.value;
+						}
+					}
+		    	}
 		    	new_li = "<li class=\"\">\
-		    		<!--<div class=\"user-avatar avatar-medium avatar-shadow\">\
-						<img src=\"" + App.config.image_prefix + "\"/>\
-					</div>-->\
+		    		<div class=\"user-avatar avatar-tiny avatar-shadow\">\
+						<img src=\"" + user_img + "\"/>\
+					</div>\
 					<div>\
 						<strong class=\"text bold\">" + c[i].name.formatted + "</strong>";
 						
@@ -288,7 +306,7 @@ Lungo.Events.init({
 		var options      = new ContactFindOptions();
 		options.filter   = "";
 		options.multiple = true;
-		var fields       = ["displayName", "name", "emails"];
+		var fields       = ["displayName", "name", "emails", "photos"];
 		navigator.contacts.find(fields, onSuccess, onError, options);
 
 		/*
