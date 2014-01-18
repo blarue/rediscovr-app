@@ -139,10 +139,12 @@ Lungo.Events.init({
 					latlng: position.coords.latitude + "," + position.coords.longitude,
 					sensor: "true"
 				}
-				alert(data.status);
+				alert(url + $$.serializeParameters(req, "?"));
 				$$.get(url, req, function(data) {
-					if (data != undefined && data.length && data.status == "OK") {
+					if (data != undefined && data.results != undefined && data.status == "OK") {
 						Lungo.dom("#moment-form-location").val(data.results[0].formatted_address);
+					} else {
+						alert(JSON.stringify(data));
 					}
 				}, "json");
 			}
@@ -277,7 +279,7 @@ Lungo.Events.init({
 						<img src=\"" + user_img + "\"/>\
 					</div>\
 					<div>\
-						<strong class=\"text bold\">" + c[i].name.formatted + "</strong>";
+						<strong class=\"text bold\">" + c[i].name.formatted + user_img + "</strong>";
 						
 				if (c[i].emails != undefined && c[i].emails != null && c[i].emails.length) {
 					for (var j = 0; j < c[i].emails.length; j++) {
