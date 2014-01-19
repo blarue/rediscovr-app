@@ -216,6 +216,7 @@ Lungo.Events.init({
 	},
 
 	'tap #moment-form-post-button': function() {
+		Lungo.Notification.show();
 		rediscovr.currentmoment.curr_image = 0;
 		rediscovr.currentmoment.num_images = Lungo.dom("#moment-form-upload-files").get(0).files.length;
 		// Upload images.

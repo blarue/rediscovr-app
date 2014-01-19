@@ -93,7 +93,12 @@
 						this_s3upload.onProgress(100, 'Upload completed.');
 						return this_s3upload.onFinishS3Put(public_url);
 					} else {
-						return this_s3upload.onError('Upload error: ' + xhr.status);
+						if (xhr.status === 403) {
+							console.log("I guess we can just try again.");
+							this_s3upload.uploadToS3(file, url, public_url);
+						} else {
+							return this_s3upload.onError('Upload error: ' + xhr.status);
+						}
 					}
 				};
 				xhr.onerror = function() {
