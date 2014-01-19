@@ -157,6 +157,8 @@ Lungo.Events.init({
 		c.getCollaborators();
 	},
 
+	'load section#person': App.sectionTrigger,
+
 	// Login
 	'tap #login-done': function() {
 		App.current_user.loginUser();
@@ -214,6 +216,8 @@ Lungo.Events.init({
 	},
 
 	'tap #moment-form-post-button': function() {
+		rediscovr.currentmoment.curr_image = 0;
+		rediscovr.currentmoment.num_images = Lungo.dom("#moment-form-upload-files").get(0).files.length;
 		// Upload images.
 		rediscovr.currentmoment.images = [];
 		var s3upload = s3upload != null ? s3upload : new S3Upload({
@@ -221,17 +225,18 @@ Lungo.Events.init({
 			s3_sign_put_url: 'http://ben.rediscovr.me/api/fileupload',
 
 			onProgress: function(percent, message) { // Use this for live upload progress bars
-				//Lungo.Notification.html('<h1>Hello World</h1>', "Close");
 				console.log('Upload progress: ', percent, message);
 			},
 			onFinishS3Put: function(public_url) { // Get the URL of the uploaded file
 				console.log('Upload finished: ', public_url);
 				var url_parts = public_url.split("/");
 				rediscovr.currentmoment.images.push({url_hash: url_parts[url_parts.length - 1]});
-				// Save moment.
-				Lungo.Notification.hide();
-				var m = new App.moment();
-				m.addMoment();
+				rediscovr.currentmoment.curr_image++;
+				if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
+					// Save moment.
+					var m = new App.moment();
+					m.addMoment();
+				}
 			},
 			onError: function(status) {
 				console.log('Upload error: ', status);
