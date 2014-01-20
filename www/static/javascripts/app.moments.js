@@ -10,8 +10,18 @@ App.moments = function() {
 
 		getMoments: function(ref) {
 			this.gatherDetails();
+			if (!this.details.since) {
+				this.details.since = null;
+			}
 			var api = new App.api();
 			api.getMoments(this);
+		},
+
+		refreshMoments: function(ref) {
+			this.gatherDetails();
+			this.details.since = null;
+			var api = new App.api();
+			api.getMoments(this);			
 		},
 
 		handleGet: function(data) {
@@ -79,7 +89,7 @@ App.moments = function() {
 			// Pull values from form to details object.
 			this.details = {
 				user: App.current_user.details.user_id,
-				since: App.current_user.details.last_sync
+				since: 0
 			}
 		}
 	}

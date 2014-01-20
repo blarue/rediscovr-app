@@ -218,7 +218,10 @@ App.database = {
 			"check",                //Icon
 			"Success",              //Title
 			3,                      //Seconds
-			App.database.nullDataHandler       //Callback function
+			function() {
+				m = new App.moments();
+				m.refreshMoments();       //Callback function
+			}
 		);
 	},
 
