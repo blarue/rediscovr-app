@@ -129,6 +129,29 @@ Lungo.Events.init({
 	'load section#add-moment': function(event) {
 		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true
 
+		var d = new Date();
+		var mon = d.getMonth() + 1;
+		var day = d.getDate();
+		if (mon < 10) {
+			mon = "0" + mon;
+		}
+		if (day < 10) {
+			day = "0" + day;
+		}
+		var default_date = d.getFullYear() + "-" + mon + "-" + day;
+		Lungo.dom("#moment-form-date").val(default_date);
+
+		var hour = d.getHours();
+		var mins = d.getMinutes();
+		if (hour < 10) {
+			hour = "0" + hour;
+		}
+		if (mins < 10) {
+			mins = "0" + mins;
+		}
+		var default_time = hour + ":" + mins;
+		Lungo.dom("#moment-form-time").val(default_time);
+
 		console.log("Requesting GPS...");
 		// We might want to go with this...
 		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true
