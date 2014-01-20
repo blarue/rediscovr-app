@@ -173,6 +173,32 @@ Lungo.Events.init({
 		Lungo.dom("#moment-form-upload-files").on("change", App.photo.getPics);
 	},
 
+	// User Settings load event.
+	'load section#settings': function(event) {
+		console.log(App.current_user);
+		if (App.current_user.details.firstName != undefined) {
+			Lungo.dom("#settings-firstname").val(App.current_user.details.firstName);
+		}
+		if (App.current_user.details.lastName != undefined) {
+			Lungo.dom("#settings-lastname").val(App.current_user.details.lastName);
+		}
+		if (App.current_user.details.email != undefined) {
+			Lungo.dom("#settings-email").val(App.current_user.details.email);
+		}
+		if (App.current_user.details.city != undefined) {
+			Lungo.dom("#settings-city").val(App.current_user.details.city);
+		}
+		if (App.current_user.details.state != undefined) {
+			Lungo.dom("#settings-state").val(App.current_user.details.state);
+		}
+		if (App.current_user.details.country != undefined) {
+			Lungo.dom("#settings-country").val(App.current_user.details.country);
+		}
+		if (App.current_user.details.phone != undefined) {
+			Lungo.dom("#settings-phonenumber").val(App.current_user.details.phone);
+		}
+	},
+
 	// 'tap #moment-capture-button': function() {
 	// 	try {
 	// 		navigator.camera.getPicture(function(imageData) {
