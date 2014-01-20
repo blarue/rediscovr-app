@@ -152,7 +152,7 @@ body > section#settings > article#settings-article { background-color:#e5e5e5; }
 body > section#settings form fieldset,
 body > section#settings .form fieldset { background:none; }
 body > section#settings input { background:#FFFFFF; padding:.7em; }
-body > section#settings label { display:inline-block; width:100%; padding-left:.7em; color:#cccccc; }
+body > section#settings label { display:inline-block; width:80%; padding-left:.7em; color:#cccccc; }
 body > section#settings > article > div.signup-form { text-align:center;margin-top:25px; }
 body > section#settings > article > div > fieldset { padding: .7em .5em; margin-left:20px; margin-right:20px; }
 body > section#settings > article > div > fieldset > img.formlabel { display: inline; width: 24px; }
@@ -162,6 +162,8 @@ body > section#settings .form fieldset input { margin:0; }
 body > section#settings > article > div > fieldset.centered { text-align: center; }
 body > section#settings > article > div > fieldset > label.dark { color: #666666; font-weight:bold; }
 body > section#settings fieldset.centered label { display: inline; }
+body > section#settings fieldset.fieldsection label { width: 100%; }
+body > section#settings fieldset.fieldsection { border-top: 1px solid #bbbbbb; }
 body > section#settings label.dark { color: #666666;}
 
 body > section.editmoment > article { background-color: #e5e5e5; }

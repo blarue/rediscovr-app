@@ -199,6 +199,7 @@ App.user = function() {
 			console.log("API: " + data.message);
 			if (data.collaborators != undefined && data.collaborators != null) {
 				var c = data.collaborators;
+				Lungo.dom("#people-article-ul").html("");
 				for (var i = 0; i < c.length; i++) {
 					var new_li = "<li class=\"arrow\" data-view-section=\"person\">\
 						<div class=\"user-avatar avatar-medium avatar-shadow\">\
