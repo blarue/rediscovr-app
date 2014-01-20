@@ -1,7 +1,7 @@
 App.api = function() {
 	
 	var config = {
-		url: "http://ben.rediscovr.me/api/",
+		url: "http://api.etched.io/api/",
 		token: "1234567890",
 		controller: "",
 		action: "",

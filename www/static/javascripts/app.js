@@ -223,7 +223,7 @@ Lungo.Events.init({
 		rediscovr.currentmoment.images = [];
 		var s3upload = s3upload != null ? s3upload : new S3Upload({
 			file_dom_selector: 'moment-form-upload-files',
-			s3_sign_put_url: 'http://ben.rediscovr.me/api/fileupload',
+			s3_sign_put_url: 'http://api.etched.io/api/fileupload',
 
 			onProgress: function(percent, message) { // Use this for live upload progress bars
 				console.log('Upload progress: ', percent, message);
