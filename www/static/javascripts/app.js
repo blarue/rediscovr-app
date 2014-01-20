@@ -359,15 +359,18 @@ Lungo.Events.init({
 		    Lungo.dom("#select-contacts-list").html("");
 		    var new_li;
 		    var has_email = true;
-		    var c = contacts;
-		    for (var i = 0; i < contacts.length; i++) {
+		    var has_image = false;
+		    // Sort contacts alphabetically using function below.
+		    var c = contacts.sort(contactSort);
+		    for (var i = 0; i < c.length; i++) {
 		    	has_email = true;
+		    	has_image = false;
 		    	var user_img = "img/user2-icon@2x.png";
 		    	if (c[i].photos != undefined && c[i].photos != null && c[i].photos.length) {
 					for (var j = 0; j < c[i].photos.length; j++) {
 			    		if (c[i].photos[j].pref == true || (j == (c[i].photos.length - 1) && user_img == "img/user2-icon@2x.png")) {
-			    			alert(JSON.stringify(c[i].photos));
-							//user_img = JSON.stringify(c[i].photos);
+							user_img = c[i].photos[j].value;
+							has_image = true;
 						}
 					}
 		    	}
@@ -392,13 +395,24 @@ Lungo.Events.init({
 				new_li += "</div>\
 					</li>";
 				if (has_email) {
-			    	Lungo.dom("#select-contacts-list").append(new_li);
+					// Put contacts with images at the top.
+					if (has_image) {
+						Lungo.dom("#select-contacts-list").prepend(new_li);
+					} else {
+						Lungo.dom("#select-contacts-list").append(new_li);
+					}
 			    }
 		    }
 		};
 
 		function onError(contactError) {
 		    alert('onError!');
+		};
+
+		var contactSort = function(a, b) {
+			aname = a.name.familyName + ' ' + a.name.givenName;
+			bname = b.name.familyName + ' ' + b.name.givenName;
+			return aname < bname ? -1 : (aname == bname ? 0 : 1);
 		};
 
 		// find all contacts with 'Bob' in any name field
