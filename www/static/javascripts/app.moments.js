@@ -70,13 +70,28 @@ App.moments = function() {
 						moment_item += "<div class=\"moment-description\">\
 								<span>" + data.moments[i].text + "</span>\
 							</div>";
+						// Process date format. Should be done centrally.
+						var t = data.moments[i].date.split(/[- :]/);
+						var d = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
+						var o = {
+							weekday: "long", 
+							year: "numeric", 
+							month: "short",
+							day: "numeric", 
+							hour: "2-digit", 
+							minute: "2-digit"
+						};
+						var ds = d.toLocaleDateString("en-us", o) + " " + d.toLocaleTimeString("en-us", o);
+						ds = ds.substr(0, ds.length - 4);
+						ds = ds.substr(0, ds.length - 6) + ds.substr(ds.length - 3, ds.length);
+						// End process date format.
 						moment_item += "<div class=\"moment-datetime\">\
-								<span>" + data.moments[i].date + "</span>\
+								<span>" + ds + "</span>\
 							</div>";
 						moment_item += "</div>";
 						Lungo.dom("#moments-article").append(moment_item);
 						delete moment_item;
-						console.log(data.moments[i].title);
+						//console.log(data.moments[i].title);
 					}
 					Lungo.Router.section("moments");
 				}
