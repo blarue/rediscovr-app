@@ -41,7 +41,11 @@ App.user = function() {
 				// Do something to show user added.
 				Lungo.Notification.success('Success', 'Your login was a great success!', 'ok', 2, function() {
 					Lungo.Notification.hide();
-					Lungo.Router.section("home");
+
+					var m = new App.moments();
+					m.getMoments();
+
+					//Lungo.Router.section("home");
 				});
 			} else if (data.Error != undefined) {
 				Lungo.Notification.error('Error', data.Error, 'remove', 3);
