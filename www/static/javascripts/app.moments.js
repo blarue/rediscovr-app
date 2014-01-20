@@ -5,10 +5,13 @@ App.moments = function() {
 			user: null,
 			since: null
 		},
-
+		domnode: "#moments-article",
 		errors: [],
 
-		getMoments: function(ref) {
+		getMoments: function(domnode) {
+			if (domnode != null) {
+				this.domnode = domnode;
+			}
 			this.gatherDetails();
 			if (!this.details.since) {
 				this.details.since = null;
@@ -89,7 +92,7 @@ App.moments = function() {
 								<span>" + ds + "</span>\
 							</div>";
 						moment_item += "</div>";
-						Lungo.dom("#moments-article").append(moment_item);
+						Lungo.dom(this.domnode).append(moment_item);
 						delete moment_item;
 						//console.log(data.moments[i].title);
 					}

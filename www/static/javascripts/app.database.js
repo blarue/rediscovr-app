@@ -169,6 +169,16 @@ App.database = {
 		);
 	},
 
+	// countMoments: function(owner) {
+	// 	var param = [owner];
+	// 	var query = "SELECT COUNT(*) FROM `moment` WHERE `owner` = ?";
+	// 	this.db.transaction(
+	// 		function(transaction) {
+	// 			transaction.executeSql(query, param, App.database.logMoment, App.database.errorHandler);
+	// 		}
+	// 	);
+	// },
+
 	logMoment: function(transaction, results) {
 		for (var i=0; i < results.rows.length; i++) {
 			var string = '';

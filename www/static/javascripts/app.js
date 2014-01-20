@@ -222,6 +222,47 @@ Lungo.Events.init({
 		}
 	},
 
+	'load section#profile': function(event) {
+		var username = "";
+		var location = "";
+		if (App.current_user.details.user_image != undefined) {
+			Lungo.dom("#profile-user-image").attr("src", App.config.image_prefix + App.current_user.details.user_image);
+		}
+		if (App.current_user.details.firstName != undefined) {
+			username += App.current_user.details.firstName;
+		}
+		if (App.current_user.details.lastName != undefined) {
+			username += App.current_user.details.lastName;
+		}
+		Lungo.dom("#profile-username").text(username);
+		if (App.current_user.details.city != undefined) {
+			location = App.current_user.details.city;
+		}
+		if (App.current_user.details.state != undefined) {
+			location += ", " + App.current_user.details.state;
+		}
+		Lungo.dom("#profile-location").text(location);
+		// Get moments from DB.
+		var db = new App.db();
+		db.open();
+		var param = ['self'];
+		var query = "SELECT COUNT(*) AS `allmoments` FROM `moment` WHERE `owner` = ?";
+		db.db.transaction(
+			function(transaction) {
+				transaction.executeSql(query, param, 
+					function(transaction, results) { Lungo.dom("#profile-stats-allmoments").text(results.rows.item(0).allmoments); }, 
+					function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
+				);
+			}
+		);
+		delete db;
+		Lungo.dom("#profile-stats-private").text("0");
+		Lungo.dom("#profile-stats-collaborations").text("0");
+
+		var m = new App.moments();
+		m.getMoments("#profile-article");
+	},
+
 	// 'tap #moment-capture-button': function() {
 	// 	try {
 	// 		navigator.camera.getPicture(function(imageData) {
@@ -325,7 +366,8 @@ Lungo.Events.init({
 		    	if (c[i].photos != undefined && c[i].photos != null && c[i].photos.length) {
 					for (var j = 0; j < c[i].photos.length; j++) {
 			    		if (c[i].photos[j].pref == true || (j == (c[i].photos.length - 1) && user_img == "img/user2-icon@2x.png")) {
-							user_img = c[i].photos.value;
+			    			alert(JSON.stringify(c[i].photos));
+							//user_img = JSON.stringify(c[i].photos);
 						}
 					}
 		    	}
@@ -334,7 +376,7 @@ Lungo.Events.init({
 						<img src=\"" + user_img + "\"/>\
 					</div>\
 					<div>\
-						<strong class=\"text bold\">" + c[i].name.formatted + user_img + "</strong>";
+						<strong class=\"text bold\">" + c[i].name.formatted + "</strong>";
 						
 				if (c[i].emails != undefined && c[i].emails != null && c[i].emails.length) {
 					for (var j = 0; j < c[i].emails.length; j++) {
