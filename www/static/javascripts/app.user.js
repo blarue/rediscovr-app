@@ -27,10 +27,10 @@ App.user = function() {
 			//console.log("API: " + data.message);
 			if (data.id != undefined && data.id != null) {
 				this.details.current_user = 1;
-				this.details.user_id = data.id;
+				this.details.id = data.id;
 				this.details.email = data.email;
-				this.details.firstName = data.first_name;
-				this.details.lastName = data.last_name;
+				this.details.first_name = data.first_name;
+				this.details.last_name = data.last_name;
 				this.details.city = data.city;
 				this.details.state = data.state;
 				this.details.country = data.country;
@@ -115,6 +115,12 @@ App.user = function() {
 			api.addUser(this);
 		},
 
+		updateUser: function() {
+			this.gatherSettingsDetails();
+			var api = new App.api();
+			api.updateUser(this);
+		},
+
 		handleAdd: function(data) {
 			console.log(data);
 			console.log("API: " + data.message);
@@ -125,6 +131,12 @@ App.user = function() {
 					// Do something to show user added.
 				Lungo.Router.section("home");
 			}
+		},
+
+		handleUpdateUser: function(data) {
+			console.log(data);
+			console.log("API: " + data.message);
+			Lungo.Notification.success('Success', 'Your login was a great success!', 'ok', 2);
 		},
 
 		gatherDetails: function() {
@@ -140,10 +152,30 @@ App.user = function() {
 				phone: Lungo.dom("#signup-phone").val(),
 				image_url: "http://tinyurl.com/dfshdk"
 			};
-
 		},
 
-		validate: function() {
+		gatherSettingsDetails: function() {
+			// Pull values from form to update the details object.
+			this.details.user = this.details.user_id;
+			this.details.email = Lungo.dom("#settings-email").val();
+			this.details.oldPassword = Lungo.dom("#settings-current-password").val();
+			this.details.newPassword = Lungo.dom("#settings-new-password1").val();
+			this.details.newPassword2 = Lungo.dom("#settings-new-password2").val();
+			this.details.firstName = Lungo.dom("#settings-firstname").val();
+			this.details.lastName = Lungo.dom("#settings-lastname").val();
+			this.details.city = Lungo.dom("#settings-city").val();
+			this.details.state = Lungo.dom("#settings-state").val();
+			this.details.country = Lungo.dom("#settings-country").val();
+			this.details.phone = Lungo.dom("#settings-phonenumber").val();
+			this.details.push_notify = ((Lungo.dom("#settings-push").get(0).checked) ? "1" : "0");
+			this.details.email_notify = ((Lungo.dom("#settings-email-share").get(0).checked) ? "1" : "0");
+			this.details.newsletter = ((Lungo.dom("#settings-newsletter").get(0).checked) ? "1" : "0");
+		},
+
+		validate: function(neworupdate) {
+			if (neworupdate == null) {
+				neworupdate = "new";
+			}
 			console.log("Validating.")
 			// if (this.details.user_id == null) {
 			// 	this.errors.push("You should have a user_id.");
@@ -151,8 +183,25 @@ App.user = function() {
 			if (this.details.email == null) {
 				this.errors.push("You should have an email.");
 			}
-			if (this.details.password == null) {
-				this.errors.push("You should have a password.");
+			if (neworupdate == "new") {
+				if (this.details.password == null) {
+					this.errors.push("You should have a password.");
+				}
+			}
+			if (neworupdate == "update") {
+				if (this.details.oldPassword == null || this.details.newPassword != null || this.details.newPassword2 == null) {
+					if (this.details.oldPassword == null || this.details.oldPassword.length) {
+						this.errors.push("You must provide your old password.");
+					}
+					if (this.details.newPassword2 == null || this.details.newPassword2.length) {
+						this.errors.push("You must verify your password.");
+					}
+					if (this.details.newPassword != null && this.details.newPassword2 == null) {
+						if (this.details.newPassword != this.details.newPassword2) {
+							this.errors.push("Both new password values must match.");
+						}
+					}
+				}
 			}
 			if (this.details.firstName == null) {
 				this.errors.push("You should have a firstName.");
