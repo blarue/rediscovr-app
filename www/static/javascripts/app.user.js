@@ -26,16 +26,16 @@ App.user = function() {
 			console.log(data);
 			//console.log("API: " + data.message);
 			if (data.id != undefined && data.id != null) {
-				this.details.current_user = 1;
-				this.details.id = data.id;
-				this.details.email = data.email;
-				this.details.first_name = data.first_name;
-				this.details.last_name = data.last_name;
-				this.details.city = data.city;
-				this.details.state = data.state;
-				this.details.country = data.country;
-				this.details.phone = data.phone;
-				this.details.user_image = data.user_image;
+				this.details.current_user = App.current_user.details.current_user = 1;
+				this.details.id = App.current_user.details.user_id = data.id;
+				this.details.email = App.current_user.details.email = data.email;
+				this.details.first_name = App.current_user.details.firstName = data.first_name;
+				this.details.last_name = App.current_user.details.lastName = data.last_name;
+				this.details.city = App.current_user.details.city = data.city;
+				this.details.state = App.current_user.details.state = data.state;
+				this.details.country = App.current_user.details.country = data.country;
+				this.details.phone = App.current_user.details.phone = data.phone;
+				this.details.user_image = App.current_user.details.user_image = data.user_image;
 
 				App.database.addUser(this.details);
 				// Do something to show user added.

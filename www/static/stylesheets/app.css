@@ -4,7 +4,7 @@
 body {
 	background-color: #FFFFFF;
 	color: #f4f4f4;
-	font: 16px/1.25 "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font: 16px/1.25 "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-weight: bold;
 	letter-spacing: -0.05em;
 }
@@ -187,7 +187,7 @@ ul#select-contacts-list > li { background-color: #FFFFFF; }
 ul#select-contacts-list > li .icon { float:right; position:absolute; left:auto; color:#f07488; }
 
 body > section#add-moment-location fieldset { background:none; border:none; }
-input#location-searchbox { padding:.4em .4em .4em 2.4em; width:85%; margin-left:.7em; margin-right:.7em; background-color:#FFFFFF; background-image:url('http://192.241.156.130/img/search-icon.png'); background-size:38px auto; background-repeat:no-repeat; }
+input#location-searchbox { padding:.4em .4em .4em 2.4em; width:85%; margin-left:.7em; margin-right:.7em; background-color:#FFFFFF; background-image:url('../../img/search-icon.png'); background-size:38px auto; background-repeat:no-repeat; }
 img#powered-by-4sq { width:50%; margin-top:.4em; }
 
 article .button.anchor:not(.icon) .icon, article button.anchor:not(.icon) .icon { float:right; position:absolute; left:auto; color:#f07488; }
