@@ -197,6 +197,10 @@ Lungo.Events.init({
 		App.current_user.updateUser();
 	},
 
+	'tap #aside-logout': function() {
+		App.current_user.logout();
+	},
+
 	'tap #moment-form-upload-files': function() {
 		Lungo.dom("#moment-form-upload-files").on("change", App.photo.getPics);
 	},

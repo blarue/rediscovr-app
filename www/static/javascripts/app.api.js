@@ -24,10 +24,22 @@ App.api = function() {
 
 		addUser: function(ref) {
 			console.log("Running addUser");
-			if (ref.validate() === true) {
+			if (ref.validate("new") === true) {
 				console.log("Validates. " + config.url + "user  " + JSON.stringify(ref.details));
 				$$.post(config.url + "user", JSON.stringify(ref.details), function(data) {
 					ref.handleAdd(data);
+				}, "json");
+			} else {
+				console.log("User doesn't validate.");
+			}
+		},
+
+		updateUser: function(ref) {
+			console.log("Running updateUser");
+			if (ref.validate("update") === true) {
+				console.log("Validates. " + config.url + "user  " + JSON.stringify(ref.details));
+				$$.put(config.url + "user", JSON.stringify(ref.details), function(data) {
+					ref.handleUpdateUser(data);
 				}, "json");
 			} else {
 				console.log("User doesn't validate.");

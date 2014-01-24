@@ -12,6 +12,12 @@ App.moments = function() {
 			if (domnode != null) {
 				this.domnode = domnode;
 			}
+
+			// var DB = App.db();
+			// DB.open();
+			// var query = "SELECT * FROM `moment` ORDER BY `date` DESC";
+			App.database.getMoments(null, 'date DESC', 20);
+
 			this.gatherDetails();
 			if (!this.details.since) {
 				this.details.since = null;
@@ -29,6 +35,7 @@ App.moments = function() {
 
 		handleGet: function(data) {
 			console.log(data);
+
 			if (data.server_time != undefined) {
 				App.current_user.details.last_sync = data.server_time;
 			}
@@ -36,21 +43,28 @@ App.moments = function() {
 				if (data.moments != undefined && data.moments.length == (data.count + 0)) {
 					console.log("API: Returned " + data.count + " moments.");
 					for (var i = 0; i < data.count; i++) {
+
+						var moment = new App.moment();
+						moment.dbmoment = data.moments[i];
+						moment.cacheMoment();
+
 						var imgdiv_class = "";
-						switch (data.moments[i].images.length) {
-							case 1:
-								imgdiv_class = "one-image";
-								break;
-							case 2:
-								imgdiv_class = "one-half";
-								break;
-							case 3:
-								imgdiv_class = "one-third";
-								break;
-							case 4:
-							default:
-								imgdiv_class = "one-fourth";
-								break;
+						if (data.moments[i].images != undefined) {
+							switch (data.moments[i].images.length) {
+								case 1:
+									imgdiv_class = "one-image";
+									break;
+								case 2:
+									imgdiv_class = "one-half";
+									break;
+								case 3:
+									imgdiv_class = "one-third";
+									break;
+								case 4:
+								default:
+									imgdiv_class = "one-fourth";
+									break;
+							}
 						}
 						var moment_item = "";
 

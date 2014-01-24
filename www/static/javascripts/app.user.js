@@ -109,6 +109,10 @@ App.user = function() {
 			}
 		},
 
+		logout: function() {
+			App.database.destroyDB('logout');
+		},
+
 		addUser: function() {
 			this.gatherDetails();
 			var api = new App.api();
