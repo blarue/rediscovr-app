@@ -60,6 +60,7 @@ Lungo.ready(function() {
 	
 	// Create instance of user for the current user.
 	App.current_user = new App.user();
+
 	// Check if there is a logged in user.
 	App.current_user.getLoggedInUser();
 
@@ -254,8 +255,8 @@ Lungo.Events.init({
 		// Get moments from DB.
 		var db = new App.db();
 		db.open();
-		var param = ['self'];
-		var query = "SELECT COUNT(*) AS `allmoments` FROM `moment` WHERE `owner` = ?";
+		var param = [App.current_user.details.user_id];
+		var query = "SELECT COUNT(*) AS `allmoments` FROM `moment` WHERE `user` = ?";
 		db.db.transaction(
 			function(transaction) {
 				transaction.executeSql(query, param, 
@@ -315,34 +316,50 @@ Lungo.Events.init({
 	},
 
 	'tap #moment-form-post-button': function() {
-		Lungo.Notification.show();
 		rediscovr.currentmoment.curr_image = 0;
 		rediscovr.currentmoment.num_images = Lungo.dom("#moment-form-upload-files").get(0).files.length;
-		// Upload images.
-		rediscovr.currentmoment.images = [];
-		var s3upload = s3upload != null ? s3upload : new S3Upload({
-			file_dom_selector: 'moment-form-upload-files',
-			s3_sign_put_url: 'http://api.etched.io/api/fileupload',
+		rediscovr.currentmoment.image_list = [];
 
-			onProgress: function(percent, message) { // Use this for live upload progress bars
-				console.log('Upload progress: ', percent, message);
-			},
-			onFinishS3Put: function(public_url) { // Get the URL of the uploaded file
-				console.log('Upload finished: ', public_url);
-				var url_parts = public_url.split("/");
-				rediscovr.currentmoment.images.push({url_hash: url_parts[url_parts.length - 1]});
+		// Resize & Store images
+		var myurl, new_name, imgr;
+		var url_tool = window.webkitURL;
+		var files = Lungo.dom("#moment-form-upload-files").get(0).files;
+		for (var i = 0; i < files.length; i++) {
+			myurl = url_tool.createObjectURL(files[i]);
+			var new_name = App.generateUid('moment') + '.jpg';
+			console.log("new_name: " + new_name);
+			imgr = new App.image();
+			imgr.generateImageBlob(myurl, 4, function(d) {
+				console.log("There should be a blob.");
+				//console.log(d);
+				data_array = [new_name, 'moment', App.current_user.details.user_id, d, 0];
+				//console.log(data_array);
+				query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
+				var DB = new App.db();
+				DB.open();
+				DB.db.transaction(
+					function(transaction) {
+						transaction.executeSql(query, data_array, 
+							function(transaction, results) {
+								//console.log(results);
+								console.log("ImageID: " + results.insertId);
+								rediscovr.currentmoment.image_list.push({url_hash: new_name, image_id: results.insertId, d: d});
+							},
+							function(transaction, errors) {
+								console.log(errors);
+							}
+						);
+					}
+				);
 				rediscovr.currentmoment.curr_image++;
 				if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
+					console.log("Last image. Add moment.")
 					// Save moment.
 					var m = new App.moment();
 					m.addMoment();
 				}
-			},
-			onError: function(status) {
-				console.log('Upload error: ', status);
-				Lungo.Notification.hide();
-			}
-		});
+			});
+		}
 	},
 
 	'load section#add-moment-location': function(event) {

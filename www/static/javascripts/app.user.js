@@ -57,6 +57,7 @@ App.user = function() {
 		getLoggedInUser: function() {
 			console.log("Checking DB for user.");
 			// Check the local DB for a logged in user. Result handled by handleGetUserDB below.
+			
 			App.database.getCurrentUser(this);
 		},
 
@@ -77,8 +78,25 @@ App.user = function() {
 				App.current_user.details.user_image = data.user_image;
 				console.log("App.current_user.details.user_id:" + App.current_user.details.user_id);
 				// Get moments?
-				this.moments = new App.moments();
-				this.moments.getMoments();
+				var DB = new App.db();
+				DB.open();
+				DB.db.transaction(
+					function(transaction) {
+						transaction.executeSql("SELECT MAX(`servertime`) AS `last_sync` FROM `moment_sync`;", [], 
+							function(transaction, results) {
+								console.log(results);
+								console.log(results.rows.item(0));
+								App.current_user.details.last_sync = results.rows.item(0).last_sync	;
+								this.moments = new App.moments();
+								this.moments.getMoments();
+							},
+							function(transaction, results) {
+								console.log(results);
+							}
+						);
+					}
+				);
+
 			}
 		},
 

@@ -2,13 +2,28 @@ App.db = function() {
 	return {
 		// DB Stuff
 		shortname: 'moments', 
-		version: '1.0', 
+		version: '1.1', 
 		displayname: 'moments', 
-		maxsize: 65536,
+		maxsize: 100*1024*1024,
 		db: {},
 
 		open: function() {
-			this.db = openDatabase(this.shortname, this.version, this.displayname, this.maxsize);
+			this.db = openDatabase(this.shortname, "", this.displayname, this.maxsize);
+		},
+
+		executeQuery: function(q, p) {
+			this.db.transaction(
+				function(transaction) {
+					transaction.executeSql(q, p, 
+						function(transaction, results) {
+							//console.log(results);
+						}, 
+						function(transaction, results) {
+							//console.log(results);
+						}
+					);
+				}
+			);
 		}
 	}
 }

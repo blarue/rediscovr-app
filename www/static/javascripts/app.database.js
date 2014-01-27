@@ -1,13 +1,13 @@
 App.database = {
 	// DB Stuff
 	shortname: 'moments', 
-	version: '1.0', 
+	version: '1.1', 
 	displayname: 'moments', 
-	maxsize: 65536,
+	maxsize: 100*1024*1024,
 	db: {},
 
 	open: function() {
-		this.db = openDatabase(this.shortname, this.version, this.displayname, this.maxsize);
+		this.db = openDatabase(this.shortname, "", this.displayname, this.maxsize);
 		this.createTables();
 	},
 
@@ -32,7 +32,8 @@ App.database = {
 		// Moment table
 		var moment_definition = "\
 			CREATE TABLE IF NOT EXISTS `moment`(\
-				`id` INTEGER NULL PRIMARY KEY, \
+				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
+				`moment_id` INTEGER UNIQUE NULL, \
 				`title` TEXT NOT NULL, \
 				`text` TEXT NULL, \
 				`user` INTEGER NOT NULL, \
@@ -45,9 +46,12 @@ App.database = {
 		var image_definition = "\
 			CREATE TABLE IF NOT EXISTS `image`(\
 				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
+				`image_id` INTEGER UNIQUE NULL, \
 				`name` TEXT UNIQUE NOT NULL, \
 				`type` TEXT NOT NULL DEFAULT 'Moment', \
-				`owner` INTEGER NOT NULL \
+				`owner` INTEGER NOT NULL, \
+				`saved` INTEGER NOT NULL DEFAULT 0, \
+				`data64` BLOB NULL \
 			);";
 		// Moment/Image map table.
 		var moment_image_definition = "\
@@ -59,10 +63,15 @@ App.database = {
 			);";
 		// Moment/User (Colaborator) map table.
 		var moment_user_definition = "\
-			CREATE TABLE `moment_user` ( \
+			CREATE TABLE IF NOT EXISTS `moment_user` ( \
 				`user_id` INTEGER NOT NULL, \
 				`moment_id` INTEGER NOT NULL, \
 				PRIMARY KEY (`user_id`,`moment_id`) \
+			);";
+		// Moment/User (Colaborator) map table.
+		var moment_sync_definition = "\
+			CREATE TABLE IF NOT EXISTS `moment_sync` ( \
+				`servertime` INTEGER NOT NULL PRIMARY KEY \
 			);";
 		this.db.transaction(
 			function(transaction) {
@@ -70,6 +79,8 @@ App.database = {
 				transaction.executeSql(moment_definition, [], App.database.nullDataHandler, App.database.errorHandler);
 				transaction.executeSql(image_definition, [], App.database.nullDataHandler, App.database.errorHandler);
 				transaction.executeSql(moment_image_definition, [], App.database.nullDataHandler, App.database.errorHandler);
+				transaction.executeSql(moment_user_definition, [], App.database.nullDataHandler, App.database.errorHandler);
+				transaction.executeSql(moment_sync_definition, [], App.database.nullDataHandler, App.database.errorHandler);
 			}
 		);
 	},
@@ -99,7 +110,7 @@ App.database = {
 		console.log("Attempting to add moment.");
 		if (d.id != undefined && d.id != null && d.id) {
 			var data_array = [d.id, d.title, d.text, d.date, d.user, d.location, d.reminder_frequency, d.reminder_end];
-			var query = "INSERT OR IGNORE INTO `moment` (`id`, `title`, `text`, `date`, `user`, `location`, `reminder`, `reminder_end`) \
+			var query = "INSERT OR IGNORE INTO `moment` (`moment_id`, `title`, `text`, `date`, `user`, `location`, `reminder`, `reminder_end`) \
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
 			this.db.transaction(
 				function(transaction) {
@@ -157,11 +168,14 @@ App.database = {
 		);
 	},
 
-	getMoments: function(owner, order, limit) {
+	getMoments: function(owner, order, limit, ref) {
+		console.log("Running DB getMoments");
 		var wheres = [{sql: "`title` IS NOT NULL", param: null}];
 		var _limit = '';
 		var _order = '';
 		var _data = [];
+		var _this = this;
+		this.myref = ref;
 		if (owner != undefined) {
 			wheres.push({sql: "`owner` = ?", param: owner});
 		}
@@ -184,11 +198,51 @@ App.database = {
 				}
 			}
 		}
-		var _query = "SELECT * FROM `moment` " + _where + _order + _limit;
+		var _query = "SELECT `moment`.*, \
+				`user`.`id` AS `user_id`, `user`.`first_name`, `user`.`last_name`, \
+				`user`.`email`, `user`.`city`, `user`.`state`, `user`.`user_image` \
+			FROM `moment` \
+			JOIN `user` ON `user`.`id` = `moment`.`user` " + _where + _order + _limit;
 		console.log(_query);
+		// Find moments
 		this.db.transaction(
 			function(transaction) {
-				transaction.executeSql(_query, _data, App.database.logMoment, App.database.errorHandler);
+				transaction.executeSql(_query, _data, 
+					function(transaction, results) {
+						// Loop through moments.
+						if (results.rows != undefined && results.rows.length) {
+							var returnobj = {
+								count: results.rows.length,
+								moments: []
+							}
+							for (var i=0; i < results.rows.length; i++) {
+								var m = results.rows.item(i);
+								var moment = new App.moment();
+								moment.domnode = ref.domnode;
+								moment.details.moment_id = m.id;
+								moment.details.api_id = m.moment_id;
+								moment.details.user = m.user_id;
+								moment.details.title = m.title;
+								moment.details.text = m.text;
+								moment.details.location = m.location;
+								moment.details.date = m.date;
+								moment.details.creator = {};
+								moment.details.creator.id = m.user_id;
+								moment.details.creator.first_name = m.first_name;
+								moment.details.creator.last_name = m.last_name;
+								moment.details.creator.email = m.email;
+								moment.details.creator.city = m.city;
+								moment.details.creator.state = m.state;
+								moment.details.creator.user_image = m.user_image;
+								moment.showMoment();
+								if (Lungo.Router.history != "moments") {
+									Lungo.Router.section("moments");
+								}
+							}
+						}
+					},
+					App.database.errorHandler
+				);
 			}
 		);
 	},
@@ -221,16 +275,16 @@ App.database = {
 		console.log("MomentID: " + results.insertId);
 		rediscovr.currentmoment.moment_id = results.insertId;
 		
-		if (rediscovr.currentmoment.images.length) {
-			for (var i = 0; i < rediscovr.currentmoment.images.length; i++) {
-				var data_array = {
-					name: rediscovr.currentmoment.images[i],
-					type: 'moment',
-					owner: 'self'
-				}
-				App.database.addImage(data_array);
-			}
-		}
+		// if (rediscovr.currentmoment.images.length) {
+		// 	for (var i = 0; i < rediscovr.currentmoment.images.length; i++) {
+		// 		var data_array = {
+		// 			name: rediscovr.currentmoment.images[i],
+		// 			type: 'moment',
+		// 			owner: 'self'
+		// 		}
+		// 		App.database.addImage(data_array);
+		// 	}
+		// }
 		Lungo.Notification.show(
 			"check",                //Icon
 			"Success",              //Title
@@ -278,13 +332,25 @@ App.database = {
 	},
 
 	destroyDB: function(reason, ref) {
+		var command;
+		switch (reason) {
+			case "version":
+			case "logout":
+				command = "DROP TABLE";
+				break;
+			//case "logout":
+			default:
+				command = "DELETE FROM";
+				break;
+		}
 		this.db.transaction(
 			function(transaction) {
-				transaction.executeSql("DELETE FROM `user`", [], App.database.nullDataHandler, App.database.errorHandler);
-				transaction.executeSql("DELETE FROM `image`", [], App.database.nullDataHandler, App.database.errorHandler);
-				transaction.executeSql("DELETE FROM `moment`", [], App.database.nullDataHandler, App.database.errorHandler);
-				transaction.executeSql("DELETE FROM `moment_image`", [], App.database.nullDataHandler, App.database.errorHandler);
-				transaction.executeSql("DELETE FROM `moment_user`", [], App.database.nullDataHandler, App.database.errorHandler);
+				transaction.executeSql(command + " `user`", [], App.database.nullDataHandler, App.database.errorHandler);
+				transaction.executeSql(command + " `image`", [], App.database.nullDataHandler, App.database.errorHandler);
+				transaction.executeSql(command + " `moment`", [], App.database.nullDataHandler, App.database.errorHandler);
+				transaction.executeSql(command + " `moment_image`", [], App.database.nullDataHandler, App.database.errorHandler);
+				transaction.executeSql(command + " `moment_user`", [], App.database.nullDataHandler, App.database.errorHandler);
+				transaction.executeSql(command + " `moment_sync`", [], App.database.nullDataHandler, App.database.errorHandler);
 			}
 		);
 		if (reason != undefined && reason == 'logout') {

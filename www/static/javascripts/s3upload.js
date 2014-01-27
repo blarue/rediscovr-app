@@ -6,8 +6,7 @@
 
 		S3Upload.prototype.s3_object_name = 'default_name';
 
-		S3Upload.prototype.s3_sign_put_url = 'http://ben.rediscovr.me/api/fileupload';
-		//S3Upload.prototype.s3_sign_put_url = 'http://192.241.156.130/s3_allow.php';
+		S3Upload.prototype.s3_sign_put_url = 'http://api.etched.io/api/fileupload';
 
 		S3Upload.prototype.file_dom_selector = 'moment-form-upload-files';
 
