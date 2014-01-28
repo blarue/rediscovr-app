@@ -1,136 +1,135 @@
 <!DOCTYPE html>
 <!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
+	Licensed to the Apache Software Foundation (ASF) under one
+	or more contributor license agreements.  See the NOTICE file
+	distributed with this work for additional information
+	regarding copyright ownership.  The ASF licenses this file
+	to you under the Apache License, Version 2.0 (the
+	"License"); you may not use this file except in compliance
+	with the License.  You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
+	Unless required by applicable law or agreed to in writing,
+	software distributed under the License is distributed on an
+	"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+	 KIND, either express or implied.  See the License for the
+	specific language governing permissions and limitations
+	under the License.
 -->
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-densitydpi=device-dpi" />
+	<head>
+		<meta charset="utf-8" />
+		<meta name="format-detection" content="telephone=no" />
+		<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-densitydpi=device-dpi" />
 <!--        <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
-        <title>Etched</title>
+		<title>Etched</title>
 
-    <!-- Main Stylesheet -->
-    <link rel="stylesheet" href="package/lungo/lungo.css">
-    <link rel="stylesheet" href="package/lungo/lungo.icon.css">
-    <link rel="stylesheet" href="static/stylesheets/theme.css">
-    <!-- App Stylesheet -->
-    <link rel="stylesheet" href="static/stylesheets/app.css?v=1">
-    <!-- Maps from Mapbox -->
-    <script src="static/javascripts/mapbox.js"></script>
-    <link rel="stylesheet" href="static/stylesheets/mapbox.css?v=1">
+	<!-- Main Stylesheet -->
+	<link rel="stylesheet" href="package/lungo/lungo.css">
+	<link rel="stylesheet" href="package/lungo/lungo.icon.css">
+	<link rel="stylesheet" href="static/stylesheets/theme.css">
+	<!-- App Stylesheet -->
+	<link rel="stylesheet" href="static/stylesheets/app.css?v=1">
+	<!-- Maps from Mapbox -->
+	<script src="static/javascripts/mapbox.js"></script>
+	<link rel="stylesheet" href="static/stylesheets/mapbox.css?v=1">
 
-    <script type="text/javascript">
+	<script type="text/javascript">
+		// var pictureSource;   // picture source
+		// var destinationType; // sets the format of returned value
 
-    var pictureSource;   // picture source
-    var destinationType; // sets the format of returned value
+		// Wait for device API libraries to load
+		document.addEventListener("deviceready",onDeviceReady,false);
 
-    // Wait for device API libraries to load
-    document.addEventListener("deviceready",onDeviceReady,false);
+		// device APIs are available
+		function onDeviceReady() {
+			// pictureSource=navigator.camera.PictureSourceType;
+			// destinationType=navigator.camera.DestinationType;
+			// Change webview background color (dropdowns etc) from PhoneGap default (black) to white.
+			if (window.plugins != undefined && window.plugins.webviewcolor != undefined) {
+				window.plugins.webviewcolor.change('#ffffff');
+			}
+		}
 
-    // device APIs are available
-    function onDeviceReady() {
-        // pictureSource=navigator.camera.PictureSourceType;
-        // destinationType=navigator.camera.DestinationType;
-        // Change webview background color (dropdowns etc) from PhoneGap default (black) to white.
-        if (window.plugins != undefined && window.plugins.webviewcolor != undefined) {
-            window.plugins.webviewcolor.change('#ffffff');
-        }
-    }
+		// // Called when a photo is successfully retrieved
+		// function onPhotoDataSuccess(imageData) {
+		//   // Uncomment to view the base64-encoded image data
+		//   // console.log(imageData);
 
-    // Called when a photo is successfully retrieved
-    function onPhotoDataSuccess(imageData) {
-      // Uncomment to view the base64-encoded image data
-      // console.log(imageData);
+		//   // Get image handle
+		//   //
+		//   var smallImage = document.getElementById('smallImage');
 
-      // Get image handle
-      //
-      var smallImage = document.getElementById('smallImage');
+		//   // Unhide image elements
+		//   //
+		//   smallImage.style.display = 'block';
 
-      // Unhide image elements
-      //
-      smallImage.style.display = 'block';
+		//   // Show the captured photo
+		//   // The in-line CSS rules are used to resize the image
+		//   //
+		//   smallImage.src = "data:image/jpeg;base64," + imageData;
+		// }
 
-      // Show the captured photo
-      // The in-line CSS rules are used to resize the image
-      //
-      smallImage.src = "data:image/jpeg;base64," + imageData;
-    }
+		// // Called when a photo is successfully retrieved
+		// //
+		// function onPhotoURISuccess(imageURI) {
+		//   // Uncomment to view the image file URI
+		//   // console.log(imageURI);
 
-    // Called when a photo is successfully retrieved
-    //
-    function onPhotoURISuccess(imageURI) {
-      // Uncomment to view the image file URI
-      // console.log(imageURI);
+		//   // Get image handle
+		//   //
+		//   var largeImage = document.getElementById('largeImage');
 
-      // Get image handle
-      //
-      var largeImage = document.getElementById('largeImage');
+		//   // Unhide image elements
+		//   //
+		//   largeImage.style.display = 'block';
 
-      // Unhide image elements
-      //
-      largeImage.style.display = 'block';
+		//   // Show the captured photo
+		//   // The in-line CSS rules are used to resize the image
+		//   //
+		//   largeImage.src = imageURI;
+		// }
 
-      // Show the captured photo
-      // The in-line CSS rules are used to resize the image
-      //
-      largeImage.src = imageURI;
-    }
+		// // A button will call this function
+		// //
+		// function capturePhoto() {
+		//   // Take picture using device camera and retrieve image as base64-encoded string
+		//   navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
+		//     destinationType: destinationType.DATA_URL });
+		// }
 
-    // A button will call this function
-    //
-    function capturePhoto() {
-      // Take picture using device camera and retrieve image as base64-encoded string
-      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
-        destinationType: destinationType.DATA_URL });
-    }
+		// // A button will call this function
+		// //
+		// function capturePhotoEdit() {
+		//   // Take picture using device camera, allow edit, and retrieve image as base64-encoded string
+		//   navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+		//     destinationType: destinationType.DATA_URL });
+		// }
 
-    // A button will call this function
-    //
-    function capturePhotoEdit() {
-      // Take picture using device camera, allow edit, and retrieve image as base64-encoded string
-      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
-        destinationType: destinationType.DATA_URL });
-    }
+		// // A button will call this function
+		// //
+		// function getPhoto(source) {
+		//   // Retrieve image file location from specified source
+		//   navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50,
+		//     destinationType: destinationType.FILE_URI,
+		//     sourceType: source });
+		// }
 
-    // A button will call this function
-    //
-    function getPhoto(source) {
-      // Retrieve image file location from specified source
-      navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50,
-        destinationType: destinationType.FILE_URI,
-        sourceType: source });
-    }
+		// // Called if something bad happens.
+		// //
+		// function onFail(message) {
+		//   alert('Failed because: ' + message);
+		// }
 
-    // Called if something bad happens.
-    //
-    function onFail(message) {
-      alert('Failed because: ' + message);
-    }
-
-    </script>
+	</script>
   </head>
   <body>
 
-    <section id="main" data-transition="slide">
-        <article id="main-article" class="signup scroll">
-            <div class='splash'>
+	<section id="main" data-transition="slide">
+		<article id="main-article" class="signup scroll">
+			<div class='splash'>
 <!--
 <button style="color:#ffffff" onclick="capturePhoto();">Capture Photo</button> <br>
 <button style="color:#ffffff" onclick="capturePhotoEdit();">Capture Editable Photo</button> <br>
@@ -139,88 +138,88 @@
 <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
 <img style="display:none;" id="largeImage" src="" />
 -->
-                <img src='img/splash-logo@2x.png' class="splash logo centered"/>
-                <div class='splash subtitle'>your favorite moments</div>
-                <a href="#" data-view-section="signup-google"><img src='img/connect-with-google@2x.png' class="splash connect centered"/></a>
-                <div class="splash privacy">
+				<img src='img/splash-logo@2x.png' class="splash logo centered"/>
+				<div class='splash subtitle'>your favorite moments</div>
+				<a href="#" data-view-section="signup-google"><img src='img/connect-with-google@2x.png' class="splash connect centered"/></a>
+				<div class="splash privacy">
 			<div style='text-align:center;font-size:12px;'><img src='img/lock-icon@2x.png'/> &nbsp; Rediscovr is 100% private. People only see what you specifically share with them.</div>
-                </div>
+				</div>
 		<div class='splash links'><a href='#' data-view-section="signup-email" class='link'>Sign Up</a> or <a href='#' data-view-section="login" class='link'>Log In</a> with email instead.</div>
-            </div>
-        </article>
-    </section>
+			</div>
+		</article>
+	</section>
 
-    <section id="walkthrough-share" data-transition="slide" data-aside="features" class="drag walkthrough">
-        <header data-title="Welcome">
-            <nav class="on-right" data-view-section="walkthrough-keep">
-                <img src="img/done-button@2x.png" />
-            </nav>
-        </header>
-    </section>
+	<section id="walkthrough-share" data-transition="slide" data-aside="features" class="drag walkthrough">
+		<header data-title="Welcome">
+			<nav class="on-right" data-view-section="walkthrough-keep">
+				<img src="img/done-button@2x.png" />
+			</nav>
+		</header>
+	</section>
 
-    <section id="walkthrough-keep" data-transition="slide" data-aside="features" class="drag walkthrough">
-        <header data-title="Welcome">
-            <nav class="on-right" data-view-section="walkthrough-remember">
-                <img src="img/done-button@2x.png" />
-            </nav>
-        </header>
-    </section>
+	<section id="walkthrough-keep" data-transition="slide" data-aside="features" class="drag walkthrough">
+		<header data-title="Welcome">
+			<nav class="on-right" data-view-section="walkthrough-remember">
+				<img src="img/done-button@2x.png" />
+			</nav>
+		</header>
+	</section>
 
-    <section id="walkthrough-remember" data-transition="slide" data-aside="features" class="drag walkthrough">
-        <header data-title="Welcome">
-            <nav class="on-right" data-view-section="home">
-                <img src="img/done-button@2x.png" />
-            </nav>
-        </header>
-    </section>
+	<section id="walkthrough-remember" data-transition="slide" data-aside="features" class="drag walkthrough">
+		<header data-title="Welcome">
+			<nav class="on-right" data-view-section="home">
+				<img src="img/done-button@2x.png" />
+			</nav>
+		</header>
+	</section>
 
-        <script type="text/javascript" src="phonegap.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
+		<script type="text/javascript" src="phonegap.js"></script>
+		<script type="text/javascript" src="js/index.js"></script>
 
 <script src="components/quojs/quo.debug.js"></script>
 <script src="package/lungo/lungo.js"></script>
-    <script>
-        Lungo.init({
-            name: 'rediscovr',
-            version: '0.0.1',
-            resources: [
-                'static/asides/left-sidebar.html',
-                'static/sections/signup-email.html',
-                'static/sections/signup-google.html',
-                'static/sections/login.html',
-                'static/sections/home.html',
-                'static/sections/moments.html',
-                'static/sections/profile.html',
-                'static/sections/people.html',
-                'static/sections/person.html',
-                'static/sections/notifications.html',
-                'static/sections/settings.html',
-                'static/sections/add-moment.html',
-                'static/sections/add-moment-reminder-frequency.html',
-                'static/sections/add-moment-reminder-end.html',
-                'static/sections/add-moment-location.html',
-                'static/sections/add-moment-select-contacts.html',
-            ],
-            history: false
-        });
-    </script>
-    <script src="static/javascripts/app.js"></script> 
-    <script src="static/javascripts/app.api.js"></script> 
-    <script src="static/javascripts/app.database.js"></script>
-    <script src="static/javascripts/app.db.js"></script> 
-    <script src="static/javascripts/app.image.js"></script>
-    <script src="static/javascripts/app.user.js"></script>
-    <script src="static/javascripts/app.moment.js"></script>
-    <script src="static/javascripts/app.moments.js"></script>
-    <script src="static/javascripts/app.photo.js"></script>
-    <script src="static/javascripts/app.contact.js"></script>
-    <script src="static/javascripts/mapping.js"></script>
-    <script src="static/javascripts/s3upload.js"></script>
-    <script src="static/javascripts/PushNotification.js"></script>
+	<script>
+		Lungo.init({
+			name: 'rediscovr',
+			version: '0.0.1',
+			resources: [
+				'static/asides/left-sidebar.html',
+				'static/sections/signup-email.html',
+				'static/sections/signup-google.html',
+				'static/sections/login.html',
+				'static/sections/home.html',
+				'static/sections/moments.html',
+				'static/sections/profile.html',
+				'static/sections/people.html',
+				'static/sections/person.html',
+				'static/sections/notifications.html',
+				'static/sections/settings.html',
+				'static/sections/add-moment.html',
+				'static/sections/add-moment-reminder-frequency.html',
+				'static/sections/add-moment-reminder-end.html',
+				'static/sections/add-moment-location.html',
+				'static/sections/add-moment-select-contacts.html',
+			],
+			history: false
+		});
+	</script>
+	<script src="static/javascripts/app.js"></script> 
+	<script src="static/javascripts/app.api.js"></script> 
+	<script src="static/javascripts/app.database.js"></script>
+	<script src="static/javascripts/app.db.js"></script> 
+	<script src="static/javascripts/app.image.js"></script>
+	<script src="static/javascripts/app.user.js"></script>
+	<script src="static/javascripts/app.moment.js"></script>
+	<script src="static/javascripts/app.moments.js"></script>
+	<script src="static/javascripts/app.photo.js"></script>
+	<script src="static/javascripts/app.contact.js"></script>
+	<script src="static/javascripts/mapping.js"></script>
+	<script src="static/javascripts/s3upload.js"></script>
+	<script src="static/javascripts/PushNotification.js"></script>
 <!--    <script src="static/javascripts/mapbox.js"></script> -->
 
-        <script type="text/javascript">
-            app.initialize();
-        </script>
-    </body>
+		<script type="text/javascript">
+			app.initialize();
+		</script>
+	</body>
 </html>

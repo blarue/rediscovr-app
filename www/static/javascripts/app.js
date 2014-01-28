@@ -163,7 +163,7 @@ Lungo.Events.init({
 					latlng: position.coords.latitude + "," + position.coords.longitude,
 					sensor: "true"
 				}
-				alert(url + $$.serializeParameters(req, "?"));
+				//alert(url + $$.serializeParameters(req, "?"));
 				$$.get(url, req, function(data) {
 					if (data != undefined && data.results != undefined && data.status == "OK") {
 						Lungo.dom("#moment-form-location").val(data.results[0].formatted_address);
@@ -371,11 +371,28 @@ Lungo.Events.init({
 	},
 
 	'tap #select-contacts-list li': function() {
-		rediscovr.currentmoment.collaborators = [{
-			name: Lungo.dom(this).children('div').children('strong').text(),
-			email: Lungo.dom(this).children('div').children('span').text()
-		}];
-		Lungo.dom("#add-moment-invite").text(rediscovr.currentmoment.collaborators[0].name);
+		if (Lungo.dom(this).hasClass('selected')) {
+			Lungo.dom(this).removeClass('selected');
+		} else {
+			Lungo.dom(this).addClass('selected');
+		}
+	},
+
+	'tap #add-moment-select-contacts-done': function() {
+		var txt = "";
+		if (rediscovr.currentmoment.collaborators == undefined) {
+			rediscovr.currentmoment.collaborators = [];
+		}
+
+		Lungo.dom("#select-contacts-list li.selected div").each(function() {
+			rediscovr.currentmoment.collaborators.push({
+				name: Lungo.dom(this).children("strong").text(),
+				email: Lungo.dom(this).children("span").text()
+			});
+			txt += Lungo.dom(this).children("strong").text() + ", ";
+		});
+
+		Lungo.dom("#add-moment-invite").text(txt.substr(0, txt.length - 2));
 		Lungo.Router.back();
 	},
 

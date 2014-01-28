@@ -14,6 +14,7 @@ App.moment = function() {
 		errors: [],
 
 		addMoment: function() {
+			alert("Running addMoment from app.moment.js");
 			var _this = this;
 			// Start DB.
 			var DB = new App.db();
@@ -54,10 +55,9 @@ App.moment = function() {
 											transaction.executeSql(q, p, 
 												function(transaction, results) {
 													console.log("_i: " + _i);
-													var api = new App.api();
-													api.addMoment(_this);
-													_this.showMoment(true);
 													if (_i == rediscovr.currentmoment.image_list.length - 1) {
+														var api = new App.api();
+														api.addMoment(_this);
 														_this.showMoment(true);
 													}
 												},
@@ -195,7 +195,6 @@ App.moment = function() {
 			}
 			delete moment_item;
 			//console.log(data.moments[i].title);
-
 		},
 
 		cacheMoment: function() {
