@@ -36,16 +36,6 @@ App.moment = function() {
 						function(transaction, results) {
 							_this.details.id = results.insertId;
 
-							if (_this.details.collaborators.length) {
-								for (var j = 0; j < _this.details.collaborators.length; j++) {
-									var u = new App.user();
-									u.details.email = _this.details.collaborators[j].email;
-									u.details.first_name = _this.details.collaborators[j].name;
-									u.details.first_last = _this.details.collaborators[j].name;
-									u.addCollaborator(_this.details.id);
-								}
-							}
-
 							if (rediscovr.currentmoment.image_list.length) {
 								var q = "INSERT INTO `moment_image` (`moment_id`, `image_id`) VALUES (?, ?)";
 								for (var i = 0; i < rediscovr.currentmoment.image_list.length; i++) {
@@ -365,7 +355,6 @@ App.moment = function() {
 			this.details.reminder_frequency = rediscovr.currentmoment.reminder_frequency = Lungo.dom("#moment-form-reminder-frequency").text();
 			this.details.reminder_end = rediscovr.currentmoment.reminder_end = Lungo.dom("#moment-form-reminder-end").text();
 			this.details.images = rediscovr.currentmoment.images;
-			this.details.collaborators = rediscovr.currentmoment.collaborators;
 		},
 
 		post: function() {
@@ -383,6 +372,7 @@ App.moment = function() {
 			};
 			App.database.addMoment(post_data);
 		},
+
 
 		validate: function() {
 			if (this.details.user == null) {
