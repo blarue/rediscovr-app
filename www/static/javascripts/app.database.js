@@ -14,10 +14,11 @@ App.database = {
 	createTables: function() {
 		console.log("Trying to create table.");
 		console.log(typeof this.db);
-		// User table
+		// User table (id = Local, user_id = API ID)
 		var user_definition = "\
 			CREATE TABLE IF NOT EXISTS `user`(\
-				`id` INTEGER NULL PRIMARY KEY, \
+				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
+				`user_id` INTEGER UNIQUE NULL, \
 				`first_name` TEXT NULL, \
 				`last_name` TEXT NULL, \
 				`email` TEXT NOT NULL, \
@@ -29,7 +30,7 @@ App.database = {
 				`current_user` INTEGER NOT NULL DEFAULT 0 \
 			);";
 
-		// Moment table
+		// Moment table (id = Local, moment_id = API ID)
 		var moment_definition = "\
 			CREATE TABLE IF NOT EXISTS `moment`(\
 				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
@@ -42,7 +43,7 @@ App.database = {
 				`reminder` TEXT NOT NULL DEFAULT 'Never', \
 				`reminder_end` TEXT NOT NULL DEFAULT 'Never' \
 			);";
-		// Image table
+		// Image table (id = Local, user_id = API ID)
 		var image_definition = "\
 			CREATE TABLE IF NOT EXISTS `image`(\
 				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
