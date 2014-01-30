@@ -4,7 +4,7 @@ App.db = function() {
 		shortname: 'moments', 
 		version: '1.1', 
 		displayname: 'moments', 
-		maxsize: 100*1024*1024,
+		maxsize: 10*1024*1024,
 		db: {},
 
 		open: function() {

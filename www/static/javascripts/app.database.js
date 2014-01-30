@@ -3,7 +3,7 @@ App.database = {
 	shortname: 'moments', 
 	version: '1.1', 
 	displayname: 'moments', 
-	maxsize: 100*1024*1024,
+	maxsize: 10*1024*1024,
 	db: {},
 
 	open: function() {
@@ -14,10 +14,11 @@ App.database = {
 	createTables: function() {
 		console.log("Trying to create table.");
 		console.log(typeof this.db);
-		// User table
+		// User table (id = Local, user_id = API ID)
 		var user_definition = "\
 			CREATE TABLE IF NOT EXISTS `user`(\
-				`id` INTEGER NULL PRIMARY KEY, \
+				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
+				`user_id` INTEGER UNIQUE NULL, \
 				`first_name` TEXT NULL, \
 				`last_name` TEXT NULL, \
 				`email` TEXT NOT NULL, \
@@ -29,7 +30,7 @@ App.database = {
 				`current_user` INTEGER NOT NULL DEFAULT 0 \
 			);";
 
-		// Moment table
+		// Moment table (id = Local, moment_id = API ID)
 		var moment_definition = "\
 			CREATE TABLE IF NOT EXISTS `moment`(\
 				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
@@ -42,7 +43,7 @@ App.database = {
 				`reminder` TEXT NOT NULL DEFAULT 'Never', \
 				`reminder_end` TEXT NOT NULL DEFAULT 'Never' \
 			);";
-		// Image table
+		// Image table (id = Local, user_id = API ID)
 		var image_definition = "\
 			CREATE TABLE IF NOT EXISTS `image`(\
 				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
@@ -61,14 +62,14 @@ App.database = {
 				`primary` INTEGER NOT NULL DEFAULT 1, \
 				PRIMARY KEY (`moment_id`, `image_id`) \
 			);";
-		// Moment/User (Colaborator) map table.
+		// Moment/User (Collaborator) map table.
 		var moment_user_definition = "\
 			CREATE TABLE IF NOT EXISTS `moment_user` ( \
 				`user_id` INTEGER NOT NULL, \
 				`moment_id` INTEGER NOT NULL, \
 				PRIMARY KEY (`user_id`,`moment_id`) \
 			);";
-		// Moment/User (Colaborator) map table.
+		// Moment Sync.
 		var moment_sync_definition = "\
 			CREATE TABLE IF NOT EXISTS `moment_sync` ( \
 				`servertime` INTEGER NOT NULL PRIMARY KEY \

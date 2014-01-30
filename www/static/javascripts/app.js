@@ -384,7 +384,7 @@ Lungo.Events.init({
 			rediscovr.currentmoment.collaborators = [];
 		}
 
-		Lungo.dom("#select-contacts-list li.selected div").each(function() {
+		Lungo.dom("#select-contacts-list li.selected div.contact-details").each(function() {
 			rediscovr.currentmoment.collaborators.push({
 				name: Lungo.dom(this).children("strong").text(),
 				email: Lungo.dom(this).children("span").text()
@@ -421,7 +421,7 @@ Lungo.Events.init({
 		    		<div class=\"user-avatar avatar-tiny avatar-shadow\">\
 						<img src=\"" + user_img + "\"/>\
 					</div>\
-					<div>\
+					<div class=\"contact-details\">\
 						<strong class=\"text bold\">" + c[i].name.formatted + "</strong>";
 						
 				if (c[i].emails != undefined && c[i].emails != null && c[i].emails.length) {
