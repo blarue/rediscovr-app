@@ -36,16 +36,6 @@ App.moment = function() {
 						function(transaction, results) {
 							_this.details.id = results.insertId;
 
-							if (_this.details.collaborators.length) {
-								for (var j = 0; j < _this.details.collaborators.length; j++) {
-									var u = new App.user();
-									u.details.email = _this.details.collaborators[j].email;
-									u.details.first_name = _this.details.collaborators[j].name;
-									u.details.first_last = _this.details.collaborators[j].name;
-									u.addCollaborator(_this.details.id);
-								}
-							}
-
 							if (rediscovr.currentmoment.image_list.length) {
 								var q = "INSERT INTO `moment_image` (`moment_id`, `image_id`) VALUES (?, ?)";
 								for (var i = 0; i < rediscovr.currentmoment.image_list.length; i++) {
@@ -167,7 +157,7 @@ App.moment = function() {
 					img_src = App.config.image_prefix + this.details.images[img];
 				}
 				moment_item += "<div class=\"moment-image " + imgdiv_class + "\">\
-						<img id=\"moment-" + this.details.moment_id + "\" src=\"" + img_src + "\"/>\
+						<a class=\"fancybox\" rel=\"group\" href=\""+ img_src +"\"><img id=\"moment-" + this.details.moment_id + "\" src=\"" + img_src + "\"></img></a>\
 					</div>";
 			}
 			moment_item += "<div class=\"moment-description\">\
@@ -203,6 +193,16 @@ App.moment = function() {
 			} else {
 				Lungo.dom(this.domnode).append(moment_item);
 			}
+			$(".fancybox").fancybox({
+				fitToView: false,
+			    autoSize: false,
+			    afterLoad: function () {
+			        this.width = 320;
+			    }
+			});
+			// $$('.moment-image > img').tap(function() {
+			// 	window.location = $$(this).attr('src');
+			// });
 			delete moment_item;
 			//console.log(data.moments[i].title);
 			Lungo.dom("#moments-article").style("-webkit-overflow-scrolling", "touch");
@@ -365,7 +365,6 @@ App.moment = function() {
 			this.details.reminder_frequency = rediscovr.currentmoment.reminder_frequency = Lungo.dom("#moment-form-reminder-frequency").text();
 			this.details.reminder_end = rediscovr.currentmoment.reminder_end = Lungo.dom("#moment-form-reminder-end").text();
 			this.details.images = rediscovr.currentmoment.images;
-			this.details.collaborators = rediscovr.currentmoment.collaborators;
 		},
 
 		post: function() {
@@ -383,6 +382,7 @@ App.moment = function() {
 			};
 			App.database.addMoment(post_data);
 		},
+
 
 		validate: function() {
 			if (this.details.user == null) {
