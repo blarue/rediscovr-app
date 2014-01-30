@@ -34,6 +34,7 @@ App.user = function() {
 						function(transaction, results) {
 							if (results.insertId != undefined) {
 								console.log("Collaborator: " + results.insertId);
+							}
 						}, 
 						function(transaction, results) {
 							//console.log(results);
