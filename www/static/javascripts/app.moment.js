@@ -185,7 +185,7 @@ App.moment = function() {
 			if (this.domnode == undefined) {
 				this.domnode = "#moments-article-container";
 			}
-			if (Lungo.Router.history() != "moments") {
+			if (Lungo.Router.history() != "moments" && prepend) {
 				Lungo.Router.section("moments");
 			}
 			if (prepend) {
@@ -195,6 +195,7 @@ App.moment = function() {
 			}
 			delete moment_item;
 			//console.log(data.moments[i].title);
+			Lungo.dom("#moments-article").style("-webkit-overflow-scrolling", "touch");
 		},
 
 		cacheMoment: function() {
@@ -208,19 +209,20 @@ App.moment = function() {
 			// Add creator as user to local DB.
 			//console.log("Attempting to add creator.");
 			var c = _this.details.creator;
-			//console.log(JSON.stringify(_this.details.creator));
+			c.current_user = (c.id == App.current_user.details.user_id) ? 1 : 0;
 			var c_data_array = [c.id, c.email, c.first_name, c.last_name, c.city, c.state, c.country, c.user_image, c.current_user];
 			var c_query = "INSERT OR IGNORE INTO `user` \
 						(`id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+			console.log(c_data_array + " " + c_query);
 			DB.db.transaction(
 				function(transaction) {
 					transaction.executeSql(c_query, c_data_array, 
 						function(transaction, results) {
-							//console.log(results);
+							console.log(results);
 						}, 
-						function(transaction, results) {
-							//console.log(results);
+						function(transaction, errors) {
+							console.log(errors);
 						}
 					);
 				}

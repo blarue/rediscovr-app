@@ -3,7 +3,7 @@ App.database = {
 	shortname: 'moments', 
 	version: '1.1', 
 	displayname: 'moments', 
-	maxsize: 100*1024*1024,
+	maxsize: 10*1024*1024,
 	db: {},
 
 	open: function() {
@@ -61,14 +61,14 @@ App.database = {
 				`primary` INTEGER NOT NULL DEFAULT 1, \
 				PRIMARY KEY (`moment_id`, `image_id`) \
 			);";
-		// Moment/User (Colaborator) map table.
+		// Moment/User (Collaborator) map table.
 		var moment_user_definition = "\
 			CREATE TABLE IF NOT EXISTS `moment_user` ( \
 				`user_id` INTEGER NOT NULL, \
 				`moment_id` INTEGER NOT NULL, \
 				PRIMARY KEY (`user_id`,`moment_id`) \
 			);";
-		// Moment/User (Colaborator) map table.
+		// Moment Sync.
 		var moment_sync_definition = "\
 			CREATE TABLE IF NOT EXISTS `moment_sync` ( \
 				`servertime` INTEGER NOT NULL PRIMARY KEY \
