@@ -167,7 +167,7 @@ App.moment = function() {
 					img_src = App.config.image_prefix + this.details.images[img];
 				}
 				moment_item += "<div class=\"moment-image " + imgdiv_class + "\">\
-						<a class=\"fancybox\" rel=\"group\" href=\""+ img_src +"\"><img id=\"moment-" + this.details.moment_id + "\" src=\"" + img_src + "\"></img></a>\
+						<img id=\"moment-" + this.details.moment_id + "\" src=\"" + img_src + "\"/>\
 					</div>";
 			}
 			moment_item += "<div class=\"moment-description\">\
@@ -203,16 +203,6 @@ App.moment = function() {
 			} else {
 				Lungo.dom(this.domnode).append(moment_item);
 			}
-			$(".fancybox").fancybox({
-				fitToView: false,
-			    autoSize: false,
-			    afterLoad: function () {
-			        this.width = 320;
-			    }
-			});
-			// $$('.moment-image > img').tap(function() {
-			// 	window.location = $$(this).attr('src');
-			// });
 			delete moment_item;
 			//console.log(data.moments[i].title);
 			Lungo.dom("#moments-article").style("-webkit-overflow-scrolling", "touch");
