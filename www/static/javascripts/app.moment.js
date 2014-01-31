@@ -42,6 +42,7 @@ App.moment = function() {
 									u.details.email = _this.details.collaborators[j].email;
 									u.details.first_name = _this.details.collaborators[j].name;
 									u.details.first_last = _this.details.collaborators[j].name;
+									u.details.phone = '';
 									u.addCollaborator(_this.details.id);
 								}
 							}
@@ -173,21 +174,10 @@ App.moment = function() {
 			moment_item += "<div class=\"moment-description\">\
 					<span>" + this.details.text + "</span>\
 				</div>";
-			// Process date format. Should be done centrally.
-			var t = this.details.date.split(/[- :]/);
-			var d = new Date(t[0], t[1]-1, t[2], t[3], t[4], t[5]);
-			var o = {
-				weekday: "long", 
-				year: "numeric", 
-				month: "short",
-				day: "numeric", 
-				hour: "2-digit", 
-				minute: "2-digit"
-			};
-			var ds = d.toLocaleDateString("en-us", o) + " " + d.toLocaleTimeString("en-us", o);
-			ds = ds.substr(0, ds.length - 4);
-			ds = ds.substr(0, ds.length - 6) + ds.substr(ds.length - 3, ds.length);
-			// End process date format.
+			
+			// Process date format. Uses moment.js (no relation)
+			var ds = momentjs(this.details.date).format("MMM D, YYYY h:mm A");
+
 			moment_item += "<div class=\"moment-datetime\">\
 					<span>" + ds + "</span>\
 				</div>";
