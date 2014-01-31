@@ -22,6 +22,27 @@ App.user = function() {
 			api.loginUser(this);
 		},
 
+		addCollaborator: function() {
+			// You were here.
+			var DB = new App.db();
+			DB.open();
+			var p = [this.details.email, this.details.first_name, this.details.last_name];
+			var q = "INSERT OR IGNORE INTO `user` (`email`, `first_name`, `last_name`) VALUES (?, ?, ?)";
+			DB.db.transaction(
+				function(transaction) {
+					transaction.executeSql(q, p, 
+						function(transaction, results) {
+							if (results.insertId != undefined) {
+								console.log("Collaborator: " + results.insertId);
+						}, 
+						function(transaction, results) {
+							//console.log(results);
+						}
+					);
+				}
+			);
+		},
+
 		handleLogin: function(data) {
 			console.log(data);
 			//console.log("API: " + data.message);
