@@ -145,7 +145,7 @@ body > section > article.moments div.moment-item > div.moment-image.one-fourth {
 body > section > article.moments div.moment-item > div.moment-image img { width:100%; }
 body > section > article.moments > div.moment-day { display:inline-block; clear:both; width:100%; border-top:1px solid #dadada; border-bottom:1px solid #dadada; margin:0; }
 body > section > article.moments .moment-description { clear:both; display:block; padding: .4em .7em; font-size:1.0em; }
-body > section > article.moments .moment-datetime { clear:both; display:block; padding: .4em .7em; font-size:.95em; color: #999999;}
+body > section > article.moments .moment-datetime { clear:both; text-transform:uppercase; display:block; padding: .4em .7em; font-size:.88em; color: #999999;}
 
 body > section#settings { background-color:#e5e5e5; }
 body > section#settings > article#settings-article { background-color:#e5e5e5; }
