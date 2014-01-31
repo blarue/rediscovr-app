@@ -26,8 +26,8 @@ App.user = function() {
 			// You were here.
 			var DB = new App.db();
 			DB.open();
-			var p = [this.details.email, this.details.first_name, this.details.last_name];
-			var q = "INSERT OR IGNORE INTO `user` (`email`, `first_name`, `last_name`) VALUES (?, ?, ?)";
+			var p = [this.details.email, this.details.first_name, this.details.last_name, this.details.phone];
+			var q = "INSERT OR IGNORE INTO `user` (`email`, `first_name`, `last_name`, `phone`) VALUES (?, ?, ?, ?)";
 			DB.db.transaction(
 				function(transaction) {
 					transaction.executeSql(q, p, 
