@@ -125,6 +125,10 @@ App.moment = function() {
 		},
 
 		renderMoment: function(prepend) {
+
+			// Need to add this to moment. Work in progress.
+			// Lungo.dom(".moment-header").each(function() { this.addEventListener("click", function(event) {if (Lungo.dom(event.target)) { alert(Lungo.dom(event.target)); } else { alert("Didn't work."); } }) });
+
 			console.log("Running renderMoment.");
 			//console.log(JSON.stringify(this.details));
 			var _this = this;

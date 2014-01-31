@@ -63,7 +63,6 @@ App.api = function() {
 			} else {
 				console.log("Moment doesn't validate.");
 			}
-
 		},
 
 		getMoments: function(ref) {
