@@ -53,6 +53,9 @@ App.generateUid = function (prefix, separator) {
 	return (prefix + delim + timestamp + delim + S4() + S4() + S4());
 };
 
+// Set up a global momentjs var. Gets set below.
+var momentjs;
+
 Lungo.ready(function() {
 
 	// Initialize DB.
@@ -71,6 +74,10 @@ Lungo.ready(function() {
 	if (rediscovr.currentmoment == undefined) {
 		rediscovr.currentmoment = {};
 	}
+
+	// Move moment javascript to momentjs to avoid confusion.
+	momentjs = moment;
+	delete moment;
 
 	pushNotification = window.plugins.pushNotification;
 });
