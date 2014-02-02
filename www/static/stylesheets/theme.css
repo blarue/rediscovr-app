@@ -1,3 +1,50 @@
+section > footer > nav > a,
+nav[data-control=groupbar] > a {
+  color: #595959;
+  -webkit-transition-property: color, box-shadow;
+  -moz-transition-property: color, box-shadow;
+  -ms-transition-property: color, box-shadow;
+  -o-transition-property: color, box-shadow;
+  transition-property: color, box-shadow;
+  -webkit-transition-duration: 400ms;
+  -moz-transition-duration: 400ms;
+  -ms-transition-duration: 400ms;
+  -o-transition-duration: 400ms;
+  transition-duration: 400ms;
+  -webkit-transition-timing-function: ease;
+  -moz-transition-timing-function: ease;
+  -ms-transition-timing-function: ease;
+  -o-transition-timing-function: ease;
+  transition-timing-function: ease;
+}
+section > footer > nav > a abbr,
+nav[data-control=groupbar] > a abbr {
+  font-weight: 400;
+}
+section > footer > nav > a.active,
+nav[data-control=groupbar] > a.active,
+section > footer > nav > a:active,
+nav[data-control=groupbar] > a:active {
+  color: #669bcf;
+}
+nav[data-control=groupbar] > a.active,
+nav[data-control=groupbar] > a:active {
+  -webkit-box-shadow: inset 0 -0.3em #00afe3;
+  -moz-box-shadow: inset 0 -0.3em #00afe3;
+  -ms-box-shadow: inset 0 -0.3em #00afe3;
+  -o-box-shadow: inset 0 -0.3em #00afe3;
+  box-shadow: inset 0 -0.3em #00afe3;
+}
+section > footer > nav > a.active,
+section > footer > nav > a:active {
+  -webkit-box-shadow: inset 0 0.3em #00afe3;
+  -moz-box-shadow: inset 0 0.3em #00afe3;
+  -ms-box-shadow: inset 0 0.3em #00afe3;
+  -o-box-shadow: inset 0 0.3em #00afe3;
+  box-shadow: inset 0 0.3em #00afe3;
+}
+
+
 /*
  * Start forms from lungo theme.
  */

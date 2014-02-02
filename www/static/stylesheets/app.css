@@ -83,6 +83,19 @@ body > section > header > nav.on-left { margin-left: 12px; }
 body > section > header > nav.on-right { margin-right: 12px; }
 body > section > header > nav > img { height: 22px; }
 
+body > section > footer { background-color: #f9f9f9; }
+body > section > footer {
+	-webkit-box-shadow: 0 -1px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0 -1px rgba(0,0,0,0.1);
+	-ms-box-shadow: 0 -1px rgba(0,0,0,0.1);
+	-o-box-shadow: 0 -1px rgba(0,0,0,0.1);
+	box-shadow: 0 -1px rgba(0,0,0,0.1);
+}
+footer nav a { color:#a1a1a1;font-size:.8em; }
+footer nav a .active  { color: #669bcf; }
+footer nav a.left  { display:block;padding:0 0 0 .7em;height:46px;text-align:left; }
+footer nav a.right { display:block;padding:0 .7em 0 0;height:46px;text-align:right; }
+
 body > section#main > article { background-color: #000000; }
 
 body > section > article > div.splash { text-align:center;margin-top:60px; }

@@ -69,7 +69,7 @@ App.moment = function() {
 													if (_i == rediscovr.currentmoment.image_list.length - 1) {
 														var api = new App.api();
 														api.addMoment(_this);
-														_this.showMoment(true);
+														_this.showMoment("prepend");
 													}
 												},
 												function(transaction, results) {
@@ -82,7 +82,7 @@ App.moment = function() {
 							} else {
 								var api = new App.api();
 								api.addMoment(_this);
-								_this.showMoment(true);
+								_this.showMoment("prepend");
 							}
 						}, 
 						function(transaction, results) {
@@ -93,9 +93,9 @@ App.moment = function() {
 			);
 		},
 
-		showMoment: function(prepend) {
-			if (prepend == null) {
-				prepend = false;
+		showMoment: function(placement) {
+			if (placement == null) {
+				placement = "append";
 			}
 			console.log("Running showMoment.");
 			var _this = this;
@@ -113,9 +113,9 @@ App.moment = function() {
 									//console.log(_this);
 									_this.details.images.push(results.rows.item(j).data64);
 								}
-								_this.renderMoment(prepend);
+								return _this.renderMoment(placement);
 							} else {
-								_this.renderMoment(prepend);
+								return _this.renderMoment(placement);
 							}
 						},
 						App.database.errorHandler
@@ -124,8 +124,7 @@ App.moment = function() {
 			);
 		},
 
-		renderMoment: function(prepend) {
-
+		renderMoment: function(placement) {
 			// Need to add this to moment. Work in progress.
 			// Lungo.dom(".moment-header").each(function() { this.addEventListener("click", function(event) {if (Lungo.dom(event.target)) { alert(Lungo.dom(event.target)); } else { alert("Didn't work."); } }) });
 
@@ -150,20 +149,35 @@ App.moment = function() {
 						break;
 				}
 			}
-			var moment_item = "";
 
-			moment_item += "<div class=\"moment-item\">\
-				<div class=\"moment-item-header\">\
-					<div class=\"user-avatar avatar-small\">\
+			// Build out moment.
+			var moment_item = document.createElement("div");
+			Lungo.dom(moment_item).addClass("moment-item");
+			var moment_header = document.createElement("div");
+			Lungo.dom(moment_header).addClass("moment-item-header");
+			Lungo.dom(moment_header).data("momentid", this.details.api_id);
+
+			// Add action for tap.
+			Lungo.dom(moment_header).tap(function() {
+				var chosen_moment = new App.moment();
+				chosen_moment.domnode = "#one-moment-article-container";
+				Lungo.dom(chosen_moment.domnode).html("");
+				App.database.getMoment(Lungo.dom(this).data("momentid"), chosen_moment);
+				Lungo.Router.section("one-moment");
+			});
+
+			var moment_header_html = "<div class=\"user-avatar avatar-small\">\
 						<img src=\"" + App.config.image_prefix + this.details.creator.user_image + "\"/>\
 					</div>\
 					<div class=\"moment-header\">\
 						<span class=\"moment-title\">" + this.details.title + "</span>\
 						<span class=\"moment-location\">" + this.details.location + "</span>\
 					</div>\
-					<div class=\"clearfix\">&nbsp;</div>\
-				</div>";
-			
+					<div class=\"clearfix\">&nbsp;</div>";
+			Lungo.dom(moment_header).html(moment_header_html);
+			Lungo.dom(moment_item).append(moment_header);
+
+			// Add images to moment.
 			for (var img = 0; img < this.details.images.length; img++) {
 				var img_src;
 				if (this.details.images[img].substr(0, 4) === "data") {
@@ -171,32 +185,79 @@ App.moment = function() {
 				} else {
 					img_src = App.config.image_prefix + this.details.images[img];
 				}
-				moment_item += "<div class=\"moment-image " + imgdiv_class + "\">\
-						<a class=\"fancybox\" rel=\"group\" href=\""+ img_src +"\"><img id=\"moment-" + this.details.moment_id + "\" src=\"" + img_src + "\"></img></a>\
-					</div>";
+				// Create div to hold moment image.
+				var moment_imgdiv = document.createElement("div");
+				Lungo.dom(moment_imgdiv).addClass("moment-image");
+				Lungo.dom(moment_imgdiv).addClass(imgdiv_class);
+				// Create anchor to hold image.
+				var moment_anchor = document.createElement("a");
+				Lungo.dom(moment_anchor).addClass("fancybox");
+				Lungo.dom(moment_anchor).attr("rel", "group");
+				Lungo.dom(moment_anchor).attr("href", "");
+				// Create image.
+				var moment_imgimg = document.createElement("img");
+				Lungo.dom(moment_imgimg).attr("id", "moment-" + this.details.moment_id);
+				Lungo.dom(moment_imgimg).attr("src", img_src);
+				// Add image to anchor.
+				Lungo.dom(moment_anchor).append(moment_imgimg);
+				// Add anchor to div.
+				Lungo.dom(moment_imgdiv).append(moment_anchor);
+				// Add div to moment.
+				Lungo.dom(moment_item).append(moment_imgdiv);
+				delete moment_imgdiv;
+				delete moment_anchor;
+				delete moment_imgimg;
 			}
-			moment_item += "<div class=\"moment-description\">\
-					<span>" + this.details.text + "</span>\
-				</div>";
+			delete moment_img;
+
+			// Create desc div.
+			var moment_descdiv = document.createElement("div");
+			Lungo.dom(moment_descdiv).addClass("moment-description");
+			// Create desc text.
+			var moment_descspan = document.createElement("span");
+			Lungo.dom(moment_descspan).text(this.details.text);
+			// Add desc text to div.
+			Lungo.dom(moment_descdiv).append(moment_descspan);
+			// Add desc div to moment.
+			Lungo.dom(moment_item).append(moment_descdiv);
 			
 			// Process date format. Uses moment.js (no relation)
 			var ds = momentjs(this.details.date).format("MMM D, YYYY h:mm A");
 
-			moment_item += "<div class=\"moment-datetime\">\
-					<span>" + ds + "</span>\
-				</div>";
-			moment_item += "</div>";
+			// Create datetime div.
+			var moment_datediv = document.createElement("div");
+			Lungo.dom(moment_datediv).addClass("moment-datetime");
+			// Create datetime text.
+			var moment_datespan = document.createElement("span");
+			Lungo.dom(moment_datespan).text(ds);
+			// Add text to div.
+			Lungo.dom(moment_datediv).append(moment_datespan)
+			// Add date div to moment item.
+			Lungo.dom(moment_item).append(moment_datediv);
+
+			// Set default domnode if not set.
 			if (this.domnode == undefined) {
 				this.domnode = "#moments-article-container";
 			}
-			if (Lungo.Router.history() != "moments" && prepend) {
+
+			// If we should be on the moments page, go there.
+			if (Lungo.Router.history() != "moments" && placement == "prepend") {
 				Lungo.Router.section("moments");
 			}
-			if (prepend) {
-				Lungo.dom(this.domnode).prepend(moment_item);
-			} else {
-				Lungo.dom(this.domnode).append(moment_item);
+
+			// Prepend or Append
+			switch (placement) {
+				case "append":
+					Lungo.dom(this.domnode).append(moment_item);
+					break;
+				case "prepend":
+					Lungo.dom(this.domnode).prepend(moment_item);
+					break;
+				case "replace":
+					Lungo.dom(this.domnode).html(moment_item);
+					break;
 			}
+
 			$(".fancybox").fancybox({
 				fitToView: false,
 			    autoSize: false,
@@ -204,12 +265,8 @@ App.moment = function() {
 			        this.width = 320;
 			    }
 			});
-			// $$('.moment-image > img').tap(function() {
-			// 	window.location = $$(this).attr('src');
-			// });
+
 			delete moment_item;
-			//console.log(data.moments[i].title);
-			Lungo.dom("#moments-article").style("-webkit-overflow-scrolling", "touch");
 		},
 
 		cacheMoment: function() {
@@ -356,6 +413,10 @@ App.moment = function() {
 				// Do something to show moment added.
 				this.post();
 			}
+		},
+
+		handleGet: function(data) {
+
 		},
 
 		gatherDetails: function() {

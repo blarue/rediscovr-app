@@ -83,56 +83,6 @@ Lungo.ready(function() {
 });
 
 Lungo.Events.init({
-	'load section#layoutevents'     : App.sectionTrigger,
-
-	'unload section#layoutevents'   : App.sectionTrigger,
-
-	'load article#environment'      : App.environment,
-
-	'load article#touchevents'      : function(event) {
-
-		["singleTap", "doubleTap", "hold",
-			"swipe", "-swiping", "swipeLeft", "swipeRight", "swipeUp", "swipeDown",
-			"rotate", "rotateLeft", "rotateRight",
-			"pinch", "pinchIn", "pinchOut",
-			"drag", "dragLeft", "dragRight", "dragUp", "dragDown"].forEach(function(type) {
-			$$("article#touchevents #gestures").on(type, function(event) {
-				$$(this).siblings('.console.output').append(' | ' + type);
-			});
-		});
-
-		$$("[data-action=clean_console]").tap(function(event) {
-			$$('.console.output').html("");
-		});
-
-		$$("[data-action=twitter]").tap(function(event) {
-			window.open("https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Flungo.tapquo.com%2F&text=@lungojs a framework for developers who want to design, build and share cross device apps", "_blank");
-		});
-
-	},
-
-
-	'load section#carousel': function(event) {
-		App.carousel = Lungo.Element.Carousel($$('[data-control=carousel]')[0], function(index, element) {
-			Lungo.dom("section#carousel .title span").html(index + 1);
-		});
-	},
-
-	'tap section#carousel > header [data-direction=left]':  App.carousel.prev,
-
-	'tap section#carousel > header [data-direction=right]': App.carousel.next,
-
-	'load section#pull': function(event) {
-		App.pull = new Lungo.Element.Pull('section#pull article', {
-			onPull: "Pull down to refresh",
-			onRelease: "Release to get new data",
-			onRefresh: "Refreshing...",
-			callback: function() {
-				alert("Pull & Refresh completed!");
-				App.pull.hide();
-			}
-		});
-	},
 
 	'load section#add-moment': function(event) {
 		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true

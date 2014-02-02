@@ -204,7 +204,7 @@ App.database = {
 				`user`.`email`, `user`.`city`, `user`.`state`, `user`.`user_image` \
 			FROM `moment` \
 			JOIN `user` ON `user`.`id` = `moment`.`user` " + _where + _order + _limit;
-		console.log(_query);
+
 		// Find moments
 		this.db.transaction(
 			function(transaction) {
@@ -235,7 +235,60 @@ App.database = {
 								moment.details.creator.city = m.city;
 								moment.details.creator.state = m.state;
 								moment.details.creator.user_image = m.user_image;
-								moment.showMoment();
+								moment.showMoment("append");
+								if (Lungo.Router.history != "moments") {
+									Lungo.Router.section("moments");
+								}
+							}
+						}
+					},
+					App.database.errorHandler
+				);
+			}
+		);
+	},
+
+	getMoment: function(moment_id, ref) {
+		console.log("Running DB getMoment for moment_id: " + moment_id);
+		var _query = "SELECT `moment`.*, \
+				`user`.`id` AS `user_id`, `user`.`first_name`, `user`.`last_name`, \
+				`user`.`email`, `user`.`city`, `user`.`state`, `user`.`user_image` \
+			FROM `moment` \
+			JOIN `user` ON `user`.`id` = `moment`.`user` \
+			WHERE `moment`.`moment_id` = ? \
+			LIMIT 1 ";
+		console.log(_query);
+		// Find moments
+		this.db.transaction(
+			function(transaction) {
+				transaction.executeSql(_query, [moment_id], 
+					function(transaction, results) {
+						// Loop through moments.
+						if (results.rows != undefined && results.rows.length) {
+							var returnobj = {
+								count: results.rows.length,
+								moments: []
+							}
+							for (var i=0; i < results.rows.length; i++) {
+								var m = results.rows.item(i);
+								var moment = new App.moment();
+								moment.domnode = ref.domnode;
+								moment.details.moment_id = m.id;
+								moment.details.api_id = m.moment_id;
+								moment.details.user = m.user_id;
+								moment.details.title = m.title;
+								moment.details.text = m.text;
+								moment.details.location = m.location;
+								moment.details.date = m.date;
+								moment.details.creator = {};
+								moment.details.creator.id = m.user_id;
+								moment.details.creator.first_name = m.first_name;
+								moment.details.creator.last_name = m.last_name;
+								moment.details.creator.email = m.email;
+								moment.details.creator.city = m.city;
+								moment.details.creator.state = m.state;
+								moment.details.creator.user_image = m.user_image;
+								moment.showMoment("append");
 								if (Lungo.Router.history != "moments") {
 									Lungo.Router.section("moments");
 								}

@@ -30,8 +30,6 @@ App.moments = function() {
 		},
 
 		handleGet: function(data) {
-			console.log(data);
-
 			if (data.server_time != undefined) {
 				App.current_user.details.last_sync = data.server_time;
 				var DB = new App.db();
@@ -47,9 +45,16 @@ App.moments = function() {
 						var moment = new App.moment();
 						moment.details = data.moments[i];
 						moment.cacheMoment();
-						moment.showMoment(false);
+						moment.showMoment("append");
 					}
 					Lungo.Router.section("moments");
+
+					// Add Tap on header for moment view.
+					Lungo.dom(".moment-item-header").each(function() { 
+						Lungo.dom(this).tap(function() { 
+							alert(Lungo.dom(this).data("momentid"));
+						});
+					});
 				}
 			} else {
 				Lungo.Router.section("home");
