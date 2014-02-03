@@ -198,6 +198,7 @@ App.moment = function() {
 				var moment_imgimg = document.createElement("img");
 				Lungo.dom(moment_imgimg).attr("id", "moment-" + this.details.moment_id);
 				Lungo.dom(moment_imgimg).attr("src", img_src);
+				Lungo.dom(moment_imgimg).attr("style", "padding:2px;");
 				// Add image to anchor.
 				Lungo.dom(moment_anchor).append(moment_imgimg);
 				// Add anchor to div.
