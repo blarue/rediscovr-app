@@ -147,6 +147,8 @@ Lungo.Events.init({
 
 	// Signup
 	'tap #signup-done': function() {
+		if(!ValidationSignForm())
+			return false;
 		App.current_user.addUser();
 	},
 
