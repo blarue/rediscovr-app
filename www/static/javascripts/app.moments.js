@@ -37,6 +37,7 @@ App.moments = function() {
 			} else {
 				this.domnode = this.months_domnode;
 			}
+			Lungo.dom(this.domnode).html("");
 			// Find locally cached moments.
 			App.database.getMoments(null, 'date DESC', null, this);
 		},
@@ -47,6 +48,7 @@ App.moments = function() {
 			} else {
 				this.domnode = this.years_domnode;
 			}
+			Lungo.dom(this.domnode).html("");
 			// Find locally cached moments.
 			App.database.getMoments(null, 'date DESC', null, this);
 		},

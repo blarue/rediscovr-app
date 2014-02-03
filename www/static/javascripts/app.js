@@ -330,15 +330,13 @@ Lungo.Events.init({
 	},
 
 	'load article#moments-years-article': function(event) {
-		alert("Loaded Years");
 		var m = new App.moments();
 		m.getMomentsYears();
 	},
 
 	'load article#moments-months-article': function(event) {
-		alert("Loaded Months");
 		var m = new App.moments();
-		m.getMomentsYears();
+		m.getMomentsMonths();
 	},
 
 	'tap #select-contacts-list li': function() {

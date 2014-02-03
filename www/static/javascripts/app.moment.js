@@ -134,7 +134,29 @@ App.moment = function() {
 			console.log("Running renderMoment.");
 			var _this = this;
 			var imgdiv_class = "month-year";
-
+			// Make sure the temporal separator exists (Bar that says "January 2014").
+			if (this.domnode == "#moments-months-article") {
+				// Process date format. Uses moment.js (no relation)
+				var divdom = this.domnode + momentjs(this.details.date).format("-YYYYMM");
+				var divdom_text = momentjs(this.details.date).format("MMM YYYY");
+			} else if (this.domnode == "#moments-years-article") {
+				// Process date format. Uses moment.js (no relation)
+				var divdom = this.domnode + momentjs(this.details.date).format("-YYYY");
+				var divdom_text = momentjs(this.details.date).format("YYYY");
+			}
+			if (!Lungo.dom(divdom).length) {
+				console.log("Should be adding separator.");
+				var temporal_separator = document.createElement("div");
+				Lungo.dom(temporal_separator).attr("id", divdom.substr(1, divdom.length - 1));
+				Lungo.dom(temporal_separator).addClass("moment-day");
+				var temporal_separator_div = document.createElement("div");
+				Lungo.dom(temporal_separator_div).addClass("on-left");
+				Lungo.dom(temporal_separator_div).addClass("hilite");
+				Lungo.dom(temporal_separator_div).text(divdom_text);
+				Lungo.dom(temporal_separator).append(temporal_separator_div);
+				Lungo.dom(this.domnode).append(temporal_separator);
+			}
+			
 			// Add images to moment.
 			for (var img = 0; img < this.details.images.length; img++) {
 				var img_src;
