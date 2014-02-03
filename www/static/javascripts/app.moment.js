@@ -113,14 +113,8 @@ App.moment = function() {
 									//console.log(_this);
 									_this.details.images.push(results.rows.item(j).data64);
 								}
-								if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
-									return _this.renderMonthYearMoment();
-								}
 								return _this.renderMoment(placement);
 							} else {
-								if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
-									return false;
-								}
 								return _this.renderMoment(placement);
 							}
 						},
@@ -195,7 +189,11 @@ App.moment = function() {
 		},
 
 		renderMoment: function(placement) {
+			// Need to add this to moment. Work in progress.
+			// Lungo.dom(".moment-header").each(function() { this.addEventListener("click", function(event) {if (Lungo.dom(event.target)) { alert(Lungo.dom(event.target)); } else { alert("Didn't work."); } }) });
+
 			console.log("Running renderMoment.");
+			//console.log(JSON.stringify(this.details));
 			var _this = this;
 			var imgdiv_class = "";
 			if (this.details.images != undefined) {
@@ -258,13 +256,13 @@ App.moment = function() {
 				// Create anchor to hold image.
 				var moment_anchor = document.createElement("a");
 				Lungo.dom(moment_anchor).addClass("fancybox");
-				Lungo.dom(moment_anchor).attr("rel", "group");
-				Lungo.dom(moment_anchor).attr("href", "");
+				//Lungo.dom(moment_anchor).attr("rel", "group");
+				Lungo.dom(moment_anchor).attr("href", img_src);
 				// Create image.
 				var moment_imgimg = document.createElement("img");
 				Lungo.dom(moment_imgimg).attr("id", "moment-" + this.details.moment_id);
 				Lungo.dom(moment_imgimg).attr("src", img_src);
-				Lungo.dom(moment_imgimg).attr("style", "padding:2px;");
+                Lungo.dom(moment_imgimg).attr("style", "padding:2px;");
 				// Add image to anchor.
 				Lungo.dom(moment_anchor).append(moment_imgimg);
 				// Add anchor to div.
