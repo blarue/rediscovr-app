@@ -6,6 +6,8 @@ App.moments = function() {
 			since: null
 		},
 		domnode: "#moments-article",
+		months_domnode: "#moments-months-article",
+		years_domnode: "#moments-years-article",
 		errors: [],
 
 		getMoments: function(domnode) {
