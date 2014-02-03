@@ -1,0 +1,75 @@
+<section id="add-moment" data-transition="slide" class="drag editmoment">
+	<header data-title="Add A Moment">
+		<nav class="on-left arrow" data-view-section="back">
+			<span>Cancel</span>
+		</nav>
+		<nav class="on-right">
+			<span id="moment-form-post-button" style="font-size:.94em;border:2px solid #ffffff;border-radius:5px;padding:.3em 1em;">Post</span>
+		</nav>
+	</header>
+	<article id="add-moment-article" class="indenteds scroll">
+		<div class="moment-form form">
+			<fieldset class="radius shadow">
+				<input id="moment-form-title" type="text" placeholder="Title"/>
+			</fieldset>
+			<fieldset class="radius shadow">
+				<textarea id="moment-form-desc" placeholder="Write a description..."></textarea>
+			</fieldset>
+			<fieldset class="radius shadow" style="padding:0;">
+				<div style="float:left;width:50%;border-right:1px solid #eeeeee;padding:.5em;"><img src='img/date-icon@2x.png' class="formlabel"/><input id="moment-form-date" type="date" style="width:auto;font-size:.9em;color:#6c9dc6;" placeholder="Jan 20, 2014"/></div>
+				<div style="float:left;width:50%;padding:.5em;"><img src='img/time-icon@2x.png' class="formlabel"/><input id="moment-form-time" type="time" style="width:auto;font-size:.9em;color:#6c9dc6;" placeholder="Time"/></div>
+			</fieldset>
+			<fieldset class="radius shadow">
+				<div style="clear:both;">
+					<img src='img/location2-icon@2x.png' class="formlabel"/>
+					<input id="moment-form-location" type="text" style="color:#6c9dc6;" placeholder="Location" value=""/>
+				</div>
+			</fieldset>
+			<fieldset class="radius shadow">
+				<img src='img/reminder-set-icon@2x.png' class="formlabel"/>
+				<div style="padding:0;margin:0;display:inline;">
+					<span style="color:#9a9a9a;">Remind me of this moment: </span>
+					<span id="moment-form-reminder-frequency" style="color:#6c9dc6;" data-view-section="add-moment-reminder-frequency">Yearly</span>
+					<br/>
+					<span style="color:#9a9a9a;margin-left:1.8em;">End reminder: </span>
+					<span id="moment-form-reminder-end" style="color:#6c9dc6;" data-view-section="add-moment-reminder-end">Never</span>
+				</div>
+			</fieldset>
+ 			<fieldset class="radius shadow" style="margin-top:.4em;">
+				<div class="fileupload">
+					<img src='img/image-icon@2x.png' class="formlabel"/>
+					<input id="moment-form-upload-files" type="file" accept="image/*|video/*" capture="camera" multiple="true"/>
+					<span style='color:#6c9dc6;'>Upload Image / Video</span>
+				</div>
+				<div id="add-moment-selected-images" style="margin-top:.3em;"></div>
+			</fieldset>
+<!--
+			<fieldset class="radius shadow">
+				<div id="moment-capture-button">
+					<img src='img/image-icon@2x.png' class="formlabel"/>
+					<span style='color:#6c9dc6;'>Upload Image / Video</span>
+				</div>
+			</fieldset>
+			<fieldset class="radius shadow">
+				<div id="add-moment-selected-images"></div>
+			</fieldset>
+-->
+			<fieldset class="radius shadow">
+				<div>
+					<img src='img/user2-icon@2x.png' class="formlabel"/>
+					<span id="add-moment-invite" style='color:#6c9dc6;' data-view-section="add-moment-select-contacts">Invite Collaborators</span>
+				</div>
+			</fieldset>
+		</div>
+	</article>
+	<article id="reminder-frequency-article" class="indenteds scroll">
+		<div class="moment-form form">
+			<fieldset class="radius shadow">
+				<button class="anchor accept margin-bottom" data-icon="ok" data-label="Yearly"></button>
+				<button class="anchor accept margin-bottom" data-label="Monthly"></button>
+				<button class="anchor accept margin-bottom" data-label="Weekly"></button>	            
+				<button class="anchor accept margin-bottom" data-label="Daily"></button>	            
+			</fieldset>
+		</div>
+	</article>
+</section>

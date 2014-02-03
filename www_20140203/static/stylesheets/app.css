@@ -1,0 +1,311 @@
+/*
+ * Start from lungo theme.
+ */
+body {
+	background-color: #FFFFFF;
+	color: #f4f4f4;
+	font: 16px/1.25 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: bold;
+	letter-spacing: -0.05em;
+}
+body * {
+	-webkit-font-smoothing: antialiased;
+}
+body .text.thin {
+	font-weight: 300;
+}
+body .text.normal {
+	font-weight: 400;
+}
+body .text.bold {
+	font-weight: 700;
+}
+body .theme {
+	background-color: THEME-light;
+}
+body .theme:active {
+	background-color: #00afe3;
+}
+
+body > section > header {
+	background-color: #00afe3;
+	-webkit-box-shadow: inset 0 -1px #b2b2b2, 0 1px rgba(0,0,0,0.1);
+	-moz-box-shadow: inset 0 -1px #b2b2b2, 0 1px rgba(0,0,0,0.1);
+	-ms-box-shadow: inset 0 -1px #b2b2b2, 0 1px rgba(0,0,0,0.1);
+	-o-box-shadow: inset 0 -1px #b2b2b2, 0 1px rgba(0,0,0,0.1);
+	box-shadow: inset 0 -1px #b2b2b2, 0 1px rgba(0,0,0,0.1);
+}
+
+body > aside {
+	background-color: #000000;
+	color: #669ac9;
+	font-size: 1.4em;
+}
+
+section .list li {
+  background: #FFFFFF;
+  font-weight: 300;
+}
+section .list li:not(.anchor) {
+  border-bottom: inset 1px #cfcfcf;
+}
+section .list li.color {
+  -webkit-box-shadow: inset 4px 0 #f4f4f4;
+  -moz-box-shadow: inset 4px 0 #f4f4f4;
+  -ms-box-shadow: inset 4px 0 #f4f4f4;
+  -o-box-shadow: inset 4px 0 #f4f4f4;
+  box-shadow: inset 4px 0 #f4f4f4;
+}
+
+#map { 
+	width: 100%;
+	height:10em;
+	/* position:absolute; top:45px; bottom:0; width:100%; */
+}
+
+.leaflet-marker-pane img {
+	background: url('../../img/pin-blue-bg.png');
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+
+
+/*
+ * End from lungo theme.
+ */
+
+body > aside > header > nav > img { height:19px; }
+body > aside > header > nav.on-left { margin-left: .7em; }
+body > aside > header > nav.on-right { margin-right: .7em; }
+
+body > section > header { background-color: #000000; }
+body > section > header > nav.on-left { margin-left: 12px; }
+body > section > header > nav.on-right { margin-right: 12px; }
+body > section > header > nav > img { height: 22px; }
+
+body > section > footer { background-color: #f9f9f9; }
+body > section > footer {
+	-webkit-box-shadow: 0 -1px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0 -1px rgba(0,0,0,0.1);
+	-ms-box-shadow: 0 -1px rgba(0,0,0,0.1);
+	-o-box-shadow: 0 -1px rgba(0,0,0,0.1);
+	box-shadow: 0 -1px rgba(0,0,0,0.1);
+}
+footer nav a { color:#a1a1a1;font-size:.8em; }
+footer nav a .active  { color: #669bcf; }
+footer nav a.left  { display:block;padding:0 0 0 .7em;height:46px;text-align:left; }
+footer nav a.right { display:block;padding:0 .7em 0 0;height:46px;text-align:right; }
+
+body > section#main > article { background-color: #000000; }
+
+body > section > article > div.splash { text-align:center;margin-top:60px; }
+body > section > article > div > img.splash.logo { width:90%; }
+body > section > article > div > div.splash.subtitle { margin-left:30px; width:90%; text-align:right; font-size:1.2em; }
+body > section > article > div > a > img.splash.connect { margin-top:60px; width:90%; }
+body > section > article > div > div.splash.privacy { margin-top:50px; margin-left:auto; margin-right:auto; width:90%; text-align:center; }
+body > section > article > div.splash > div.splash.links { margin-top:40px; margin-left:auto; margin-right:auto; width:90%; text-align:center; font-size:1.1em; }
+body > section > article > div.splash > div.splash.links > a.link { color:#477ca6; }
+
+body > section.signup > article { background-color: #e5e5e5; }
+body > section.signup > article > div > img.userimg { width:116px; }
+body > section.signup > article > div.signup-form { text-align:center;margin-top:25px; }
+body > section.signup > article > div > fieldset { padding: .7em .5em; margin-left:20px; margin-right:20px; }
+body > section.signup > article > div > fieldset > img.formlabel { display: inline; width: 24px; }
+body > section.signup > article > div > fieldset > input[type="text"] { width:85%;}
+body > section.signup > article > div > fieldset > input[type="email"] { width:85%;}
+body > section.signup > article > div > fieldset > input[type="password"] { width:85%;}
+
+body > section#walkthrough-share { background: url('../../img/bg_walkthrough1.jpg'); background-size: 100%; }
+body > section#walkthrough-keep { background: url('../../img/bg_walkthrough2.jpg'); background-size: 100%; }
+body > section#walkthrough-remember { background: url('../../img/bg_walkthrough3.jpg'); background-size: 100%; }
+
+body > section.moments > header { background-color: #000000; min-height:54px; }
+body > section.moments > header > nav > img { height: 25px; }
+body > section.moments > header > nav.padleft { margin-left: 50px; }
+
+body > section.home > article { background-color: #000000; }
+body > section.home > article > div.instructions { font-size:1.6em; text-align:center; margin-top:100px; padding-left:2.0em; padding-right:2.0em; }
+body > section.home > article > div.instructions-2 { font-size:1.6em; text-align:center; margin-top:.5em; padding-left:2.1em; padding-right:2.1em; }
+body > section.home > article > div.day-header { background-color: #FFFFFF;min-height:24px; }
+body > section.home > article > div.day-header > div.day-name { color: #ff679b; font-size:.95em; margin-top:.3em; margin-left:.7em; }
+body > section.home > article > div.day-header > div.day-alarm { margin-right:.7em; }
+body > section.home > article > div.day-header > div.day-alarm > img { height: 18px; margin-right:.7em; }
+body > section.home > article > div.add-moment-button { text-align:center; margin-top:1em; }
+body > section.home > article > div.add-moment-button img { height: 126px; }
+
+body > section > article.moments { background-color:#FFFFFF; color:#4e4d52; }
+body > section > article.moments > div.profile-img { margin-left:.7em; margin-top:.7em; }
+body > section > article.moments > div.profile-detail { margin-left:.7em; margin-top:.7em; text-align:left; }
+body > section > article.moments > div.profile-detail > span.username { font-size: 1.4em; }
+body > section > article.moments > div.profile-detail > span.userloc { font-size: .8em; }
+
+body > section > article.moments > div.user-stats { clear:both; overflow:auto; width:100%; border-top:1px solid #dadada; border-bottom:1px solid #dadada; margin:0; padding:0; }
+body > section > article.moments > div.user-stats > div.user-stats-section { float:left; text-align:center; width:33%; border-right:1px solid #dadada; padding:.6em 0; }
+body > section > article.moments > div.user-stats > div.user-stats-section.last { border-right:none; }
+body > section > article.moments > div.user-stats > div.user-stats-section > span.user-stat-title { font-size:1em; }
+body > section > article.moments > div.user-stats > div.user-stats-section > span.user-stat-stat { font-size:1.1em; font-weight:bold; color:#f9708c; }
+
+body > section > article.moments div.moment-item { margin:0; padding:0; border-bottom: 1px solid #eeeeee; }
+body > section > article.moments div.moment-item > div.moment-item-header { width:100%; margin:.7em 0px .7em 0px; padding:0; margin-bottom: 0; }
+body > section > article.moments div.moment-item > div.moment-item-header > div.moment-header { padding-top:.1em; }
+body > section > article.moments div.moment-item > div.moment-item-header > div.moment-header > span.moment-title { display:block; color:#656565; font-size:1.15em; }
+body > section > article.moments div.moment-item > div.moment-item-header > div.moment-header > span.moment-location { display:block; width:300px; color:#999999; font-size:.85em; }
+body > section > article.moments div.moment-item > div.moment-image { clear:both; width:100%; margin-top: .2em; }
+body > section > article.moments div.moment-item > div.moment-image.one-image  { display:inline-block; width:100%; }
+body > section > article.moments div.moment-item > div.moment-image.one-half   { display:inline-block; width:50%; }
+body > section > article.moments div.moment-item > div.moment-image.one-third  { display:inline-block; width:32%; margin-right:1px; }
+body > section > article.moments div.moment-item > div.moment-image.one-fourth { display:inline-block; width:24%; margin-right:1px; }
+body > section > article.moments div.moment-item > div.moment-image img { width:100%; }
+body > section > article.moments > div.moment-day { display:inline-block; clear:both; width:100%; border-top:1px solid #dadada; border-bottom:1px solid #dadada; margin:0; }
+body > section > article.moments .moment-description { clear:both; display:block; padding: .4em .7em; font-size:1.0em; }
+body > section > article.moments .moment-datetime { clear:both; text-transform:uppercase; display:block; padding: .4em .7em; font-size:.88em; color: #999999;}
+
+body > section#settings { background-color:#e5e5e5; }
+body > section#settings > article#settings-article { background-color:#e5e5e5; }
+body > section#settings form fieldset,
+body > section#settings .form fieldset { background:none; }
+body > section#settings input { background:#FFFFFF; padding:.7em; }
+body > section#settings label { display:inline-block; width:80%; padding-left:.7em; color:#cccccc; }
+body > section#settings > article > div.signup-form { text-align:center;margin-top:25px; }
+body > section#settings > article > div > fieldset { padding: .7em .5em; margin-left:20px; margin-right:20px; }
+body > section#settings > article > div > fieldset > img.formlabel { display: inline; width: 24px; }
+body > section#settings > article > div > fieldset > input[type="text"] { width:100%;}
+body > section#settings .form fieldset label { margin:0; }
+body > section#settings .form fieldset input { margin:0; }
+body > section#settings > article > div > fieldset.centered { text-align: center; }
+body > section#settings > article > div > fieldset > label.dark { color: #666666; font-weight:bold; }
+body > section#settings fieldset.centered label { display: inline; }
+body > section#settings fieldset.fieldsection label { width: 100%; }
+body > section#settings fieldset.fieldsection { border-top: 1px solid #bbbbbb; }
+body > section#settings label.dark { color: #666666;}
+
+body > section.editmoment > article { background-color: #e5e5e5; padding-bottom:125px; }
+body > section.editmoment > article > div > img.userimg { width:116px; }
+body > section.editmoment > article > div.moment-form { margin-top:25px; }
+body > section.editmoment > article > div > fieldset { padding: .7em .5em; margin-left:20px; margin-right:20px; }
+body > section.editmoment > article > div > fieldset img.formlabel { display: inline; width: 24px; }
+body > section.editmoment > article > div > fieldset input[type="text"] { width:85%; }
+body > section.editmoment > article > div > fieldset select option { color:#9a9a9a; }
+body > section.editmoment > article > div > fieldset button { text-align:left; color:#9a9a9a; padding:0; margin:0; }
+
+body > section.optionselect > article { background-color: #e5e5e5; }
+body > section.optionselect fieldset { background:none; border:none; }
+body > section.optionselect fieldset button { padding:0 .7em; margin:2px .7em; text-align:left; background-color: #FFFFFF; color:#9a9a9a; }
+body > section.optionselect fieldset button.light { background-color:#FFFFFF; }
+body > section.optionselect fieldset button.dark { background-color:#F6F6F6; color:#909090;}
+
+article#select-contacts-article { background-color: #e5e5e5; }
+ul#select-contacts-list { padding:0 .7em; margin:2px .7em; }
+ul#select-contacts-list > li { background-color: #FFFFFF; }
+ul#select-contacts-list > li .icon { float:right; position:absolute; left:auto; color:#f07488; }
+ul#select-contacts-list > li.selected { background-color: #dadada; }
+
+body > section#add-moment-location fieldset { background:none; border:none; }
+input#location-searchbox {
+	padding:.4em .4em .4em 2.4em; 
+	width:85%; 
+	margin-left:.7em; 
+	margin-right:.7em; 
+	background-color:#FFFFFF; 
+	background-image:url('../../img/search-icon.png'); 
+	background-size:38px auto; 
+	background-repeat:no-repeat;
+}
+img#powered-by-4sq { width:50%; margin-top:.4em; }
+
+article .button.anchor:not(.icon) .icon, article button.anchor:not(.icon) .icon { float:right; position:absolute; left:auto; color:#f07488; }
+
+article button.anchor, article .button.anchor { width: 94%; }
+body > section.optionselect .form fieldset .icon { top:auto; }
+
+div.num-collaborations {
+	display:inline;
+	padding:.2em;
+	border:1px solid #f9708c;
+	font-size:.8em;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+}
+
+div.num-collaborations > span.num {
+	color: #f9708c;
+}
+
+.hilite {
+	color: #6699cc;
+	font-weight: bold;
+}
+
+.clearfix {
+	font-size: .01em;
+	clear: both;
+}
+
+/* Hidden file upload form */
+.fileupload {
+	width: 100%;
+    height: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.fileupload input {
+    position: absolute;
+    top: 0;
+    right: 0; 
+    cursor: pointer;
+    opacity: 0.0;
+    font-size: 300px; 
+    height: 100px;
+}
+/* End Hidden file upload form */
+
+/* Global Mods */
+div.user-avatar { float:left; overflow:auto; margin-right:.7em; margin-bottom:.5em; background: #fff; height:60px; width:60px; padding:2px; border-radius: 50%; }
+div.user-avatar > img { display: block; width:100%; border:0; margin:0; border-radius:50%; }
+div.avatar-tiny { width:38px; height:38px; }
+div.avatar-small { width:50px; height:50px; }
+.avatar-medium { width:80px; height:80px; }
+div.avatar-large { width:100px; height:100px; }
+.avatar-shadow { box-shadow: 0 .15em .2em 0 #999; }
+
+.console {
+	background: #292f34;
+	color: white;
+	font-size: 1.0em;
+	text-align: center;
+}
+
+li {
+	padding-top: 128px !important;
+	padding-bottom: 128px !important;
+	overflow: auto;
+}
+
+#touchevents .list li:not(.anchor) {
+	padding: 64px 8px;
+}
+
+#scroll h1 {
+	line-height: 44px;
+	background: black;
+	color: white;
+	text-indent: 10px;
+}
+
+#scroll img {
+	min-width: 256px;
+	min-height: 128px;
+	background: #333;
+}
+#scroll .anchor img {
+	width: 100%;
+	margin-bottom: 4px;
+}
+#scroll .horizontal img {
+	height: 100%;
+	margin-right: 4px;
+}
