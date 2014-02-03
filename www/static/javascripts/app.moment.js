@@ -113,8 +113,14 @@ App.moment = function() {
 									//console.log(_this);
 									_this.details.images.push(results.rows.item(j).data64);
 								}
+								if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
+									return _this.renderMonthYearMoment();
+								}
 								return _this.renderMoment(placement);
 							} else {
+								if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
+									return false;
+								}
 								return _this.renderMoment(placement);
 							}
 						},
@@ -124,12 +130,50 @@ App.moment = function() {
 			);
 		},
 
-		renderMoment: function(placement) {
-			// Need to add this to moment. Work in progress.
-			// Lungo.dom(".moment-header").each(function() { this.addEventListener("click", function(event) {if (Lungo.dom(event.target)) { alert(Lungo.dom(event.target)); } else { alert("Didn't work."); } }) });
-
+		renderMonthYearMoment: function() {
 			console.log("Running renderMoment.");
-			//console.log(JSON.stringify(this.details));
+			var _this = this;
+			var imgdiv_class = "month-year";
+
+			// Add images to moment.
+			for (var img = 0; img < this.details.images.length; img++) {
+				var img_src;
+				if (this.details.images[img].substr(0, 4) === "data") {
+					img_src = this.details.images[img]
+				} else {
+					img_src = App.config.image_prefix + this.details.images[img];
+				}
+				// Create div to hold moment image.
+				var moment_imgdiv = document.createElement("div");
+				Lungo.dom(moment_imgdiv).addClass("moment-image");
+				Lungo.dom(moment_imgdiv).addClass(imgdiv_class);
+				Lungo.dom(moment_imgdiv).data("momentid", this.details.api_id);
+
+				// Add action for tap.
+				Lungo.dom(moment_imgdiv).tap(function() {
+					var chosen_moment = new App.moment();
+					chosen_moment.domnode = "#one-moment-article-container";
+					Lungo.dom(chosen_moment.domnode).html("");
+					App.database.getMoment(Lungo.dom(this).data("momentid"), chosen_moment);
+					Lungo.Router.section("one-moment");
+				});
+
+				// Create image.
+				var moment_imgimg = document.createElement("img");
+				Lungo.dom(moment_imgimg).attr("id", "moment-" + this.details.moment_id);
+				Lungo.dom(moment_imgimg).attr("src", img_src);
+				// Add image to div.
+				Lungo.dom(moment_imgdiv).append(moment_imgimg);
+				// Add div to article.
+				Lungo.dom(_this.domnode).append(moment_imgdiv);
+				delete moment_imgdiv;
+				delete moment_imgimg;
+			}
+
+		},
+
+		renderMoment: function(placement) {
+			console.log("Running renderMoment.");
 			var _this = this;
 			var imgdiv_class = "";
 			if (this.details.images != undefined) {

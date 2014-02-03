@@ -329,6 +329,18 @@ Lungo.Events.init({
 		rediscovr.mapping.addMap();
 	},
 
+	'load article#moments-years-article': function(event) {
+		alert("Loaded Years");
+		var m = new App.moments();
+		m.getMomentsYears();
+	},
+
+	'load article#moments-months-article': function(event) {
+		alert("Loaded Months");
+		var m = new App.moments();
+		m.getMomentsYears();
+	},
+
 	'tap #select-contacts-list li': function() {
 		if (Lungo.dom(this).hasClass('selected')) {
 			Lungo.dom(this).removeClass('selected');
