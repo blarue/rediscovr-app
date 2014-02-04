@@ -173,7 +173,7 @@ App.user = function() {
 				this.details.current_user = 1;
 				App.database.addUser(this.details);
 					// Do something to show user added.
-				Lungo.Router.section("home");
+				Lungo.Router.section("walkthrough-share");
 			}
 		},
 

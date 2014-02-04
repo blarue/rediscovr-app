@@ -115,9 +115,10 @@ body > section.signup > article > div > fieldset > input[type="text"] { width:85
 body > section.signup > article > div > fieldset > input[type="email"] { width:85%;}
 body > section.signup > article > div > fieldset > input[type="password"] { width:85%;}
 
-body > section#walkthrough-share { background: url('../../img/bg_walkthrough1.jpg'); background-size: 100%; }
-body > section#walkthrough-keep { background: url('../../img/bg_walkthrough2.jpg'); background-size: 100%; }
-body > section#walkthrough-remember { background: url('../../img/bg_walkthrough3.jpg'); background-size: 100%; }
+body > section#walkthrough-share { background: url('../../img/04 - Walkthrough1.jpg'); background-size: 100%; }
+body > section#walkthrough-keep { background: url('../../img/05 - Walkthrough2.jpg'); background-size: 100%; }
+body > section#walkthrough-retain { background: url('../../img/06 - Walkthrough3.jpg'); background-size: 100%; }
+body > section#walkthrough-remember { background: url('../../img/07 - Walkthrough4.jpg'); background-size: 100%; }
 
 body > section.moments > header { background-color: #000000; min-height:54px; }
 body > section.moments > header > nav > img { height: 25px; }
