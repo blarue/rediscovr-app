@@ -79,16 +79,6 @@ function ValidationSignForm()
 	}else{
 		$("#err_msg").hide(200);
 	}
-
-	var phone =$("#signup-phone").val();
-	if (phone==null || phone=="")
-	{
-		$("#err_msg").html("phone number must be filled out");
-		$("#err_msg").show(500);
-		return false;
-	}else{
-		$("#err_msg").hide(200);
-	}
     
     return true;
 }
