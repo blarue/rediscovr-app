@@ -89,8 +89,8 @@ function ValidationSignForm()
 	}else{
 		$("#err_msg").hide(200);
 	}
-
-	return true;
+    
+    return true;
 }
 
 function looksLikeMail(str) {

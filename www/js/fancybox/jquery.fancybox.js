@@ -95,11 +95,11 @@
 
 		defaults: {
 			theme     : 'default',          // 'default', dark', 'light'
-			padding   : 15,					// space inside box, around content
-			margin    : [30, 55, 30, 55],	// space between viewport and the box
-			loop      : true,               // Continuous gallery item loop
+			padding   : 0,					// space inside box, around content
+			margin    : [0, 0, 0, 0],	// space between viewport and the box
+			loop      : false,               // Continuous gallery item loop
 
-			arrows    : true,
+            arrows    : false,
 			closeBtn  : true,
 			expander  : !isTouch,
 
@@ -118,12 +118,12 @@
 			helpers : {},				// list of enabled helpers
 
 			// Dimensions
-			width       : 800,
+			width       : 320,
 			height      : 450,
-			minWidth    : 100,
-			minHeight   : 100,
-			maxWidth    : 99999,
-			maxHeight   : 99999,
+			minWidth    : 310,
+			minHeight   : 450,
+			maxWidth    : 320,
+			maxHeight   : 450,
 			aspectRatio : false,
 			fitToView   : true,
 
@@ -180,8 +180,8 @@
 			},
 
 			iframe : {
-				scrolling : 'auto',
-				preload   : true
+				scrolling : 'invisible',
+				preload   : false
 			},
 
 			swf : {
@@ -221,8 +221,8 @@
 				iframe   : '<iframe id="fancybox-frame{rnd}" name="fancybox-frame{rnd}" class="fancybox-iframe" frameborder="0" vspace="0" hspace="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen allowtransparency="true"></iframe>',
 				error    : '<p class="fancybox-error">{{ERROR}}</p>',
 				closeBtn : '<a title="{{CLOSE}}" class="fancybox-close" href="javascript:;"></a>',
-				next     : '<a title="{{NEXT}}" class="fancybox-nav fancybox-next" href="javascript:;"><span></span></a>',
-				prev     : '<a title="{{PREV}}" class="fancybox-nav fancybox-prev" href="javascript:;"><span></span></a>'
+				next     : '',
+				prev     : ''
 			},
 
 			// Localization
@@ -261,8 +261,8 @@
 			locked        : true,
 			preload       : 3,			// Number of gallery images to preload
 			mouseWheel    : true,		// Enable or disable mousewheel support
-			scrolling     : 'auto',     // 'yes', 'no', any valid value for CSS "overflow" property
-			scrollOutside : true		// If trye, fancyBox will try to set scrollbars outside the content
+			scrolling     : 'invisible',     // 'yes', 'no', any valid value for CSS "overflow" property
+			scrollOutside : false		// If trye, fancyBox will try to set scrollbars outside the content
 		},
 
 		// Current state
@@ -364,20 +364,20 @@
 
 				if (type === 'image' || type === 'swf') {
 					defaults.autoWidth = defaults.autoHeight = false;
-					defaults.scrolling = 'visible';
+				//	defaults.scrolling = 'visible';
 				}
 
 				if (type === 'image') {
-					defaults.aspectRatio = true;
+				//	defaults.aspectRatio = true;
 				}
 
 				if (type === 'iframe') {
 					defaults.autoWidth = false;
-					defaults.scrolling = isTouch ? 'scroll' : 'visible';
+				//	defaults.scrolling = isTouch ? 'scroll' : 'visible';
 				}
 
 				if (items.length < 2) {
-					defaults.margin = 30;
+				//	defaults.margin = 30;
 				}
 
 				item = $.extend(true, {}, defaults, item);
@@ -1362,13 +1362,12 @@
 
 			// Calculations for the content
 			minWidth  = getScalar( isPercentage(minWidth) ? getScalar(minWidth, 'w') - wSpace : minWidth );
-			maxWidth  = getScalar( isPercentage(maxWidth) ? getScalar(maxWidth, 'w') - wSpace : maxWidth );
-
+            maxWidth  = getScalar( isPercentage(maxWidth) ? getScalar(maxWidth, 'w') - wSpace : maxWidth );
 			minHeight = getScalar( isPercentage(minHeight) ? getScalar(minHeight, 'h') - hSpace : minHeight );
-			maxHeight = getScalar( isPercentage(maxHeight) ? getScalar(maxHeight, 'h') - hSpace : maxHeight );
+            maxHeight = getScalar( isPercentage(maxHeight) ? getScalar(maxHeight, 'h') - hSpace : maxHeight );
 
 			origWidth  = getScalar( isPercentage(width)  ? getScalar(width,  'w') - wSpace : width  );
-			origHeight = getScalar( isPercentage(height) ? getScalar(height, 'h') - hSpace : height );
+             origHeight = 450;//getScalar( isPercentage(height) ? getScalar(height, 'h') - hSpace : height );
 
 			if (current.fitToView) {
 				maxWidth  = Math.min(maxWidth,  getScalar('100%', 'w') - wSpace );
@@ -2327,7 +2326,7 @@
 
 		F.lockMargin = (w2 - w1);
 
-		$("<style type='text/css'>.fancybox-margin{margin-right:" + F.lockMargin + "px;}</style>").appendTo("head");
+		//$("<style type='text/css'>.fancybox-margin{margin-right:" + F.lockMargin + "px;}</style>").appendTo("head");
 
 		// Auto start
 		if ($("script[src*='jquery.fancybox.js']").attr('src').match(/autorun/) ){
