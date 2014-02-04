@@ -138,7 +138,7 @@ App.moment = function() {
 			if (this.domnode == "#moments-months-article") {
 				// Process date format. Uses moment.js (no relation)
 				var divdom = this.domnode + momentjs(this.details.date).format("-YYYYMM");
-				var divdom_text = momentjs(this.details.date).format("MMM YYYY");
+				var divdom_text = momentjs(this.details.date).format("MMMM YYYY").toUpperCase();
 			} else if (this.domnode == "#moments-years-article") {
 				// Process date format. Uses moment.js (no relation)
 				var divdom = this.domnode + momentjs(this.details.date).format("-YYYY");
