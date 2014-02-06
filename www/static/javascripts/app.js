@@ -185,7 +185,7 @@ Lungo.Events.init({
 			Lungo.dom("#profile-user-image").attr("src", App.config.image_prefix + App.current_user.details.user_image);
 		}
 		if (App.current_user.details.firstName != undefined) {
-			username += App.current_user.details.firstName;
+			username += App.current_user.details.firstName + "  ";
 		}
 		if (App.current_user.details.lastName != undefined) {
 			username += App.current_user.details.lastName;
@@ -206,7 +206,7 @@ Lungo.Events.init({
 		db.db.transaction(
 			function(transaction) {
 				transaction.executeSql(query, param, 
-					function(transaction, results) { Lungo.dom("#profile-stats-allmoments").text(results.rows.item(0).allmoments); }, 
+					function(transaction, results) { Lungo.dom("#profile-stats-allmoments").text(results.rows.item(0).allmoments); },
 					function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
 				);
 			}
@@ -214,7 +214,9 @@ Lungo.Events.init({
 		delete db;
 		Lungo.dom("#profile-stats-private").text("0");
 		Lungo.dom("#profile-stats-collaborations").text("0");
-
+        
+        Lungo.dom(".moment-item").remove();
+        
 		var m = new App.moments();
 		m.getMoments("#profile-article");
 	},
