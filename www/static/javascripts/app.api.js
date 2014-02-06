@@ -53,6 +53,18 @@ App.api = function() {
 			this.uploadImages(ref);
 		},
 
+		editMoment: function(ref) {
+			//if (ref.validate() === true) {
+				console.log("Validates. " + config.url + "moment  " + JSON.stringify(ref.details));
+				$$.put(config.url + "moment", JSON.stringify(ref.details), function(data) {
+					// ref.handleAdd(data);
+					console.log("Success");
+				}, "json");
+			// } else {
+			// 	console.log("Moment doesn't validate.");
+			// }
+		},
+
 		handleAddImages: function(ref) {
 			if (ref.validate() === true) {
 				console.log("Validates. " + config.url + "moment  " + JSON.stringify(ref.details));

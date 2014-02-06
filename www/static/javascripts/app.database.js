@@ -93,7 +93,7 @@ App.database = {
 
 		if (d.id != undefined) {
 			var data_array = [d.id, d.email, d.first_name, d.last_name, d.city, d.state, d.country, d.user_image, d.current_user];
-			var query = "INSERT OR IGNORE INTO `user` (`id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
+			var query = "INSERT OR IGNORE INTO `user` (`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		} else {
 			var data_array = [d.email, d.first_name, d.last_name, d.city, d.state, d.country, d.image, d.current_user];
@@ -200,10 +200,10 @@ App.database = {
 			}
 		}
 		var _query = "SELECT `moment`.*, \
-				`user`.`id` AS `user_id`, `user`.`first_name`, `user`.`last_name`, \
+				`user`.`user_id` AS `user_id`, `user`.`first_name`, `user`.`last_name`, \
 				`user`.`email`, `user`.`city`, `user`.`state`, `user`.`user_image` \
 			FROM `moment` \
-			JOIN `user` ON `user`.`id` = `moment`.`user` " + _where + _order + _limit;
+			JOIN `user` ON `user`.`user_id` = `moment`.`user` " + _where + _order + _limit;
 
 		// Find moments
 		this.db.transaction(
@@ -248,13 +248,92 @@ App.database = {
 		);
 	},
 
+	getMomentForEdit: function(moment_id, ref) {
+		var _this = this;
+		console.log("Running DB getMoment for moment_id: " + moment_id);
+		var _query = "SELECT `moment`.*, \
+				`user`.`user_id` AS `user_id`, `user`.`first_name`, `user`.`last_name`, \
+				`user`.`email`, `user`.`city`, `user`.`state`, `user`.`user_image` \
+			FROM `moment` \
+			JOIN `user` ON `user`.`user_id` = `moment`.`user` \
+			WHERE `moment`.`moment_id` = ? \
+			LIMIT 1 ";
+		console.log(_query);
+		// Find moments
+		this.db.transaction(function(transaction){transaction.executeSql(_query, [moment_id], 
+			function(transaction, results) {
+				// Loop through moments.
+				if (results.rows != undefined && results.rows.length) {
+					var m = results.rows.item(0);
+					//Lungo.dom(".selectedphotos").hide();
+					//Lungo.dom("#add-moment-selected-images").html("");
+					Lungo.dom("#add-moment > header > h1.title").text("Edit Moment");
+					Lungo.dom("#moment-form-post-button").text("Edit");
+					Lungo.dom("#moment-form-title").val(m.title);
+					Lungo.dom("#moment-form-desc").val(m.text);
+					Lungo.dom("#moment-form-date").val(momentjs(m.date).format("YYYY-MM-DD"));
+					Lungo.dom("#moment-form-time").val(momentjs(m.date).format("HH:mm:ss"));
+					Lungo.dom("#moment-form-location").val(m.location);
+					Lungo.dom("#moment-form-reminder-frequency").text(m.reminder);
+					Lungo.dom("#moment-form-reminder-end").text(m.reminder_end);
+					Lungo.dom("#moment-form-moment-id").val(moment_id);
+					var _q_img = "SELECT `i`.* \
+						FROM `image` `i` \
+						JOIN `moment_image` `mi` ON `i`.`id` = `mi`.`image_id` \
+						JOIN `moment` `m` ON `mi`.`moment_id` = `m`.`id` \
+						WHERE `m`.`moment_id` = ?";
+					console.log(_q_img);
+					_this.db.transaction(function(transaction){transaction.executeSql(_q_img, [moment_id],
+						function(transaction, results) {
+							console.log(moment_id);
+							if (results.rows != undefined && results.rows.length) {
+								Lungo.dom("#add-moment-selected-images").html("");
+								for (var i = 0; i < results.rows.length; i++) {
+									var mimg = results.rows.item(i);
+									var chosen_image = "<img style=\"display:inline-block;width:70px;height:70px;border:1px solid #ddd;\" src=\"" + mimg.data64 + "\" />";
+									Lungo.dom("#add-moment-selected-images").append(chosen_image);
+									Lungo.dom(".selectedphotos").show();
+								}
+							}
+						}, App.database.errorHandler);
+					});
+
+					var _q_col = "SELECT `u`.* \
+						FROM `user` `u` \
+						JOIN `moment_user` `mu` ON `u`.`user_id` = `mu`.`user_id` \
+						WHERE `mu`.`moment_id` = ?";
+					console.log(_q_col);
+					var sel_col = "";
+					_this.db.transaction(function(transaction){transaction.executeSql(_q_col, [moment_id],
+						function(transaction, results) {
+							console.log(moment_id);
+							if (results.rows != undefined && results.rows.length) {
+								Lungo.dom("#add-moment-invite").html("");
+								for (var i = 0; i < results.rows.length; i++) {
+									var mcol = results.rows.item(i);
+									sel_col += mcol.first_name + " " + mcol.last_name + ", ";
+								}
+								Lungo.dom("#add-moment-invite").text(sel_col.substr(0, sel_col.length - 2));
+							}
+						}, App.database.errorHandler);
+					});
+					//Lungo.dom("#add-moment-invite").text("Invite Collaborators");
+					// jQuery? Why not..?
+					//$("#moment-form-upload-files").replaceWith($("#moment-form-upload-files").clone());
+					Lungo.Router.section("add-moment");
+				}
+			}, App.database.errorHandler);
+		});
+	},
+
+
 	getMoment: function(moment_id, ref) {
 		console.log("Running DB getMoment for moment_id: " + moment_id);
 		var _query = "SELECT `moment`.*, \
-				`user`.`id` AS `user_id`, `user`.`first_name`, `user`.`last_name`, \
+				`user`.`user_id` AS `user_id`, `user`.`first_name`, `user`.`last_name`, \
 				`user`.`email`, `user`.`city`, `user`.`state`, `user`.`user_image` \
 			FROM `moment` \
-			JOIN `user` ON `user`.`id` = `moment`.`user` \
+			JOIN `user` ON `user`.`user_id` = `moment`.`user` \
 			WHERE `moment`.`moment_id` = ? \
 			LIMIT 1 ";
 		console.log(_query);

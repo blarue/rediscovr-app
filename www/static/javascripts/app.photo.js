@@ -17,9 +17,31 @@ App.photo = {
 			Lungo.dom("#add-moment-selected-images").html("");
         	for (var i = 0; i < event.target.files.length; i++) {
         		myurl = url_tool.createObjectURL(event.target.files[i]);
-				chosen_image = "<img style=\"display:inline-block;width:40px;height:40px;border:1px solid #FFFFFF;\" src=\"" + myurl + "\" />";
-				Lungo.dom("#add-moment-selected-images").append(chosen_image);	
+        		chosen_image = document.createElement("img");
+        		Lungo.dom(chosen_image).attr("style", "display:inline-block;width:70px;height:70px;border:1px solid #FFFFFF;");
+        		Lungo.dom(chosen_image).attr("src", myurl);
+				// Lungo.dom(chosen_image).tap(function(e) {
+				// 	var _this = this;
+				// 	Lungo.Notification.confirm({
+				// 		icon: null,
+				// 		title: 'Are you sure you want to remove this photo?',
+				// 		description: '',
+				// 		accept: {
+				// 			icon: 'checkmark',
+				// 			label: 'Accept',
+				// 			callback: function(){ Lungo.dom(_this).hide(); }
+				// 		},
+				// 		cancel: {
+				// 			icon: 'close',
+				// 			label: 'Cancel',
+				// 			callback: function(){ alert("No!"); }
+				// 		}
+				// 	});
+				// });
+				//chosen_image = "<img style=\"display:inline-block;width:70px;height:70px;border:1px solid #FFFFFF;\" src=\"" + myurl + "\" />";
+				Lungo.dom("#add-moment-selected-images").append(chosen_image);
         	}
+        	Lungo.dom(".selectedphotos").show();
         	delete myurl, url_tool, chosen_image;
         }
 	},

@@ -13,8 +13,40 @@ App.moment = function() {
 
 		errors: [],
 
+		editMoment: function() {
+			console.log("Running editMoment from app.moment.js");
+			var _this = this;
+			// Start DB.
+			var DB = new App.db();
+			DB.open();
+			this.details.creator = App.current_user.details;
+			this.details.creator.id = App.current_user.details.user_id;
+
+			this.gatherDetails();
+			var m = this.details;
+			m.moment_id = Lungo.dom("#moment-form-moment-id").val();
+			var m_data_array = [m.title, m.text, m.date, m.location, m.moment_id];
+			var m_query = "UPDATE `moment` SET `title` = ?, `text` = ?, `date` = ?, `location` = ? \
+				WHERE `moment_id` = ?";
+			console.log(m_query + " " + m_data_array);
+			DB.db.transaction(
+				function(transaction) {
+					transaction.executeSql(m_query, m_data_array, 
+						function(transaction, results) {
+							console.log("results: " + results);
+							var api = new App.api();
+							api.editMoment(_this);
+						},
+						function(transaction, errors) {
+							console.log("errors: " + errors);
+						}
+					);
+				}
+			);
+		},
+
 		addMoment: function() {
-			alert("Running addMoment from app.moment.js");
+			console.log("Running addMoment from app.moment.js");
 			var _this = this;
 			// Start DB.
 			var DB = new App.db();
@@ -229,6 +261,10 @@ App.moment = function() {
 				chosen_moment.domnode = "#one-moment-article-container";
 				Lungo.dom(chosen_moment.domnode).html("");
 				App.database.getMoment(Lungo.dom(this).data("momentid"), chosen_moment);
+				var moment_id = Lungo.dom(this).data("momentid");
+				Lungo.dom("#moment-edit-button").tap(function() {
+					App.database.getMomentForEdit(moment_id);
+				});
 				Lungo.Router.section("one-moment");
 			});
 
@@ -350,7 +386,7 @@ App.moment = function() {
 			c.current_user = (c.id == App.current_user.details.user_id) ? 1 : 0;
 			var c_data_array = [c.id, c.email, c.first_name, c.last_name, c.city, c.state, c.country, c.user_image, c.current_user];
 			var c_query = "INSERT OR IGNORE INTO `user` \
-						(`id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
+						(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 			console.log(c_data_array + " " + c_query);
 			DB.db.transaction(
@@ -393,10 +429,11 @@ App.moment = function() {
 			if (_this.details.collaborators != undefined && _this.details.collaborators.length) {
 				for (var j = 0; j < _this.details.collaborators.length; j++) {
 					var cc = _this.details.collaborators[j];
-					var cc_data_array = [cc.id, cc.email, cc.first_name, cc.last_name, cc.city, cc.state, cc.country, cc.user_image, cc.current_user];
+					var cc_data_array = [cc.id, cc.email, (cc.first_name || ''), (cc.last_name || ''), (cc.city || ''), (cc.state || ''), (cc.country || ''), (cc.user_image || ''), 0];
 					var cc_query = "INSERT OR IGNORE INTO `user` \
-						(`id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
+						(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+					console.log(cc_query + cc_data_array);
 					DB.db.transaction(
 						function(transaction) {
 							transaction.executeSql(cc_query, cc_data_array, 
