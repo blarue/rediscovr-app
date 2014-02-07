@@ -237,13 +237,13 @@ Lungo.Events.init({
         );
                   
         var private_count = 0;
-        var param2 = [App.current_user.details.user_id];
-        var query2 = "SELECT COUNT(*) AS `private` FROM `moment` WHERE `user` = ?";
+        var param2 = 0;//[App.current_user.details.user_id];
+        var query2 = "SELECT COUNT(*) AS `allmoments` FROM `moment` WHERE `user` != ?";
         db.db.transaction(
               function(transaction) {
                    transaction.executeSql(query2, param2,
                         function(transaction, results) {
-                             private_count = results.rows.item(0).private - collaborations_count;
+                             private_count = results.rows.item(0).allmoments - collaborations_count;
                              Lungo.dom("#profile-stats-private").text(private_count);
                          },
                                                            function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
