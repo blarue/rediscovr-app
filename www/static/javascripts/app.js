@@ -111,12 +111,30 @@ Lungo.Events.init({
 	'load section#add-moment': function(event) {
 		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true
 
-		var default_date = momentjs().format("YYYY-MM-DD");
+		var d = new Date();
+		var mon = d.getMonth() + 1;
+		var day = d.getDate();
+		if (mon < 10) {
+			mon = "0" + mon;
+		}
+		if (day < 10) {
+			day = "0" + day;
+		}
+		var default_date = d.getFullYear() + "-" + mon + "-" + day;
 		Lungo.dom("#moment-form-date").val(default_date);
 
-		var default_time = momentjs().format("HH:mm:ss");
+		var hour = d.getHours();
+		var mins = d.getMinutes();
+		if (hour < 10) {
+			hour = "0" + hour;
+		}
+		if (mins < 10) {
+			mins = "0" + mins;
+		}
+		var default_time = hour + ":" + mins;
 		Lungo.dom("#moment-form-time").val(default_time);
 
+<<<<<<< HEAD
 		window.setTimeout(function() {
 			if (Lungo.dom("#moment-form-location").val() === "") {
 				console.log("Requesting GPS...");
@@ -142,12 +160,43 @@ Lungo.Events.init({
 								alert(JSON.stringify(data));
 							}
 						}, "json");
+=======
+		console.log("Requesting GPS...");
+		// We might want to go with this...
+		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true
+		navigator.geolocation.getCurrentPosition(
+			function(position) {
+				var url = "http://maps.googleapis.com/maps/api/geocode/json";
+				var req = {
+					latlng: position.coords.latitude + "," + position.coords.longitude,
+					sensor: "true"
+				}
+				//alert(url + $$.serializeParameters(req, "?"));
+				$$.get(url, req, function(data) {
+					if (data != undefined && data.results != undefined && data.status == "OK") {
+						Lungo.dom("#moment-form-location").val(data.results[0].formatted_address);
+					} else {
+						alert(JSON.stringify(data));
+>>>>>>> Select Reminder Page fix
 					}
-				);
+				}, "json");
 			}
-		}, 600);
+		);
 	},
+    'load section#add-moment-reminder-end': function(event) {
+        var d = new Date();
+          var mon = d.getMonth() + 1;
+          var day = d.getDate();
+          if (mon < 10) {
+              mon = "0" + mon;
+          }
+          if (day < 10) {
+              day = "0" + day;
+          }
+          var default_date = d.getFullYear() + "-" + mon + "-" + day;
+          Lungo.dom("#moment-reminder-end-date").val(default_date);
 
+    },
 	// List of people load event.
 	'load section#people': function(event) {
 		var c = new App.user();
@@ -369,6 +418,7 @@ Lungo.Events.init({
         );
 
         var private_count = 0;
+<<<<<<< HEAD
         var param2 = [0];//[App.current_user.details.user_id];
         var query2 = "SELECT COUNT(*) AS `collaboation` FROM `moment` WHERE `user` != ?";
         db.db.transaction(
@@ -382,6 +432,21 @@ Lungo.Events.init({
                 );
             }
         );
+=======
+                  var param2 = [0];//[App.current_user.details.user_id];
+        var query2 = "SELECT COUNT(*) AS `collaboation` FROM `moment` WHERE `user` != ?";
+        db.db.transaction(
+              function(transaction) {
+                   transaction.executeSql(query2, param2,
+                        function(transaction, results) {
+                             private_count = results.rows.item(0).collaboation - collaborations_count;
+                             Lungo.dom("#profile-stats-private").text(private_count);
+                         },
+                                                           function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
+                                                           );
+                                    }
+                                    );
+>>>>>>> Select Reminder Page fix
         delete db;
         // var private_count = my_moment_count - collaborations_count;
         //	Lungo.dom("#profile-stats-private").text(private_count);
@@ -405,23 +470,28 @@ Lungo.Events.init({
 
 	// Reminder end panel.
 	'tap #reminder-end-article button': function() {
-		Lungo.dom("#reminder-end-article button.dark").children(".icon").remove();
+	/*	Lungo.dom("#reminder-end-article button.dark").children(".icon").remove();
 		Lungo.dom("#reminder-end-article button.dark").toggleClass("dark").toggleClass("light");
 		Lungo.dom(this).toggleClass('dark');
 		Lungo.dom("#reminder-end-article button.dark").append("<span class='icon ok'></span>");
 		rediscovr.currentmoment.reminder_end = Lungo.dom(this).children('abbr').html();
-		Lungo.dom("#moment-form-reminder-end").text(rediscovr.currentmoment.reminder_end);
+		Lungo.dom("#moment-form-reminder-end").text(rediscovr.currentmoment.reminder_end); */
 	},
 
 	'tap #moment-form-post-button': function() {
 		rediscovr.currentmoment.curr_image = 0;
+<<<<<<< HEAD
 		//rediscovr.currentmoment.num_images = Lungo.dom("#moment-form-upload-files").get(0).files.length;
 		rediscovr.currentmoment.num_images = Lungo.dom("#add-moment-selected-images").children().length;
+=======
+		rediscovr.currentmoment.num_images = Lungo.dom("#moment-form-upload-files").get(0).files.length;
+>>>>>>> Select Reminder Page fix
 		rediscovr.currentmoment.image_list = [];
 
 		// Resize & Store images
 		var myurl, new_name, imgr;
 		var url_tool = window.webkitURL;
+<<<<<<< HEAD
 		var files = [];
 		for (var i = 0; i < Lungo.dom("#add-moment-selected-images").children().length; i++) {
 			var full_path = Lungo.dom("#add-moment-selected-images").children()[i].src;
@@ -529,6 +599,44 @@ Lungo.Events.init({
 				var m = new App.moment();
 				m.editMoment();
 			}
+=======
+		var files = Lungo.dom("#moment-form-upload-files").get(0).files;
+		for (var i = 0; i < files.length; i++) {
+			myurl = url_tool.createObjectURL(files[i]);
+			var new_name = App.generateUid('moment') + '.jpg';
+			console.log("new_name: " + new_name);
+			imgr = new App.image();
+			imgr.generateImageBlob(myurl, 4, function(d) {
+				console.log("There should be a blob.");
+				//console.log(d);
+				data_array = [new_name, 'moment', App.current_user.details.user_id, d, 0];
+				//console.log(data_array);
+				query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
+				var DB = new App.db();
+				DB.open();
+				DB.db.transaction(
+					function(transaction) {
+						transaction.executeSql(query, data_array, 
+							function(transaction, results) {
+								//console.log(results);
+								console.log("ImageID: " + results.insertId);
+								rediscovr.currentmoment.image_list.push({url_hash: new_name, image_id: results.insertId, d: d});
+							},
+							function(transaction, errors) {
+								console.log(errors);
+							}
+						);
+					}
+				);
+				rediscovr.currentmoment.curr_image++;
+				if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
+					console.log("Last image. Add moment.")
+					// Save moment.
+					var m = new App.moment();
+					m.addMoment();
+				}
+			});
+>>>>>>> Select Reminder Page fix
 		}
 	},
 
@@ -540,6 +648,7 @@ Lungo.Events.init({
 		rediscovr.mapping.addMap();
 	},
 
+<<<<<<< HEAD
 	'load article#moments-years-article': function(event) {
 		var m = new App.moments();
 		m.getMomentsYears();
@@ -573,6 +682,8 @@ Lungo.Events.init({
 	//	App.database.getMomentForEdit();
 	// },
 
+=======
+>>>>>>> Select Reminder Page fix
 	'tap #select-contacts-list li': function() {
 		if (Lungo.dom(this).hasClass('selected')) {
 			Lungo.dom(this).removeClass('selected');

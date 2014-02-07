@@ -15,6 +15,7 @@ App.photo = {
 
     getPics: function(event) {
         if (event.target.files.length) {
+<<<<<<< HEAD
             var chosen_image;
             var myurl;
             var url_tool = window.webkitURL;
@@ -94,6 +95,19 @@ App.photo = {
             Lungo.dom("#add-moment-image-collection").append("<span class=\"tag count\">" + Lungo.dom("#add-moment-selected-images").children().length + "</span>");
             Lungo.dom("#add-moment-file-upload").hide();
             delete myurl, url_tool, chosen_image;
+=======
+        	var chosen_image;
+        	var myurl;
+        	var url_tool = window.webkitURL;
+			// Empty any existing thumbs.
+			Lungo.dom("#add-moment-selected-images").html("");
+        	for (var i = 0; i < event.target.files.length; i++) {
+        		myurl = url_tool.createObjectURL(event.target.files[i]);
+				chosen_image = "<img style=\"display:inline-block;width:40px;height:40px;border:1px solid #FFFFFF;\" src=\"" + myurl + "\" />";
+				Lungo.dom("#add-moment-selected-images").append(chosen_image);	
+        	}
+        	delete myurl, url_tool, chosen_image;
+>>>>>>> Select Reminder Page fix
         }
     },
     getProfilePics: function(event) {

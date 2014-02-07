@@ -6,8 +6,6 @@ App.moments = function() {
 			since: null
 		},
 		domnode: "#moments-article",
-		months_domnode: "#moments-months-article",
-		years_domnode: "#moments-years-article",
 		errors: [],
 
 		getMoments: function(domnode) {
@@ -31,6 +29,7 @@ App.moments = function() {
 			api.getMoments(this);
 		},
 
+<<<<<<< HEAD
 		getCollaboratorsMoments: function(user_id, domnode) {
 			if (domnode !== null && domnode !== undefined) {
 				this.domnode = domnode;
@@ -61,6 +60,8 @@ App.moments = function() {
 			App.database.getMoments(null, 'date DESC', null, this);
 		},
 
+=======
+>>>>>>> Select Reminder Page fix
 		handleGet: function(data) {
 			if (data.server_time !== undefined) {
 				App.current_user.details.last_sync = data.server_time;

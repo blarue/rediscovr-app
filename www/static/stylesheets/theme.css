@@ -27,7 +27,6 @@ section > footer > nav > a:active,
 nav[data-control=groupbar] > a:active {
   color: #669bcf;
 }
-/*
 nav[data-control=groupbar] > a.active,
 nav[data-control=groupbar] > a:active {
   -webkit-box-shadow: inset 0 -0.3em #00afe3;
@@ -44,7 +43,7 @@ section > footer > nav > a:active {
   -o-box-shadow: inset 0 0.3em #00afe3;
   box-shadow: inset 0 0.3em #00afe3;
 }
-*/
+
 
 /* 
  * Start Tag from Lungo Theme

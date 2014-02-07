@@ -1,6 +1,6 @@
 <section id="add-moment" data-transition="slide" class="drag editmoment">
 	<header data-title="Add A Moment">
-		<nav id="add-moment-cancel" class="on-left arrow" data-view-section="back">
+		<nav class="on-left arrow" data-view-section="back">
 			<span>Cancel</span>
 		</nav>
 		<nav class="on-right">
@@ -9,13 +9,17 @@
 	</header>
 	<article id="add-moment-article" class="indenteds scroll">
 		<div class="moment-form form">
+<<<<<<< HEAD
 			<fieldset class="radius shadow selectedphotos" style="display:none;">
 				<div id="add-moment-image-collection" style="display:inline-block;margin:.3em auto;text-align:center;"></div>
 			</fieldset>
 			<fieldset class="radius shadow edittext">
+=======
+			<fieldset class="radius shadow">
+>>>>>>> Select Reminder Page fix
 				<input id="moment-form-title" type="text" placeholder="Title"/>
 			</fieldset>
-			<fieldset class="radius shadow edittext">
+			<fieldset class="radius shadow">
 				<textarea id="moment-form-desc" placeholder="Write a description..."></textarea>
 			</fieldset>
 			<fieldset class="radius shadow" style="padding:0;">
@@ -44,6 +48,7 @@
 					<!--<input id="moment-form-upload-files" type="file" accept="image/*|video/*;capture=camera" capture="camera" multiple="true"/> -->
 					<span style='color:#6c9dc6;'>Upload Image / Video</span>
 				</div>
+				<div id="add-moment-selected-images" style="margin-top:.3em;"></div>
 			</fieldset>
 <!--
 			<fieldset class="radius shadow">
@@ -61,9 +66,6 @@
 					<img src='img/user2-icon@2x.png' class="formlabel"/>
 					<span id="add-moment-invite" style='color:#6c9dc6;' data-view-section="add-moment-select-contacts">Invite Collaborators</span>
 				</div>
-			</fieldset>
-			<fieldset style="display:none;">
-				<input id="moment-form-moment-id" type="hidden" value=""/>
 			</fieldset>
 		</div>
 	</article>

@@ -14,12 +14,18 @@ App.moment = function() {
 		errors: [],
 		domnode: null,
 
+<<<<<<< HEAD
 		editMoment: function() {
 			console.log("Running editMoment from app.moment.js");
+=======
+		addMoment: function() {
+			alert("Running addMoment from app.moment.js");
+>>>>>>> Select Reminder Page fix
 			var _this = this;
 			// Start DB.
 			var DB = new App.db();
 			DB.open();
+<<<<<<< HEAD
 			this.details.creator = App.current_user.details;
 			this.details.creator.id = App.current_user.details.user_id;
 
@@ -30,11 +36,30 @@ App.moment = function() {
 			var m_query = "UPDATE `moment` SET `title` = ?, `text` = ?, `date` = ?, `location` = ? " +
 				"WHERE `moment_id` = ?";
 			console.log(m_query + " " + m_data_array);
+=======
+
+			this.details.creator = App.current_user.details;
+			this.details.creator.id = App.current_user.details.user_id;
+			this.details.images = [];
+
+			this.gatherDetails();
+			var m = this.details;
+			var m_data_array = [m.title, m.text, m.date, App.current_user.details.user_id, m.location];
+			var m_query = "INSERT OR IGNORE INTO `moment` \
+						(`title`, `text`, `date`, `user`, `location`) \
+						VALUES (?, ?, ?, ?, ?);";
+>>>>>>> Select Reminder Page fix
 			DB.db.transaction(
 				function(transaction) {
 					transaction.executeSql(m_query, m_data_array, 
 						function(transaction, results) {
+<<<<<<< HEAD
 							if (_this.details.collaborators !== undefined && _this.details.collaborators.length) {
+=======
+							_this.details.id = results.insertId;
+
+							if (_this.details.collaborators.length) {
+>>>>>>> Select Reminder Page fix
 								for (var j = 0; j < _this.details.collaborators.length; j++) {
 									var u = new App.user();
 									u.details.email = _this.details.collaborators[j].email;
@@ -201,14 +226,8 @@ App.moment = function() {
 									//console.log(_this);
 									_this.details.images.push(results.rows.item(j).name);
 								}
-								if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
-									return _this.renderMonthYearMoment();
-								}
 								return _this.renderMoment(placement);
 							} else {
-								if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
-									return false;
-								}
 								return _this.renderMoment(placement);
 							}
 						},
@@ -218,6 +237,7 @@ App.moment = function() {
 			);
 		},
 
+<<<<<<< HEAD
 		renderMonthYearMoment: function() {
 			console.log("Running renderMonthYearMoment.");
 			console.log(this.details);
@@ -283,6 +303,14 @@ App.moment = function() {
 
 		renderMoment: function(placement) {
 //			console.log("Running renderMoment.");
+=======
+		renderMoment: function(placement) {
+			// Need to add this to moment. Work in progress.
+			// Lungo.dom(".moment-header").each(function() { this.addEventListener("click", function(event) {if (Lungo.dom(event.target)) { alert(Lungo.dom(event.target)); } else { alert("Didn't work."); } }) });
+
+			console.log("Running renderMoment.");
+			//console.log(JSON.stringify(this.details));
+>>>>>>> Select Reminder Page fix
 			var _this = this;
 			var imgdiv_class = "";
 			if (this.details.images !== undefined) {
@@ -317,10 +345,6 @@ App.moment = function() {
 				chosen_moment.domnode = "#one-moment-article-container";
 				Lungo.dom(chosen_moment.domnode).html("");
 				App.database.getMoment(Lungo.dom(this).data("momentid"), chosen_moment);
-				var moment_id = Lungo.dom(this).data("momentid");
-				Lungo.dom("#moment-edit-button").tap(function() {
-					App.database.getMomentForEdit(moment_id);
-				});
 				Lungo.Router.section("one-moment");
 			});
 
@@ -352,13 +376,13 @@ App.moment = function() {
 				// Create anchor to hold image.
 				var moment_anchor = document.createElement("a");
 				Lungo.dom(moment_anchor).addClass("fancybox");
-				Lungo.dom(moment_anchor).attr("rel", "group");
-				Lungo.dom(moment_anchor).attr("href", "");
+				//Lungo.dom(moment_anchor).attr("rel", "group");
+				Lungo.dom(moment_anchor).attr("href", img_src);
 				// Create image.
 				var moment_imgimg = document.createElement("img");
 				Lungo.dom(moment_imgimg).attr("id", "moment-" + this.details.moment_id);
 				Lungo.dom(moment_imgimg).attr("src", img_src);
-				Lungo.dom(moment_imgimg).attr("style", "padding:2px;");
+                Lungo.dom(moment_imgimg).attr("style", "padding:2px;");
 				// Add image to anchor.
 				Lungo.dom(moment_anchor).append(moment_imgimg);
 				// Add anchor to div.
@@ -414,7 +438,7 @@ App.moment = function() {
 					Lungo.dom(this.domnode).html(moment_item);
 					break;
 			}
-
+            
 			$(".fancybox").fancybox({
 				fitToView: false,
 				autoSize: false,
@@ -437,8 +461,15 @@ App.moment = function() {
 			var c = _this.details.creator;
 			c.current_user = (c.id == App.current_user.details.user_id) ? 1 : 0;
 			var c_data_array = [c.id, c.email, c.first_name, c.last_name, c.city, c.state, c.country, c.user_image, c.current_user];
+<<<<<<< HEAD
             var c_query = "INSERT OR IGNORE INTO `user` \ (`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
             //console.log(c_data_array + " " + c_query);
+=======
+			var c_query = "INSERT OR IGNORE INTO `user` \
+						(`id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+			console.log(c_data_array + " " + c_query);
+>>>>>>> Select Reminder Page fix
 			DB.db.transaction(
 				function(transaction) {
 					transaction.executeSql(c_query, c_data_array, 
@@ -479,11 +510,18 @@ App.moment = function() {
 			if (_this.details.collaborators !== undefined && _this.details.collaborators.length) {
 				for (var j = 0; j < _this.details.collaborators.length; j++) {
 					var cc = _this.details.collaborators[j];
+<<<<<<< HEAD
 					var cc_data_array = [cc.id, cc.email, (cc.first_name || ''), (cc.last_name || ''), (cc.city || ''), (cc.state || ''), (cc.country || ''), (cc.user_image || ''), 0];
 					var cc_query = "INSERT OR IGNORE INTO `user` " +
 						"(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) " +
 						"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 					console.log(cc_query + cc_data_array);
+=======
+					var cc_data_array = [cc.id, cc.email, cc.first_name, cc.last_name, cc.city, cc.state, cc.country, cc.user_image, cc.current_user];
+					var cc_query = "INSERT OR IGNORE INTO `user` \
+						(`id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+>>>>>>> Select Reminder Page fix
 					DB.db.transaction(
 						function(transaction) {
 							transaction.executeSql(cc_query, cc_data_array, 

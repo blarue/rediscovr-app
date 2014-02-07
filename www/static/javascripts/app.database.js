@@ -94,7 +94,7 @@ App.database = {
 
 		if (d.id != undefined) {
 			var data_array = [d.id, d.email, d.first_name, d.last_name, d.city, d.state, d.country, d.user_image, d.current_user];
-			var query = "INSERT OR IGNORE INTO `user` (`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
+			var query = "INSERT OR IGNORE INTO `user` (`id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
 					VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		} else {
 			var data_array = [d.email, d.first_name, d.last_name, d.city, d.state, d.country, d.image, d.current_user];
@@ -221,10 +221,10 @@ App.database = {
 			}
 		}
 		var _query = "SELECT `moment`.*, \
-				`user`.`user_id` AS `user_id`, `user`.`first_name`, `user`.`last_name`, \
+				`user`.`id` AS `user_id`, `user`.`first_name`, `user`.`last_name`, \
 				`user`.`email`, `user`.`city`, `user`.`state`, `user`.`user_image` \
 			FROM `moment` \
-			JOIN `user` ON `user`.`user_id` = `moment`.`user` " + _where + _order + _limit;
+			JOIN `user` ON `user`.`id` = `moment`.`user` " + _where + _order + _limit;
 
 		// Find moments
 		this.db.transaction(
@@ -270,6 +270,7 @@ App.database = {
 		);
 	},
 
+<<<<<<< HEAD
 	getMomentForEdit: function(moment_id, ref) {
 		var _this = this;
 		console.log("Running DB getMoment for moment_id: " + moment_id);
@@ -381,13 +382,15 @@ App.database = {
 	},
 
 
+=======
+>>>>>>> Select Reminder Page fix
 	getMoment: function(moment_id, ref) {
 		console.log("Running DB getMoment for moment_id: " + moment_id);
 		var _query = "SELECT `moment`.*, \
-				`user`.`user_id` AS `user_id`, `user`.`first_name`, `user`.`last_name`, \
+				`user`.`id` AS `user_id`, `user`.`first_name`, `user`.`last_name`, \
 				`user`.`email`, `user`.`city`, `user`.`state`, `user`.`user_image` \
 			FROM `moment` \
-			JOIN `user` ON `user`.`user_id` = `moment`.`user` \
+			JOIN `user` ON `user`.`id` = `moment`.`user` \
 			WHERE `moment`.`moment_id` = ? \
 			LIMIT 1 ";
 		console.log(_query);
