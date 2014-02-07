@@ -152,6 +152,10 @@ Lungo.Events.init({
 		Lungo.dom("#moment-form-upload-files").on("change", App.photo.getPics);
 	},
 
+	'tap #moment-photos-upload-files': function() {
+		Lungo.dom("#moment-photos-upload-files").on("change", App.photo.getPics);
+	},
+
 	// User Settings load event.
 	'load section#settings': function(event) {
 		console.log(App.current_user);
@@ -304,55 +308,55 @@ Lungo.Events.init({
 	},
 
 	'tap #moment-form-post-button': function() {
-		if (Lungo.dom("#moment-form-post-button").text() == "Post") {
-			rediscovr.currentmoment.curr_image = 0;
-			rediscovr.currentmoment.num_images = Lungo.dom("#moment-form-upload-files").get(0).files.length;
-			rediscovr.currentmoment.image_list = [];
+		rediscovr.currentmoment.curr_image = 0;
+		rediscovr.currentmoment.num_images = Lungo.dom("#moment-form-upload-files").get(0).files.length;
+		rediscovr.currentmoment.image_list = [];
 
-			// Resize & Store images
-			var myurl, new_name, imgr;
-			var url_tool = window.webkitURL;
-			var files = Lungo.dom("#moment-form-upload-files").get(0).files;
-			for (var i = 0; i < files.length; i++) {
-				myurl = url_tool.createObjectURL(files[i]);
-				var new_name = App.generateUid('moment') + '.jpg';
-				console.log("new_name: " + new_name);
-				imgr = new App.image();
-				imgr.generateImageBlob(myurl, 4, function(d) {
-					console.log("There should be a blob.");
-					//console.log(d);
-					data_array = [new_name, 'moment', App.current_user.details.user_id, d, 0];
-					//console.log(data_array);
-					query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
-					var DB = new App.db();
-					DB.open();
-					DB.db.transaction(
-						function(transaction) {
-							transaction.executeSql(query, data_array, 
-								function(transaction, results) {
-									//console.log(results);
-									console.log("ImageID: " + results.insertId);
-									rediscovr.currentmoment.image_list.push({url_hash: new_name, image_id: results.insertId, d: d});
-								},
-								function(transaction, errors) {
-									console.log(errors);
-								}
-							);
-						}
-					);
-					rediscovr.currentmoment.curr_image++;
-					if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
+		// Resize & Store images
+		var myurl, new_name, imgr;
+		var url_tool = window.webkitURL;
+		var files = Lungo.dom("#moment-form-upload-files").get(0).files;
+		for (var i = 0; i < files.length; i++) {
+			myurl = url_tool.createObjectURL(files[i]);
+			var new_name = App.generateUid('moment') + '.jpg';
+			console.log("new_name: " + new_name);
+			imgr = new App.image();
+			imgr.generateImageBlob(myurl, 4, function(d) {
+				console.log("There should be a blob.");
+				//console.log(d);
+				data_array = [new_name, 'moment', App.current_user.details.user_id, d, 0];
+				//console.log(data_array);
+				query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
+				var DB = new App.db();
+				DB.open();
+				DB.db.transaction(
+					function(transaction) {
+						transaction.executeSql(query, data_array, 
+							function(transaction, results) {
+								//console.log(results);
+								console.log("ImageID: " + results.insertId);
+								rediscovr.currentmoment.image_list.push({url_hash: new_name, image_id: results.insertId, d: d});
+							},
+							function(transaction, errors) {
+								console.log(errors);
+							}
+						);
+					}
+				);
+				rediscovr.currentmoment.curr_image++;
+				if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
+					if (Lungo.dom("#moment-form-post-button").text() == "Post") {
 						console.log("Last image. Add moment.")
 						// Save moment.
 						var m = new App.moment();
 						m.addMoment();
+					} else if (Lungo.dom("#moment-form-post-button").text() == "Edit") {
+						alert("Editing");
+						var m = new App.moment();
+						m.editMoment();
 					}
-				});
-			}
-		} else if (Lungo.dom("#moment-form-post-button").text() == "Edit") {
-			alert("Editing");
-			var m = new App.moment();
-			m.editMoment();
+				}
+			});
 		}
 	},
 
