@@ -81,7 +81,7 @@ App.moments = function() {
 					});
 				}
 			} else {
-				Lungo.Router.section("home");
+				//Lungo.Router.section("home");
 			}
 		},
 

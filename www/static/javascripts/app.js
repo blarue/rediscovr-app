@@ -37,7 +37,8 @@ App.carousel = {prev: null, next: null};
 var pushNotification;
 
 App.config = {
-	image_prefix: "http://s3.amazonaws.com/etch-images/"
+	image_prefix: "http://s3.amazonaws.com/etch-images/",
+	local_prefix: ""
 };
 
 // Algorithm for generating unique IDs. Pass in a prefix like 'moment'.
@@ -316,47 +317,94 @@ Lungo.Events.init({
 		var myurl, new_name, imgr;
 		var url_tool = window.webkitURL;
 		var files = Lungo.dom("#moment-form-upload-files").get(0).files;
-		for (var i = 0; i < files.length; i++) {
-			myurl = url_tool.createObjectURL(files[i]);
-			var new_name = App.generateUid('moment') + '.jpg';
-			console.log("new_name: " + new_name);
-			imgr = new App.image();
-			imgr.generateImageBlob(myurl, 4, function(d) {
-				console.log("There should be a blob.");
-				//console.log(d);
-				data_array = [new_name, 'moment', App.current_user.details.user_id, d, 0];
-				//console.log(data_array);
-				query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
-				var DB = new App.db();
-				DB.open();
-				DB.db.transaction(
-					function(transaction) {
-						transaction.executeSql(query, data_array, 
-							function(transaction, results) {
-								//console.log(results);
-								console.log("ImageID: " + results.insertId);
-								rediscovr.currentmoment.image_list.push({url_hash: new_name, image_id: results.insertId, d: d});
-							},
-							function(transaction, errors) {
-								console.log(errors);
-							}
-						);
+		if (files.length) {
+			for (var i = 0; i < files.length; i++) {
+				myurl = url_tool.createObjectURL(files[i]);
+				var n = files[i].name.split(".");
+				var ext = n[n.length - 1];
+				var new_name = App.generateUid('moment') + "." + ext;
+				console.log("new_name: " + new_name);
+				var imgr = new App.image();
+				imgr.mode = "cache-new";
+				imgr.cacheNewImage(files[i], new_name, function(res) {
+					data_array = [new_name, 'moment', App.current_user.details.user_id, 0];
+					//console.log(data_array);
+					query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?);";
+					var DB = new App.db();
+					DB.open();
+					DB.db.transaction(function(transaction) {transaction.executeSql(query, data_array, 
+						function(transaction, results) {
+							//console.log(results);
+							console.log("ImageID: " + results.insertId);
+							rediscovr.currentmoment.image_list.push({url_hash: new_name, image_id: results.insertId, d: d});
+						},
+						function(transaction, errors) {
+							console.log(errors);
+						}
+					);});
+					rediscovr.currentmoment.curr_image++;
+					if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
+						if (Lungo.dom("#moment-form-post-button").text() == "Post") {
+							console.log("Last image. Add moment.")
+							// Save moment.
+							var m = new App.moment();
+							m.addMoment();
+						} else if (Lungo.dom("#moment-form-post-button").text() == "Edit") {
+							alert("Editing");
+							var m = new App.moment();
+							m.editMoment();
+						}
 					}
-				);
-				rediscovr.currentmoment.curr_image++;
-				if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
-					if (Lungo.dom("#moment-form-post-button").text() == "Post") {
-						console.log("Last image. Add moment.")
-						// Save moment.
-						var m = new App.moment();
-						m.addMoment();
-					} else if (Lungo.dom("#moment-form-post-button").text() == "Edit") {
-						alert("Editing");
-						var m = new App.moment();
-						m.editMoment();
-					}
-				}
-			});
+				});
+				// imgr = new App.image();
+				// imgr.generateImageBlob(myurl, 4, function(d) {
+				// 	console.log("There should be a blob.");
+				// 	//console.log(d);
+				// 	data_array = [new_name, 'moment', App.current_user.details.user_id, d, 0];
+				// 	//console.log(data_array);
+				// 	query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
+				// 	var DB = new App.db();
+				// 	DB.open();
+				// 	DB.db.transaction(
+				// 		function(transaction) {
+				// 			transaction.executeSql(query, data_array, 
+				// 				function(transaction, results) {
+				// 					//console.log(results);
+				// 					console.log("ImageID: " + results.insertId);
+				// 					rediscovr.currentmoment.image_list.push({url_hash: new_name, image_id: results.insertId, d: d});
+				// 				},
+				// 				function(transaction, errors) {
+				// 					console.log(errors);
+				// 				}
+				// 			);
+				// 		}
+				// 	);
+				// 	rediscovr.currentmoment.curr_image++;
+				// 	if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
+				// 		if (Lungo.dom("#moment-form-post-button").text() == "Post") {
+				// 			console.log("Last image. Add moment.")
+				// 			// Save moment.
+				// 			var m = new App.moment();
+				// 			m.addMoment();
+				// 		} else if (Lungo.dom("#moment-form-post-button").text() == "Edit") {
+				// 			alert("Editing");
+				// 			var m = new App.moment();
+				// 			m.editMoment();
+				// 		}
+				// 	}
+				// });
+			}
+		} else {
+			if (Lungo.dom("#moment-form-post-button").text() == "Post") {
+				console.log("Last image. Add moment.")
+				// Save moment.
+				var m = new App.moment();
+				m.addMoment();
+			} else if (Lungo.dom("#moment-form-post-button").text() == "Edit") {
+				alert("Editing");
+				var m = new App.moment();
+				m.editMoment();
+			}
 		}
 	},
 
@@ -468,11 +516,11 @@ Lungo.Events.init({
 					</li>";
 				if (has_email) {
 					// Put contacts with images at the top.
-					if (has_image) {
-						Lungo.dom("#select-contacts-list").prepend(new_li);
-					} else {
-						Lungo.dom("#select-contacts-list").append(new_li);
-					}
+					// if (has_image) {
+					// 	Lungo.dom("#select-contacts-list").prepend(new_li);
+					// } else {
+					Lungo.dom("#select-contacts-list").append(new_li);
+					// }
 			    }
 		    }
 		};
@@ -482,8 +530,8 @@ Lungo.Events.init({
 		};
 
 		var contactSort = function(a, b) {
-			aname = a.name.familyName + ' ' + a.name.givenName;
-			bname = b.name.familyName + ' ' + b.name.givenName;
+			aname = a.name.givenName + ' ' + a.name.familyName;
+			bname = b.name.givenName + ' ' + b.name.familyName;
 			return aname < bname ? -1 : (aname == bname ? 0 : 1);
 		};
 

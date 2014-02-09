@@ -13,35 +13,47 @@ App.photo = {
         	var chosen_image;
         	var myurl;
         	var url_tool = window.webkitURL;
-			// Empty any existing thumbs.
-			Lungo.dom("#add-moment-selected-images").html("");
+
+			// Empty any existing thumbs. Or not!!
+			//Lungo.dom("#add-moment-selected-images").html("");
         	for (var i = 0; i < event.target.files.length; i++) {
         		myurl = url_tool.createObjectURL(event.target.files[i]);
         		chosen_image = document.createElement("img");
         		Lungo.dom(chosen_image).attr("style", "display:inline-block;width:70px;height:70px;border:1px solid #FFFFFF;");
         		Lungo.dom(chosen_image).attr("src", myurl);
-				// Lungo.dom(chosen_image).tap(function(e) {
-				// 	var _this = this;
-				// 	Lungo.Notification.confirm({
-				// 		icon: null,
-				// 		title: 'Are you sure you want to remove this photo?',
-				// 		description: '',
-				// 		accept: {
-				// 			icon: 'checkmark',
-				// 			label: 'Accept',
-				// 			callback: function(){ Lungo.dom(_this).hide(); }
-				// 		},
-				// 		cancel: {
-				// 			icon: 'close',
-				// 			label: 'Cancel',
-				// 			callback: function(){ alert("No!"); }
-				// 		}
-				// 	});
-				// });
-				//chosen_image = "<img style=\"display:inline-block;width:70px;height:70px;border:1px solid #FFFFFF;\" src=\"" + myurl + "\" />";
+				Lungo.dom(chosen_image).tap(function(e) {
+					var _this = this;
+					Lungo.Notification.confirm({
+						icon: null,
+						title: 'Are you sure you want to remove this photo?',
+						description: '',
+						accept: {
+							icon: 'checkmark',
+							label: 'Accept',
+							callback: function(){ Lungo.dom(_this).hide(); }
+						},
+						cancel: {
+							icon: 'close',
+							label: 'Cancel',
+							callback: function(){ alert("No!"); }
+						}
+					});
+				});
 				Lungo.dom("#add-moment-selected-images").append(chosen_image);
         	}
-        	Lungo.dom(".selectedphotos").show();
+			Lungo.dom(".selectedphotos").show();
+			Lungo.dom("#moment-photos-done-button-count").text(Lungo.dom("#add-moment-selected-images").children().length);
+			if (Lungo.Router.history() !== "add-moment-photos") {
+				Lungo.Router.section("add-moment-photos");
+			}
+			// Clone the first child node from the selected images and make that the collection image.
+			var collection_image = Lungo.dom("#add-moment-selected-images").children().first().get(0).cloneNode();
+			Lungo.dom(collection_image).tap(function() {
+				Lungo.Router.section("add-moment-photos");
+			});
+			Lungo.dom("#add-moment-image-collection").html(collection_image);
+			Lungo.dom("#add-moment-image-collection").append("<span class=\"tag count\">" + Lungo.dom("#add-moment-selected-images").children().length + "</span>");
+			Lungo.dom("#add-moment-file-upload").hide();
         	delete myurl, url_tool, chosen_image;
         }
 	},

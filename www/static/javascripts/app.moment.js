@@ -33,9 +33,54 @@ App.moment = function() {
 				function(transaction) {
 					transaction.executeSql(m_query, m_data_array, 
 						function(transaction, results) {
-							console.log("results: " + results);
-							var api = new App.api();
-							api.editMoment(_this);
+							if (_this.details.collaborators != undefined && _this.details.collaborators.length) {
+								for (var j = 0; j < _this.details.collaborators.length; j++) {
+									var u = new App.user();
+									u.details.email = _this.details.collaborators[j].email;
+									u.details.first_name = _this.details.collaborators[j].name;
+									u.details.first_last = _this.details.collaborators[j].name;
+									u.details.phone = '';
+									u.addCollaborator(_this.details.id);
+								}
+							}
+
+							if (rediscovr.currentmoment.image_list.length) {
+								var q = "INSERT INTO `moment_image` (`moment_id`, `image_id`) VALUES (?, ?)";
+								for (var i = 0; i < rediscovr.currentmoment.image_list.length; i++) {
+									console.log("i: " + i);
+									var p = [_this.details.id, rediscovr.currentmoment.image_list[i].image_id];
+									if (_this.details.images == undefined) {
+										_this.details.images = [];	
+									}
+									console.log("i: " + i);
+									_this.details.images.push(rediscovr.currentmoment.image_list[i].d);
+									console.log("i: " + i);
+									// Keep i set after we enter this function.
+									var _i = i;
+									DB.db.transaction(
+										function(transaction) {
+											console.log("_i: " + _i);
+											transaction.executeSql(q, p, 
+												function(transaction, results) {
+													console.log("_i: " + _i);
+													if (_i == rediscovr.currentmoment.image_list.length - 1) {
+														var api = new App.api();
+														api.editMoment(_this);
+														_this.showMoment("prepend");
+													}
+												},
+												function(transaction, results) {
+													console.log(results);
+												}
+											);
+										}
+									);
+								}
+							} else {
+								console.log("results: " + results);
+								var api = new App.api();
+								api.editMoment(_this);
+							}
 						},
 						function(transaction, errors) {
 							console.log("errors: " + errors);
@@ -143,7 +188,7 @@ App.moment = function() {
 							if (results.rows != undefined && results.rows.length) {
 								for (var j=0; j < results.rows.length; j++) {
 									//console.log(_this);
-									_this.details.images.push(results.rows.item(j).data64);
+									_this.details.images.push(results.rows.item(j).name);
 								}
 								if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
 									return _this.renderMonthYearMoment();
@@ -284,6 +329,8 @@ App.moment = function() {
 				var img_src;
 				if (this.details.images[img].substr(0, 4) === "data") {
 					img_src = this.details.images[img]
+				} else if (this.details.images[img].substr(0, 6) === "moment") {
+					img_src = App.config.local_prefix + this.details.images[img];
 				} else {
 					img_src = App.config.image_prefix + this.details.images[img];
 				}
@@ -472,40 +519,60 @@ App.moment = function() {
 					var image = _this.details.images[j];
 					console.log(JSON.stringify(image));
 					var imgr = new App.image();
-					imgr.generateImageBlob(image, 4, function(d) {
-						console.log("There should be a blob.");
-						//console.log(d);
-						var i_data_array = [image, 'moment', _this.details.creator.id, d, 1];
-						//console.log(i_data_array);
-						var i_query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
-						DB.db.transaction(
-							function(transaction) {
-								transaction.executeSql(i_query, i_data_array, 
+					imgr.cacheLocally(image, function(res) {
+						var i_data_array = [image, 'moment', _this.details.creator.id, 1];
+						var i_query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?);";
+						DB.db.transaction(function(transaction){transaction.executeSql(i_query, i_data_array, 
+							function(transaction, results) {
+								var im_data_array = [_this.details.id, results.insertId, 1];
+								var im_query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) VALUES (?, ?, ?);";
+								DB.db.transaction(function(transaction){transaction.executeSql(im_query, im_data_array, 
 									function(transaction, results) {
 										console.log(results);
-										console.log("ImageID: " + results.insertId);
-										console.log("MomentID: " + _this.details.id);
-										var im_data_array = [_this.details.id, results.insertId, 1];
-										var im_query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) VALUES (?, ?, ?);";
-										DB.db.transaction(
-											function(transaction) {
-												transaction.executeSql(im_query, im_data_array, 
-													function(transaction, results) {
-														console.log(results);
-													}, 
-													function(transaction, errors) {
-														console.log("errors" + errors);
-													}
-												);
-											}
-										);
-									}, function(transaction, results) {
-										//console.log(results);
+									}, 
+									function(transaction, errors) {
+										console.log("errors" + errors);
 									}
-								);
+								);});
+							}, function(transaction, results) {
+
 							}
-						);
+						)});
 					});
+					// imgr.generateImageBlob(image, 4, function(d) {
+					// 	console.log("There should be a blob.");
+					// 	//console.log(d);
+					// 	var i_data_array = [image, 'moment', _this.details.creator.id, d, 1];
+					// 	//console.log(i_data_array);
+					// 	var i_query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
+					// 	DB.db.transaction(
+					// 		function(transaction) {
+					// 			transaction.executeSql(i_query, i_data_array, 
+					// 				function(transaction, results) {
+					// 					console.log(results);
+					// 					console.log("ImageID: " + results.insertId);
+					// 					console.log("MomentID: " + _this.details.id);
+					// 					var im_data_array = [_this.details.id, results.insertId, 1];
+					// 					var im_query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) VALUES (?, ?, ?);";
+					// 					DB.db.transaction(
+					// 						function(transaction) {
+					// 							transaction.executeSql(im_query, im_data_array, 
+					// 								function(transaction, results) {
+					// 									console.log(results);
+					// 								}, 
+					// 								function(transaction, errors) {
+					// 									console.log("errors" + errors);
+					// 								}
+					// 							);
+					// 						}
+					// 					);
+					// 				}, function(transaction, results) {
+					// 					//console.log(results);
+					// 				}
+					// 			);
+					// 		}
+					// 	);
+					// });
 				}
 			}
 		},

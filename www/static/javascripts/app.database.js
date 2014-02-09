@@ -290,14 +290,44 @@ App.database = {
 								Lungo.dom("#add-moment-selected-images").html("");
 								for (var i = 0; i < results.rows.length; i++) {
 									var mimg = results.rows.item(i);
-									var chosen_image = "<img style=\"display:inline-block;width:70px;height:70px;border:1px solid #ddd;\" src=\"" + mimg.data64 + "\" />";
-									Lungo.dom("#add-moment-selected-images").append(chosen_image);
+									//var chosen_image = "<img style=\"display:inline-block;width:70px;height:70px;border:1px solid #ddd;\" src=\"" + mimg.data64 + "\" />";
+									var chosen_image = document.createElement("img");
+									Lungo.dom(chosen_image).attr("style", "display:inline-block;width:70px;height:70px;border:1px solid #ddd;");
+									Lungo.dom(chosen_image).attr("src", App.config.local_prefix + mimg.name);
+									if (i == 0) {
+										var collection_image = chosen_image.cloneNode(true);
+										Lungo.dom(collection_image).tap(function() {
+											Lungo.Router.section("add-moment-photos");
+										});
+										Lungo.dom("#add-moment-image-collection").append(collection_image);
+									}
+									Lungo.dom(chosen_image).tap(function(e) {
+										var _this = this;
+										Lungo.Notification.confirm({
+											icon: null,
+											title: 'Are you sure you want to remove this photo?',
+											description: '',
+											accept: {
+												icon: 'checkmark',
+												label: 'Accept',
+												callback: function(){ Lungo.dom(_this).hide(); }
+											},
+											cancel: {
+												icon: 'close',
+												label: 'Cancel',
+												callback: function(){ alert("No!"); }
+											}
+										});
+									});
+
+									Lungo.dom("#add-moment-selected-images").append(Lungo.dom(chosen_image));
 									Lungo.dom(".selectedphotos").show();
 								}
+								Lungo.dom("#add-moment-image-collection").append("<span class=\"tag count\">" + Lungo.dom("#add-moment-selected-images").children().length + "</span>");
 							}
 						}, App.database.errorHandler);
 					});
-
+					// Get collaborators.
 					var _q_col = "SELECT `u`.* \
 						FROM `user` `u` \
 						JOIN `moment_user` `mu` ON `u`.`user_id` = `mu`.`user_id` \
@@ -314,6 +344,8 @@ App.database = {
 									sel_col += mcol.first_name + " " + mcol.last_name + ", ";
 								}
 								Lungo.dom("#add-moment-invite").text(sel_col.substr(0, sel_col.length - 2));
+							} else {
+								Lungo.dom("#add-moment-invite").text("Invite Collaborators");
 							}
 						}, App.database.errorHandler);
 					});

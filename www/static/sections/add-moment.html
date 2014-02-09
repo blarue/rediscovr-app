@@ -4,13 +4,13 @@
 			<span>Cancel</span>
 		</nav>
 		<nav class="on-right">
-			<span id="moment-form-post-button" style="font-size:.94em;border:2px solid #ffffff;border-radius:5px;padding:.3em 1em;">Post</span>
+			<span id="moment-form-post-button" style="font-size:.94em;color:#000000;background-color:#FFFFFF;border:1px solid #000000;border-radius:5px;padding:.3em .6em;">Post</span>
 		</nav>
 	</header>
 	<article id="add-moment-article" class="indenteds scroll">
 		<div class="moment-form form">
 			<fieldset class="radius shadow selectedphotos" style="display:none;">
-				<div id="add-moment-selected-images" style="display:inline-block;margin:.3em auto;text-align:center;"></div>
+				<div id="add-moment-image-collection" style="display:inline-block;margin:.3em auto;text-align:center;"></div>
 			</fieldset>
 			<fieldset class="radius shadow edittext">
 				<input id="moment-form-title" type="text" placeholder="Title"/>
@@ -38,10 +38,10 @@
 					<span id="moment-form-reminder-end" style="color:#6c9dc6;" data-view-section="add-moment-reminder-end">Never</span>
 				</div>
 			</fieldset>
- 			<fieldset class="radius shadow" style="margin-top:.4em;">
+ 			<fieldset id="add-moment-file-upload" class="radius shadow" style="margin-top:.4em;">
 				<div class="fileupload">
 					<img src='img/image-icon@2x.png' class="formlabel"/>
-					<input id="moment-form-upload-files" type="file" accept="image/*|video/*" capture="camera" multiple="true"/>
+					<input id="moment-form-upload-files" type="file" accept="image/*|video/*;capture=camera" capture="camera" multiple="true"/>
 					<span style='color:#6c9dc6;'>Upload Image / Video</span>
 				</div>
 			</fieldset>
