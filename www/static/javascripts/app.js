@@ -206,59 +206,19 @@ Lungo.Events.init({
 		// Get moments from DB.
 		var db = new App.db();
 		db.open();
-        var my_moment_count = 0;
-        var param = [0]; //[App.current_user.details.user_id];
-		var query = "SELECT COUNT(*) AS `allmoments` FROM `moment` WHERE `user` != ?";
+		var param = [App.current_user.details.user_id];
+		var query = "SELECT COUNT(*) AS `allmoments` FROM `moment` WHERE `user` = ?";
 		db.db.transaction(
 			function(transaction) {
-				transaction.executeSql(query, param,
-					function(transaction, results) {
-                        my_moment_count = results.rows.item(0).allmoments;
-                        Lungo.dom("#profile-stats-allmoments").text(my_moment_count);
-                                       },
+				transaction.executeSql(query, param, 
+					function(transaction, results) { Lungo.dom("#profile-stats-allmoments").text(results.rows.item(0).allmoments); },
 					function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
 				);
 			}
 		);
-/*		delete db;
-                  
-        // Get moments from DB.
-        var db = new App.db();
-        db.open();
-     */
-        var collaborations_count = 0;
-        var param1 = [App.current_user.details.user_id];
-        var query1 = "SELECT COUNT(*) AS `collaboation` FROM moment, moment_user WHERE moment.moment_id=moment_user.moment_id and moment_user.user_id=?";
-        db.db.transaction(
-              function(transaction) {
-                  transaction.executeSql(query1, param1,
-                      function(transaction, results) {
-                           collaborations_count = results.rows.item(0).collaboation;
-                           Lungo.dom("#profile-stats-collaborations").text(collaborations_count);
-                  },
-                      function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
-                  );
-              }
-        );
-                  
-        var private_count = 0;
-        var param2 = [App.current_user.details.user_id];
-        var query2 = "SELECT COUNT(*) AS `private` FROM `moment` WHERE `user` = ?";
-        db.db.transaction(
-              function(transaction) {
-                   transaction.executeSql(query2, param2,
-                        function(transaction, results) {
-                             private_count = results.rows.item(0).private - collaborations_count;
-                             Lungo.dom("#profile-stats-private").text(private_count);
-                         },
-                                                           function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
-                                                           );
-                                    }
-                                    );
-        delete db;
-       // var private_count = my_moment_count - collaborations_count;
-	//	Lungo.dom("#profile-stats-private").text(private_count);
-	//	Lungo.dom("#profile-stats-collaborations").text("0");
+		delete db;
+		Lungo.dom("#profile-stats-private").text("0");
+		Lungo.dom("#profile-stats-collaborations").text("0");
         
         Lungo.dom(".moment-item").remove();
         
