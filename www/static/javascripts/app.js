@@ -150,7 +150,30 @@ Lungo.Events.init({
 	},
 
 	'tap #moment-form-upload-files': function() {
-		Lungo.dom("#moment-form-upload-files").on("change", App.photo.getPics);
+		navigator.notification.confirm(
+			'',
+			function(buttonIndex) {
+				console.log(buttonIndex);
+				switch (buttonIndex) {
+					case 1:
+						console.log("Camera");
+						App.photo.getPhoto();
+						break;
+					case 2:
+						console.log("Library");
+						App.photo.getPhoto(pictureSource.PHOTOLIBRARY);
+						break;
+					case 3:
+						return false;
+						break;
+				}
+			},
+			'Upload a photo', // Title?
+			['Take a photo','Choose Existing', 'Cancel']
+		);
+		//App.photo.getPhoto(pictureSource.PHOTOLIBRARY);
+		//Lungo.dom("#moment-form-upload-files").on("change", App.photo.getPics);
+
 	},
 
 	'tap #moment-photos-upload-files': function() {
@@ -283,6 +306,14 @@ Lungo.Events.init({
 				var n = files[i].name.split(".");
 				var ext = n[n.length - 1];
 				var new_name = App.generateUid('moment') + "." + ext;
+				var types = {
+					video: ["mov", "mp4", "m4v"],
+					image: ["jpg", "jpeg", "png"]
+				};
+				var is_vid = (types.video.indexOf(ext.toLowerCase()) != -1) ? true : false;
+				var is_img = (types.image.indexOf(ext.toLowerCase()) != -1) ? true : false;
+				var asset_type = (is_img) ? "image" : "video";
+
 				console.log("new_name: " + new_name);
 				var imgr = new App.image();
 				imgr.mode = "cache-new";
