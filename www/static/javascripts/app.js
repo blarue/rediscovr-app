@@ -243,7 +243,7 @@ Lungo.Events.init({
 		Lungo.dom("#profile-stats-private").text("0");
 		Lungo.dom("#profile-stats-collaborations").text("0");
         
-        Lungo.dom(".moment-item").remove();
+    Lungo.dom(".moment-item").remove();
         
 		var m = new App.moments();
 		m.getMoments("#profile-article");
@@ -398,7 +398,11 @@ Lungo.Events.init({
 			}
 		}
 	},
-
+	'load section#notifications': function(event) {
+		console.log("Load notifications page....");
+		var notifications = new App.notification();
+		notifications.getNotifications();
+	},
 	'load section#add-moment-location': function(event) {
 		Lungo.dom("#location-searchbox").on("blur", function() {
 			rediscovr.mapping.query = Lungo.dom("#location-searchbox").get(0).value;
