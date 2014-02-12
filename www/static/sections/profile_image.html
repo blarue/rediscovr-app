@@ -1,0 +1,26 @@
+<section id="profile_image_section" data-transition="slide" data-aside="left-sidebar" class="drag optionselect">
+    <header data-title="Select Profile Image">
+        <nav class="on-left arrow" data-view-section="back">
+            <span>Back</span>
+        </nav>
+        <nav class="on-right" data-view-section="back">
+            <span>Done</span>
+        </nav>
+    </header>
+    <article id="profile-image-article" class="indenteds scroll">
+        <div class="profile-image-form form">
+            <fieldset class="radius shadow" style="margin-top:.4em;">
+                <div class="fileupload" style="height:50px;">
+                    <img src='img/image-icon@2x.png' class="formlabel"/>
+                    <input id="profile-upload-file" type="file" accept="image/*|video/*" capture="camera" multiple="true"/>
+                    <span style='color:#6c9dc6;'>Choose Image / Video</span>
+                </div>
+                <!--<div id="add-moment-selected-images" style="margin-top:.3em;"><img id="selected_profile_image" style="width:100%; height:80%;" src="img/07 - Walkthrough4.jpg"/></div> -->
+                <div id="profile-selected-images" style="margin-top:.3em;"></div>
+                <img id="cropped" width=300 height=300 />
+                <canvas id="canvas" style="display:none;"></canvas>
+
+            </fieldset>
+        </div>
+    </article>
+</section>
