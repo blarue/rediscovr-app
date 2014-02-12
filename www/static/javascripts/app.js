@@ -228,20 +228,60 @@ Lungo.Events.init({
 		Lungo.dom("#profile-location").text(location);
 		// Get moments from DB.
 		var db = new App.db();
-		db.open();
-		var param = [App.current_user.details.user_id];
-		var query = "SELECT COUNT(*) AS `allmoments` FROM `moment` WHERE `user` = ?";
-		db.db.transaction(
-			function(transaction) {
-				transaction.executeSql(query, param, 
-					function(transaction, results) { Lungo.dom("#profile-stats-allmoments").text(results.rows.item(0).allmoments); },
-					function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
-				);
-			}
-		);
-		delete db;
-		Lungo.dom("#profile-stats-private").text("0");
-		Lungo.dom("#profile-stats-collaborations").text("0");
+        db.open();
+        var my_moment_count = 0;
+        var param = [0]; //[App.current_user.details.user_id];
+        var query = "SELECT COUNT(*) AS `allmoments` FROM `moment` WHERE `user` != ?";
+        db.db.transaction(
+            function(transaction) {
+                transaction.executeSql(query, param,
+                    function(transaction, results) {
+                        my_moment_count = results.rows.item(0).allmoments;
+                        Lungo.dom("#profile-stats-allmoments").text(my_moment_count);
+                    },
+                    function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
+                );
+            }
+        );
+        /*		delete db;
+
+         // Get moments from DB.
+         var db = new App.db();
+         db.open();
+         */
+        var collaborations_count = 0;
+        var param1 = [App.current_user.details.user_id];
+        var query1 = "SELECT COUNT(*) AS `collaboation` FROM moment, moment_user WHERE moment.moment_id=moment_user.moment_id and moment_user.user_id=?";
+        db.db.transaction(
+            function(transaction) {
+                transaction.executeSql(query1, param1,
+                    function(transaction, results) {
+                        collaborations_count = results.rows.item(0).collaboation;
+                        Lungo.dom("#profile-stats-collaborations").text(collaborations_count);
+                    },
+                    function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
+                );
+            }
+        );
+
+        var private_count = 0;
+        var param2 = [0];//[App.current_user.details.user_id];
+        var query2 = "SELECT COUNT(*) AS `collaboation` FROM `moment` WHERE `user` != ?";
+        db.db.transaction(
+            function(transaction) {
+                transaction.executeSql(query2, param2,
+                    function(transaction, results) {
+                        private_count = results.rows.item(0).collaboation - collaborations_count;
+                        Lungo.dom("#profile-stats-private").text(private_count);
+                    },
+                    function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
+                );
+            }
+        );
+        delete db;
+        // var private_count = my_moment_count - collaborations_count;
+        //	Lungo.dom("#profile-stats-private").text(private_count);
+        //	Lungo.dom("#profile-stats-collaborations").text("0");
         
         Lungo.dom(".moment-item").remove();
         
@@ -273,12 +313,13 @@ Lungo.Events.init({
 
 	// Reminder frequency panel.
 	'tap #reminder-frequency-article button': function() {
-		Lungo.dom("#reminder-frequency-article button.dark").children(".icon").remove();
+	/*	Lungo.dom("#reminder-frequency-article button.dark").children(".icon").remove();
 		Lungo.dom("#reminder-frequency-article button.dark").toggleClass("dark").toggleClass("light");
 		Lungo.dom(this).toggleClass('dark');
 		Lungo.dom("#reminder-frequency-article button.dark").append("<span class='icon ok'></span>");
 		rediscovr.currentmoment.reminder_frequency = Lungo.dom(this).children('abbr').html();
 		Lungo.dom("#moment-form-reminder-frequency").text(rediscovr.currentmoment.reminder_frequency);
+    */
 	},
 
 	// Reminder end panel.
@@ -292,7 +333,31 @@ Lungo.Events.init({
 	},
 
 	'tap #moment-form-post-button': function() {
-		rediscovr.currentmoment.curr_image = 0;
+        try{
+
+            var m_names = new Array("January", "February", "March","April", "May", "June", "July","August", "September","October", "November", "December");
+
+            var d = Lungo.dom("#moment-form-date").val().split("-");
+            var curr_date = d[2];
+            var curr_month = parseInt(d[1])-1;
+            var curr_year = d[0];
+            var startDate = new Date(m_names[curr_month] +" " + curr_date + ", " + curr_year +" " + Lungo.dom("#moment-form-time").val() + ":00");
+            var endDate = startDate;
+            //console.log(startDate + "/" + endDate + "/" + new Date());
+
+            var title = Lungo.dom("#moment-form-title").val();
+            var location = Lungo.dom("#moment-form-location").val();
+            var notes = Lungo.dom("#moment-form-desc").val();
+            var success = function(message) {  };
+            var error = function(message) {  };
+
+            window.plugins.calendar.createEvent(title,location,notes,startDate,endDate,success,error);
+
+        }catch(e){
+            //console.log(e);
+        }
+
+        rediscovr.currentmoment.curr_image = 0;
 		rediscovr.currentmoment.num_images = Lungo.dom("#moment-form-upload-files").get(0).files.length;
 		rediscovr.currentmoment.image_list = [];
 
@@ -323,7 +388,7 @@ Lungo.Events.init({
 					query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?);";
 					var DB = new App.db();
 					DB.open();
-					DB.db.transaction(function(transaction) {transaction.executeSql(query, data_array, 
+					DB.db.transaction(function(transaction) {transaction.executeSql(query, data_array,
 						function(transaction, results) {
 							//console.log(results);
 							console.log("ImageID: " + results.insertId);
