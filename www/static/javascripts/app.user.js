@@ -89,7 +89,7 @@ App.user = function() {
 			if (data.id != undefined && data.id != null) {
 				console.log(App.current_user);
 				App.current_user.details.current_user = 1;
-				App.current_user.details.user_id = data.user_id;
+				App.current_user.details.user_id = data.id;
 				App.current_user.details.email = data.email;
 				App.current_user.details.firstName = data.firstName;
 				App.current_user.details.lastName = data.lastName;

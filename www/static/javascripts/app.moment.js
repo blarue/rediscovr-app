@@ -13,85 +13,8 @@ App.moment = function() {
 
 		errors: [],
 
-		editMoment: function() {
-			console.log("Running editMoment from app.moment.js");
-			var _this = this;
-			// Start DB.
-			var DB = new App.db();
-			DB.open();
-			this.details.creator = App.current_user.details;
-			this.details.creator.id = App.current_user.details.user_id;
-
-			this.gatherDetails();
-			var m = this.details;
-			m.moment_id = Lungo.dom("#moment-form-moment-id").val();
-			var m_data_array = [m.title, m.text, m.date, m.location, m.moment_id];
-			var m_query = "UPDATE `moment` SET `title` = ?, `text` = ?, `date` = ?, `location` = ? \
-				WHERE `moment_id` = ?";
-			console.log(m_query + " " + m_data_array);
-			DB.db.transaction(
-				function(transaction) {
-					transaction.executeSql(m_query, m_data_array, 
-						function(transaction, results) {
-							if (_this.details.collaborators != undefined && _this.details.collaborators.length) {
-								for (var j = 0; j < _this.details.collaborators.length; j++) {
-									var u = new App.user();
-									u.details.email = _this.details.collaborators[j].email;
-									u.details.first_name = _this.details.collaborators[j].name;
-									u.details.first_last = _this.details.collaborators[j].name;
-									u.details.phone = '';
-									u.addCollaborator(_this.details.id);
-								}
-							}
-
-							if (rediscovr.currentmoment.image_list.length) {
-								var q = "INSERT INTO `moment_image` (`moment_id`, `image_id`) VALUES (?, ?)";
-								for (var i = 0; i < rediscovr.currentmoment.image_list.length; i++) {
-									console.log("i: " + i);
-									var p = [_this.details.id, rediscovr.currentmoment.image_list[i].image_id];
-									if (_this.details.images == undefined) {
-										_this.details.images = [];	
-									}
-									console.log("i: " + i);
-									_this.details.images.push(rediscovr.currentmoment.image_list[i].d);
-									console.log("i: " + i);
-									// Keep i set after we enter this function.
-									var _i = i;
-									DB.db.transaction(
-										function(transaction) {
-											console.log("_i: " + _i);
-											transaction.executeSql(q, p, 
-												function(transaction, results) {
-													console.log("_i: " + _i);
-													if (_i == rediscovr.currentmoment.image_list.length - 1) {
-														var api = new App.api();
-														api.editMoment(_this);
-														_this.showMoment("prepend");
-													}
-												},
-												function(transaction, results) {
-													console.log(results);
-												}
-											);
-										}
-									);
-								}
-							} else {
-								console.log("results: " + results);
-								var api = new App.api();
-								api.editMoment(_this);
-							}
-						},
-						function(transaction, errors) {
-							console.log("errors: " + errors);
-						}
-					);
-				}
-			);
-		},
-
 		addMoment: function() {
-			console.log("Running addMoment from app.moment.js");
+			alert("Running addMoment from app.moment.js");
 			var _this = this;
 			// Start DB.
 			var DB = new App.db();
@@ -188,16 +111,10 @@ App.moment = function() {
 							if (results.rows != undefined && results.rows.length) {
 								for (var j=0; j < results.rows.length; j++) {
 									//console.log(_this);
-									_this.details.images.push(results.rows.item(j).name);
-								}
-								if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
-									return _this.renderMonthYearMoment();
+									_this.details.images.push(results.rows.item(j).data64);
 								}
 								return _this.renderMoment(placement);
 							} else {
-								if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
-									return false;
-								}
 								return _this.renderMoment(placement);
 							}
 						},
@@ -207,72 +124,12 @@ App.moment = function() {
 			);
 		},
 
-		renderMonthYearMoment: function() {
-			console.log("Running renderMoment.");
-			var _this = this;
-			var imgdiv_class = "month-year";
-			// Make sure the temporal separator exists (Bar that says "January 2014").
-			if (this.domnode == "#moments-months-article") {
-				// Process date format. Uses moment.js (no relation)
-				var divdom = this.domnode + momentjs(this.details.date).format("-YYYYMM");
-				var divdom_text = momentjs(this.details.date).format("MMMM YYYY").toUpperCase();
-			} else if (this.domnode == "#moments-years-article") {
-				// Process date format. Uses moment.js (no relation)
-				var divdom = this.domnode + momentjs(this.details.date).format("-YYYY");
-				var divdom_text = momentjs(this.details.date).format("YYYY");
-			}
-			if (!Lungo.dom(divdom).length) {
-				console.log("Should be adding separator.");
-				var temporal_separator = document.createElement("div");
-				Lungo.dom(temporal_separator).attr("id", divdom.substr(1, divdom.length - 1));
-				Lungo.dom(temporal_separator).addClass("moment-day");
-				var temporal_separator_div = document.createElement("div");
-				Lungo.dom(temporal_separator_div).addClass("on-left");
-				Lungo.dom(temporal_separator_div).addClass("hilite");
-				Lungo.dom(temporal_separator_div).text(divdom_text);
-				Lungo.dom(temporal_separator).append(temporal_separator_div);
-				Lungo.dom(this.domnode).append(temporal_separator);
-			}
-			
-			// Add images to moment.
-			for (var img = 0; img < this.details.images.length; img++) {
-				var img_src;
-				if (this.details.images[img].substr(0, 4) === "data") {
-					img_src = this.details.images[img]
-				} else {
-					img_src = App.config.image_prefix + this.details.images[img];
-				}
-				// Create div to hold moment image.
-				var moment_imgdiv = document.createElement("div");
-				Lungo.dom(moment_imgdiv).addClass("moment-image");
-				Lungo.dom(moment_imgdiv).addClass(imgdiv_class);
-				Lungo.dom(moment_imgdiv).data("momentid", this.details.api_id);
-
-				// Add action for tap.
-				Lungo.dom(moment_imgdiv).tap(function() {
-					var chosen_moment = new App.moment();
-					chosen_moment.domnode = "#one-moment-article-container";
-					Lungo.dom(chosen_moment.domnode).html("");
-					App.database.getMoment(Lungo.dom(this).data("momentid"), chosen_moment);
-					Lungo.Router.section("one-moment");
-				});
-
-				// Create image.
-				var moment_imgimg = document.createElement("img");
-				Lungo.dom(moment_imgimg).attr("id", "moment-" + this.details.moment_id);
-				Lungo.dom(moment_imgimg).attr("src", img_src);
-				// Add image to div.
-				Lungo.dom(moment_imgdiv).append(moment_imgimg);
-				// Add div to article.
-				Lungo.dom(_this.domnode).append(moment_imgdiv);
-				delete moment_imgdiv;
-				delete moment_imgimg;
-			}
-
-		},
-
 		renderMoment: function(placement) {
+			// Need to add this to moment. Work in progress.
+			// Lungo.dom(".moment-header").each(function() { this.addEventListener("click", function(event) {if (Lungo.dom(event.target)) { alert(Lungo.dom(event.target)); } else { alert("Didn't work."); } }) });
+
 			console.log("Running renderMoment.");
+			//console.log(JSON.stringify(this.details));
 			var _this = this;
 			var imgdiv_class = "";
 			if (this.details.images != undefined) {
@@ -306,10 +163,6 @@ App.moment = function() {
 				chosen_moment.domnode = "#one-moment-article-container";
 				Lungo.dom(chosen_moment.domnode).html("");
 				App.database.getMoment(Lungo.dom(this).data("momentid"), chosen_moment);
-				var moment_id = Lungo.dom(this).data("momentid");
-				Lungo.dom("#moment-edit-button").tap(function() {
-					App.database.getMomentForEdit(moment_id);
-				});
 				Lungo.Router.section("one-moment");
 			});
 
@@ -329,8 +182,6 @@ App.moment = function() {
 				var img_src;
 				if (this.details.images[img].substr(0, 4) === "data") {
 					img_src = this.details.images[img]
-				} else if (this.details.images[img].substr(0, 6) === "moment") {
-					img_src = App.config.local_prefix + this.details.images[img];
 				} else {
 					img_src = App.config.image_prefix + this.details.images[img];
 				}
@@ -341,13 +192,13 @@ App.moment = function() {
 				// Create anchor to hold image.
 				var moment_anchor = document.createElement("a");
 				Lungo.dom(moment_anchor).addClass("fancybox");
-				Lungo.dom(moment_anchor).attr("rel", "group");
-				Lungo.dom(moment_anchor).attr("href", "");
+				//Lungo.dom(moment_anchor).attr("rel", "group");
+				Lungo.dom(moment_anchor).attr("href", img_src);
 				// Create image.
 				var moment_imgimg = document.createElement("img");
 				Lungo.dom(moment_imgimg).attr("id", "moment-" + this.details.moment_id);
 				Lungo.dom(moment_imgimg).attr("src", img_src);
-				Lungo.dom(moment_imgimg).attr("style", "padding:2px;");
+                Lungo.dom(moment_imgimg).attr("style", "padding:2px;");
 				// Add image to anchor.
 				Lungo.dom(moment_anchor).append(moment_imgimg);
 				// Add anchor to div.
@@ -407,7 +258,7 @@ App.moment = function() {
 					Lungo.dom(this.domnode).html(moment_item);
 					break;
 			}
-
+            
 			$(".fancybox").fancybox({
 				fitToView: false,
 			    autoSize: false,
@@ -433,7 +284,7 @@ App.moment = function() {
 			c.current_user = (c.id == App.current_user.details.user_id) ? 1 : 0;
 			var c_data_array = [c.id, c.email, c.first_name, c.last_name, c.city, c.state, c.country, c.user_image, c.current_user];
 			var c_query = "INSERT OR IGNORE INTO `user` \
-						(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
+						(`id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 			console.log(c_data_array + " " + c_query);
 			DB.db.transaction(
@@ -476,11 +327,10 @@ App.moment = function() {
 			if (_this.details.collaborators != undefined && _this.details.collaborators.length) {
 				for (var j = 0; j < _this.details.collaborators.length; j++) {
 					var cc = _this.details.collaborators[j];
-					var cc_data_array = [cc.id, cc.email, (cc.first_name || ''), (cc.last_name || ''), (cc.city || ''), (cc.state || ''), (cc.country || ''), (cc.user_image || ''), 0];
+					var cc_data_array = [cc.id, cc.email, cc.first_name, cc.last_name, cc.city, cc.state, cc.country, cc.user_image, cc.current_user];
 					var cc_query = "INSERT OR IGNORE INTO `user` \
-						(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
+						(`id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-					console.log(cc_query + cc_data_array);
 					DB.db.transaction(
 						function(transaction) {
 							transaction.executeSql(cc_query, cc_data_array, 
@@ -519,60 +369,40 @@ App.moment = function() {
 					var image = _this.details.images[j];
 					console.log(JSON.stringify(image));
 					var imgr = new App.image();
-					imgr.cacheLocally(image, function(res) {
-						var i_data_array = [image, 'moment', _this.details.creator.id, 1];
-						var i_query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?);";
-						DB.db.transaction(function(transaction){transaction.executeSql(i_query, i_data_array, 
-							function(transaction, results) {
-								var im_data_array = [_this.details.id, results.insertId, 1];
-								var im_query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) VALUES (?, ?, ?);";
-								DB.db.transaction(function(transaction){transaction.executeSql(im_query, im_data_array, 
+					imgr.generateImageBlob(image, 4, function(d) {
+						console.log("There should be a blob.");
+						//console.log(d);
+						var i_data_array = [image, 'moment', _this.details.creator.id, d, 1];
+						//console.log(i_data_array);
+						var i_query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
+						DB.db.transaction(
+							function(transaction) {
+								transaction.executeSql(i_query, i_data_array, 
 									function(transaction, results) {
 										console.log(results);
-									}, 
-									function(transaction, errors) {
-										console.log("errors" + errors);
+										console.log("ImageID: " + results.insertId);
+										console.log("MomentID: " + _this.details.id);
+										var im_data_array = [_this.details.id, results.insertId, 1];
+										var im_query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) VALUES (?, ?, ?);";
+										DB.db.transaction(
+											function(transaction) {
+												transaction.executeSql(im_query, im_data_array, 
+													function(transaction, results) {
+														console.log(results);
+													}, 
+													function(transaction, errors) {
+														console.log("errors" + errors);
+													}
+												);
+											}
+										);
+									}, function(transaction, results) {
+										//console.log(results);
 									}
-								);});
-							}, function(transaction, results) {
-
+								);
 							}
-						)});
+						);
 					});
-					// imgr.generateImageBlob(image, 4, function(d) {
-					// 	console.log("There should be a blob.");
-					// 	//console.log(d);
-					// 	var i_data_array = [image, 'moment', _this.details.creator.id, d, 1];
-					// 	//console.log(i_data_array);
-					// 	var i_query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
-					// 	DB.db.transaction(
-					// 		function(transaction) {
-					// 			transaction.executeSql(i_query, i_data_array, 
-					// 				function(transaction, results) {
-					// 					console.log(results);
-					// 					console.log("ImageID: " + results.insertId);
-					// 					console.log("MomentID: " + _this.details.id);
-					// 					var im_data_array = [_this.details.id, results.insertId, 1];
-					// 					var im_query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) VALUES (?, ?, ?);";
-					// 					DB.db.transaction(
-					// 						function(transaction) {
-					// 							transaction.executeSql(im_query, im_data_array, 
-					// 								function(transaction, results) {
-					// 									console.log(results);
-					// 								}, 
-					// 								function(transaction, errors) {
-					// 									console.log("errors" + errors);
-					// 								}
-					// 							);
-					// 						}
-					// 					);
-					// 				}, function(transaction, results) {
-					// 					//console.log(results);
-					// 				}
-					// 			);
-					// 		}
-					// 	);
-					// });
 				}
 			}
 		},

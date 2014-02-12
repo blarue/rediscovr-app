@@ -27,7 +27,6 @@ section > footer > nav > a:active,
 nav[data-control=groupbar] > a:active {
   color: #669bcf;
 }
-/*
 nav[data-control=groupbar] > a.active,
 nav[data-control=groupbar] > a:active {
   -webkit-box-shadow: inset 0 -0.3em #00afe3;
@@ -44,43 +43,6 @@ section > footer > nav > a:active {
   -o-box-shadow: inset 0 0.3em #00afe3;
   box-shadow: inset 0 0.3em #00afe3;
 }
-*/
-
-/* 
- * Start Tag from Lungo Theme
- */
-.tag:not(.icon) {
-  color: #fff;
-  font-weight: bold;
-  -webkit-text-shadow: none;
-  -moz-text-shadow: none;
-  -ms-text-shadow: none;
-  -o-text-shadow: none;
-  text-shadow: none;
-}
-.tag:not(.icon):not(.count) {
-  -webkit-border-radius: 0.2em;
-  -moz-border-radius: 0.2em;
-  -ms-border-radius: 0.2em;
-  -o-border-radius: 0.2em;
-  border-radius: 0.2em;
-}
-.tag:not(.icon).count {
-  -webkit-border-radius: 0.3em;
-  -moz-border-radius: 0.3em;
-  -ms-border-radius: 0.3em;
-  -o-border-radius: 0.3em;
-  border-radius: 0.3em;
-  -webkit-box-shadow: 0 0 1px rgba(0,0,0,0.25);
-  -moz-box-shadow: 0 0 1px rgba(0,0,0,0.25);
-  -ms-box-shadow: 0 0 1px rgba(0,0,0,0.25);
-  -o-box-shadow: 0 0 1px rgba(0,0,0,0.25);
-  box-shadow: 0 0 1px rgba(0,0,0,0.25);
-  background-color: #6698cc;
-}
-/* 
- * End Tag from Lungo Theme
- */
 
 
 /*

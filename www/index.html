@@ -38,13 +38,14 @@
 	<script src="static/javascripts/mapbox.js"></script>
 	<link rel="stylesheet" href="static/stylesheets/mapbox.css?v=1">
 	<link rel="stylesheet" href="css/index.css">
+
 	<script type="text/javascript">
 		// var pictureSource;   // picture source
 		// var destinationType; // sets the format of returned value
 
 		// Wait for device API libraries to load
-		document.addEventListener("deviceready", onDeviceReady, false);
-		var file_msg = "";
+		document.addEventListener("deviceready",onDeviceReady,false);
+
 		// device APIs are available
 		function onDeviceReady() {
 			// pictureSource=navigator.camera.PictureSourceType;
@@ -53,74 +54,6 @@
 			if (window.plugins != undefined && window.plugins.webviewcolor != undefined) {
 				window.plugins.webviewcolor.change('#ffffff');
 			}
-			window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, onFileSystemFail);
-			window.verbosity = true;
-			checkConnection();
-		}
-		// File methods.
-		function onFileSystemSuccess(fileSystem) {
-			file_msg += "Got Directory\n";
-			file_msg += fileSystem.name + "\n";
-			file_msg += fileSystem.root.name + "\n";
-			fileSystem.root.getDirectory("momentimg", {create:true}, FS_gotDir, FS_onError);
-		}
-		function onFileSystemFail(evt) {
-			file_msg += evt.target.error.code;
-			alert(file_msg);
-		}
-		function FS_gotDir(d){
-			DATADIR = d;
-			App.config.local_prefix = "file://localhost" + DATADIR.fullPath + "/";
-			file_msg += App.config.local_prefix + "\n\n";
-			var reader = DATADIR.createReader();
-			reader.readEntries(function(d) {
-			    FS_gotFiles(d);
-			    FS_appReady();
-			}, FS_onError);
-		}
-		//Result of reading my directory
-		function FS_gotFiles(entries) {
-			file_msg += "The dir has " + entries.length + " entries.\n";
-			console.log("The dir has " + entries.length + " entries.");
-		}
-		// Error handler.
-		function FS_onError(e){
-			console.log("ERROR");
-			console.log(JSON.stringify(e));
-			file_msg += "ERROR\n";
-			file_msg += JSON.stringify(e);
-			alert(file_msg);
-		}
-		function FS_appReady(){
-			file_msg += "need to download http://etch-images.s3.amazonaws.com/moment-1391758629194-e20d29a57db7.jpg\n";
-			console.log("need to download http://etch-images.s3.amazonaws.com/moment-1391758629194-e20d29a57db7.jpg");
-			var root = "http://etch-images.s3.amazonaws.com/";
-			var file = "moment-1391758629194-e20d29a57db7.jpg";
-			var ft = new FileTransfer();
-			var dlPath = DATADIR.fullPath + "/" + file;
-			file_msg += "downloading crap to " + dlPath;
-			console.log("downloading crap to " + dlPath);
-			ft.download(root + escape(file), dlPath, function(file_dl) {
-				file_msg += "Success: " + file_dl.toURL() + "\n";
-				console.log("Successful download");
-				//alert(file_msg);
-			}, FS_onError);
-		}
-		// Connection Methods
-		function checkConnection() {
-			var networkState = navigator.connection.type;
-
-			var states = {};
-			states[Connection.UNKNOWN]  = 'Unknown connection';
-			states[Connection.ETHERNET] = 'Ethernet connection';
-			states[Connection.WIFI]     = 'WiFi connection';
-			states[Connection.CELL_2G]  = 'Cell 2G connection';
-			states[Connection.CELL_3G]  = 'Cell 3G connection';
-			states[Connection.CELL_4G]  = 'Cell 4G connection';
-			states[Connection.CELL]     = 'Cell generic connection';
-			states[Connection.NONE]     = 'No network connection';
-
-			// alert('Connection type: ' + states[networkState]);
 		}
 
 		// // Called when a photo is successfully retrieved
@@ -262,7 +195,7 @@
 		<script src="package/lungo/lungo.js"></script>
 		<script>
 			Lungo.init({
-				name: 'Etched',
+				name: 'rediscovr',
 				version: '0.0.1',
 				resources: [
 					'static/asides/left-sidebar.html',
@@ -273,6 +206,7 @@
 					'static/sections/moments.html',
 					'static/sections/one-moment.html',
 					'static/sections/profile.html',
+                    'static/sections/profile_image.html',
 					'static/sections/people.html',
 					'static/sections/person.html',
 					'static/sections/notifications.html',
@@ -282,7 +216,6 @@
 					'static/sections/add-moment-reminder-end.html',
 					'static/sections/add-moment-location.html',
 					'static/sections/add-moment-select-contacts.html',
-					'static/sections/add-moment-photos.html',
 				],
 				history: false
 			});
@@ -307,7 +240,6 @@
 		<script src="js/fancybox/jquery.fancybox-thumbs.js"></script>
 		<!-- Date utility, oddly called Moment.js -->
 		<script src="static/javascripts/moment.min.js"></script>
-		
 		<script type="text/javascript">
 			app.initialize();
 		</script>

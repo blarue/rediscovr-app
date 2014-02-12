@@ -1,3 +1,8 @@
+var ctx;
+var t_width, t_height;
+var pos_y, pos_x;
+var target_flag = false;
+
 App.photo = {
 // navigator.camera.getPicture(this.onCaptureSuccess, this.onCaptureFail, {
 //     allowEdit: true,
@@ -13,50 +18,83 @@ App.photo = {
         	var chosen_image;
         	var myurl;
         	var url_tool = window.webkitURL;
-
-			// Empty any existing thumbs. Or not!!
-			//Lungo.dom("#add-moment-selected-images").html("");
+			// Empty any existing thumbs.
+			Lungo.dom("#add-moment-selected-images").html("");
         	for (var i = 0; i < event.target.files.length; i++) {
         		myurl = url_tool.createObjectURL(event.target.files[i]);
-        		chosen_image = document.createElement("img");
-        		Lungo.dom(chosen_image).attr("style", "display:inline-block;width:70px;height:70px;border:1px solid #FFFFFF;");
-        		Lungo.dom(chosen_image).attr("src", myurl);
-				Lungo.dom(chosen_image).tap(function(e) {
-					var _this = this;
-					Lungo.Notification.confirm({
-						icon: null,
-						title: 'Are you sure you want to remove this photo?',
-						description: '',
-						accept: {
-							icon: 'checkmark',
-							label: 'Accept',
-							callback: function(){ Lungo.dom(_this).hide(); }
-						},
-						cancel: {
-							icon: 'close',
-							label: 'Cancel',
-							callback: function(){ alert("No!"); }
-						}
-					});
-				});
+				chosen_image = "<img style=\"display:inline-block;width:40px;height:40px;border:1px solid #FFFFFF;\" src=\"" + myurl + "\" />";
 				Lungo.dom("#add-moment-selected-images").append(chosen_image);
         	}
-			Lungo.dom(".selectedphotos").show();
-			Lungo.dom("#moment-photos-done-button-count").text(Lungo.dom("#add-moment-selected-images").children().length);
-			if (Lungo.Router.history() !== "add-moment-photos") {
-				Lungo.Router.section("add-moment-photos");
-			}
-			// Clone the first child node from the selected images and make that the collection image.
-			var collection_image = Lungo.dom("#add-moment-selected-images").children().first().get(0).cloneNode();
-			Lungo.dom(collection_image).tap(function() {
-				Lungo.Router.section("add-moment-photos");
-			});
-			Lungo.dom("#add-moment-image-collection").html(collection_image);
-			Lungo.dom("#add-moment-image-collection").append("<span class=\"tag count\">" + Lungo.dom("#add-moment-selected-images").children().length + "</span>");
-			Lungo.dom("#add-moment-file-upload").hide();
         	delete myurl, url_tool, chosen_image;
         }
-	},
+    },
+    getProfilePics: function(event) {
+        if (event.target.files.length) {
+        	var chosen_image;
+        	var myurl;
+        	var url_tool = window.webkitURL;
+            var orig;
+			// Empty any existing thumbs.
+			//Lungo.dom("#add-moment-selected-images").html("");
+        	for (var i = 0; i < 1; i++) {
+                $("#profile-selected-images").empty();
+        		myurl = url_tool.createObjectURL(event.target.files[i]);
+                chosen_image = " <img id='source' style='display:none;' src=\"" + myurl + "\"/>";
+				Lungo.dom("#profile-selected-images").append(chosen_image);
+                
+                orig = new Image();
+                orig.addEventListener("load", function(event){
+                                   //   console.log("Original Width: " + orig.width);
+                                   //   console.log("Original Height: " + orig.height);
+                                      
+					try{
+						var canvas=document.getElementById("canvas");
+                        ctx=canvas.getContext("2d");
+                        var img=new Image();
+                        var s_height = orig.height;
+                        var s_width = orig.width;
+                        if(s_height > s_width)
+                        {
+							target_flag = true;
+                            t_width = s_width;
+                            delta = s_height - s_width;
+                            pos_y = parseInt(delta/2);
+                            document.getElementById("canvas").height = t_width;
+                            document.getElementById("canvas").width = t_width;
+                        }else{
+                            target_flag = false;
+                            t_height = s_height;
+                            delta = s_width - s_height;
+                            pos_x = parseInt(delta/2);
+                            document.getElementById("canvas").height = t_height;
+                            document.getElementById("canvas").width = t_height;
+                        }
+                                      
+                        var img=new Image();
+                        img.onload=function(){
+							if(target_flag == true)
+								ctx.drawImage(img,0,pos_y,t_width,t_width,0,0,t_width,t_width);
+                            else
+                                ctx.drawImage(img,pos_x,0,t_height,t_height,0,0,t_height,t_height);
+                                      
+                            document.getElementById("cropped").src=canvas.toDataURL();
+                        }
+                        img.src=document.getElementById("source").src;
+                                      
+                     }catch(e){console.log(e);}
+                                      
+                }, false);
+                if (myurl.substr(0, 1) == "/") {
+                    orig.src = myurl;
+                } else if (myurl.substr(0, 4) == "blob") {
+                    orig.src = myurl;
+                } else {
+                    orig.src = App.config.image_prefix + myurl;
+                }
+        	}
+        	delete myurl, url_tool, chosen_image, orig;
+        }
+	}
 
 	// capturePhoto: function() {
 	// 	// Take picture using device camera and retrieve image as base64-encoded string

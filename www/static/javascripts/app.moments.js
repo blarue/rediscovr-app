@@ -6,8 +6,6 @@ App.moments = function() {
 			since: null
 		},
 		domnode: "#moments-article",
-		months_domnode: "#moments-months-article",
-		years_domnode: "#moments-years-article",
 		errors: [],
 
 		getMoments: function(domnode) {
@@ -29,28 +27,6 @@ App.moments = function() {
 			console.log("last_sync: " + App.current_user.details.last_sync);
 			var api = new App.api();
 			api.getMoments(this);
-		},
-
-		getMomentsMonths: function(domnode) {
-			if (domnode != null) {
-				this.domnode = domnode;
-			} else {
-				this.domnode = this.months_domnode;
-			}
-			Lungo.dom(this.domnode).html("");
-			// Find locally cached moments.
-			App.database.getMoments(null, 'date DESC', null, this);
-		},
-
-		getMomentsYears: function(domnode) {
-			if (domnode != null) {
-				this.domnode = domnode;
-			} else {
-				this.domnode = this.years_domnode;
-			}
-			Lungo.dom(this.domnode).html("");
-			// Find locally cached moments.
-			App.database.getMoments(null, 'date DESC', null, this);
 		},
 
 		handleGet: function(data) {
@@ -81,7 +57,7 @@ App.moments = function() {
 					});
 				}
 			} else {
-				//Lungo.Router.section("home");
+				Lungo.Router.section("home");
 			}
 		},
 
