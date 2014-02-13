@@ -114,7 +114,25 @@ App.image = function() {
 					break;
 			}
 		},
-
+		setImageBlob:{} function(image, steps, cb) {
+        	if (steps == null) {
+            	steps = 4;
+       		}
+        	console.log("Running generate blob.");
+        	this.orig = new Image();
+        	var _this = this;
+        	this.orig.addEventListener("load", function(event) {
+                  //console.log("Original Width: " + _this.orig.width);
+                  //console.log("Original Height: " + _this.orig.height);
+            }, false);
+        	if (image.substr(0, 1) == "/") {
+            	this.orig.src = image;
+        	} else if (image.substr(0, 4) == "blob") {
+           	 	this.orig.src = image;
+       	 	} else {
+            	this.orig.src = App.config.image_prefix + image;
+        	}
+    	},
 		generateImageBlob: function(image, steps, cb) {
 			if (steps == null) {
 				steps = 4;

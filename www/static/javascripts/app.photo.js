@@ -1,3 +1,8 @@
+var ctx;
+var t_width, t_height;
+var pos_y, pos_x;
+var target_flag = false;
+
 App.photo = {
 // navigator.camera.getPicture(this.onCaptureSuccess, this.onCaptureFail, {
 //     allowEdit: true,

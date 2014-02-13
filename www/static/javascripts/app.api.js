@@ -104,7 +104,16 @@ App.api = function() {
 				ref.handleGetCollaborators(data);
 			}, "json");	
 		},
-
+   		
+   		getNotifications: function(ref) {
+        	console.log("Running getNotifications");
+        
+        	$$.get(config.url + "notification", ref.details, function(data) {
+            	ref.handleGetNotifications(data);
+            }, "json"); 
+        
+        },
+        
 		uploadImages: function(ref) {
 			//Upload images.
 			var _this = this;

@@ -179,7 +179,17 @@ Lungo.Events.init({
 	'tap #moment-photos-upload-files': function() {
 		Lungo.dom("#moment-photos-upload-files").on("change", App.photo.getPics);
 	},
-
+	
+	'load section#notifications': function(event) {
+		console.log("Load notifications page....");
+		var notifications = new App.notification();
+		notifications.getNotifications();
+	},
+	
+	'tap #profile-upload-file': function() {
+		console.log(2);
+		Lungo.dom("#profile-upload-file").on("change", App.photo.getProfilePics);
+	},
 	// User Settings load event.
 	'load section#settings': function(event) {
 		console.log(App.current_user);
@@ -334,27 +344,26 @@ Lungo.Events.init({
 
 	'tap #moment-form-post-button': function() {
         try{
-
             var m_names = new Array("January", "February", "March","April", "May", "June", "July","August", "September","October", "November", "December");
 
             var d = Lungo.dom("#moment-form-date").val().split("-");
             var curr_date = d[2];
             var curr_month = parseInt(d[1])-1;
             var curr_year = d[0];
-            var startDate = new Date(m_names[curr_month] +" " + curr_date + ", " + curr_year +" " + Lungo.dom("#moment-form-time").val() + ":00");
+            var startDate = new Date(m_names[curr_month] +" " + curr_date + ", " + curr_year +" " + Lungo.dom("#moment-form-time").val());
             var endDate = startDate;
             //console.log(startDate + "/" + endDate + "/" + new Date());
 
             var title = Lungo.dom("#moment-form-title").val();
             var location = Lungo.dom("#moment-form-location").val();
             var notes = Lungo.dom("#moment-form-desc").val();
-            var success = function(message) {  };
-            var error = function(message) {  };
+            var success = function(message) {  console.log("success");};
+            var error = function(message) {  console.log("failed");};
 
             window.plugins.calendar.createEvent(title,location,notes,startDate,endDate,success,error);
 
         }catch(e){
-            //console.log(e);
+            console.log(e);
         }
 
         rediscovr.currentmoment.curr_image = 0;
