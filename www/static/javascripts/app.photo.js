@@ -1,3 +1,8 @@
+var ctx;
+var t_width, t_height;
+var pos_y, pos_x;
+var target_flag = false;
+
 App.photo = {
 // navigator.camera.getPicture(this.onCaptureSuccess, this.onCaptureFail, {
 //     allowEdit: true,
@@ -95,7 +100,7 @@ console.log("myurl: " + myurl);
 	capturePhoto: function() {
 		// Take picture using device camera and retrieve image as base64-encoded string
 		navigator.camera.getPicture(this.onPhotoDataSuccess, this.onFail, {
-			quality: 50, 
+			quality: 50,
 			destinationType: destinationType.DATA_URL,
 			targetWidth: 320,
 			targetHeight: 320
@@ -105,8 +110,8 @@ console.log("myurl: " + myurl);
 	capturePhotoEdit: function() {
 		// Take picture using device camera, allow edit, and retrieve image as base64-encoded string
 		navigator.camera.getPicture(this.onPhotoDataSuccess, this.onFail, {
-			quality: 20, 
-			allowEdit: true, 
+			quality: 20,
+			allowEdit: true,
 			destinationType: destinationType.DATA_URL,
 			targetWidth: 320,
 			targetHeight: 320
@@ -116,8 +121,8 @@ console.log("myurl: " + myurl);
 	getPhoto: function(source) {
 		// Retrieve image file location from specified source
 		navigator.camera.getPicture(this.onPhotoURISuccess, this.onFail, {
-			quality: 75, 
-			destinationType: destinationType.FILE_URI, 
+			quality: 75,
+			destinationType: destinationType.FILE_URI,
 			sourceType: source,
 			mediaType: Camera.MediaType.ALLMEDIA,
 			targetWidth: 320,
@@ -154,7 +159,7 @@ console.log("myurl: " + myurl);
 		// The in-line CSS rules are used to resize the image
 		largeImage.src = imageURI;
 	},
-	
+
 	// Called if something bad happens.
 	//
 	onFail: function(message) {
