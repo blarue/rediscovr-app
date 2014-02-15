@@ -93,6 +93,17 @@ App.api = function() {
 			}, "json");	
 		},
 
+<<<<<<< HEAD
+		getNotifications: function(ref) {
+			console.log("Running getNotifications");
+		
+			$$.get(config.url + "notification", ref.details, function(data) {
+			  ref.handleGetNotifications(data);
+			}, "json");	
+		},
+		
+		uploadImages: function(ref) {
+=======
         getNotifications: function(ref) {
             console.log("Running getNotifications");
 
@@ -103,6 +114,7 @@ App.api = function() {
         },
 
         uploadImages: function(ref) {
+>>>>>>> hotfix/notifications
 			//Upload images.
 			var _this = this;
 			var _ref = ref;
