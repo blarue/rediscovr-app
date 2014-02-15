@@ -180,6 +180,16 @@ Lungo.Events.init({
 		Lungo.dom("#moment-photos-upload-files").on("change", App.photo.getPics);
 	},
 
+    'load section#notifications': function(event) {
+        console.log("Load notifications page....");
+        var notifications = new App.notification();
+        notifications.getNotifications();
+    },
+
+    'tap #profile-upload-file': function() {
+        console.log(2);
+        Lungo.dom("#profile-upload-file").on("change", App.photo.getProfilePics);
+    },
 	// User Settings load event.
 	'load section#settings': function(event) {
 		console.log(App.current_user);
