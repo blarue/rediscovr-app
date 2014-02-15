@@ -31,7 +31,7 @@ App.notification = function() {
                 var row = notificationArray[i];
 
                 if(row.id != undefined && row.id != null)
-                    Lungo.dom("#notifications-article #notifications_list").append('<li class=\"arrow\" onclick=\"gotoPersonDetail(\''+row.first_name+'\'\,\''+row.last_name+'\'\,\''+row.city+'\'\,\''+row.state+'\'\,\''+row.images+'\');\"><div class=\"user-avatar avatar-medium avatar-shadow\"><img src=\"'+row.user_image+'\"/></div><div><span class=\"text\">'+row.first_name+' '+ row.last_name+' has added <span class=\"hilite\">'+row.images+' photos</span> from today</span></div><div style=\"clear:both;\"></div></li>');
+                    Lungo.dom("#notifications-article #notifications_list").append('<li class=\"arrow\" onclick=\"gotoPersonDetail(\''+row.first_name+'\'\,\''+row.last_name+'\'\,\''+row.city+'\'\,\''+row.state+'\'\,\''+row.images+'\');\"><div class=\"user-avatar avatar-medium avatar-shadow\"><img src=http://cdn.etched.io/"'+row.user_image+'\"/></div><div><span class=\"text\">'+row.first_name+' '+ row.last_name+' has added <span class=\"hilite\">'+row.images+' photos</span> from today</span></div><div style=\"clear:both;\"></div></li>');
             });
             //	App.notificaitonLastSyncTime = results.server_time;
         },
