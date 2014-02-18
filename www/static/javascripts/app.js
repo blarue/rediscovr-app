@@ -41,10 +41,12 @@ App.config = {
 	local_prefix: ""
 };
 
+App.upload_images = [];
+
 // Algorithm for generating unique IDs. Pass in a prefix like 'moment'.
 App.generateUid = function (prefix, separator) {
 	var timestamp = new Date().getTime();
-	var prefix = prefix || "general";
+	prefix = prefix || "general";
 	var delim = separator || "-";
 	// Return a random four character string.
 	function S4() {
@@ -72,13 +74,12 @@ Lungo.ready(function() {
 	if (typeof rediscovr == "undefined") {
 		rediscovr = {};
 	}
-	if (rediscovr.currentmoment == undefined) {
+	if (rediscovr.currentmoment === undefined) {
 		rediscovr.currentmoment = {};
 	}
 
 	// Move moment javascript to momentjs to avoid confusion.
 	momentjs = moment;
-	delete moment;
 
 	pushNotification = window.plugins.pushNotification;
 });
@@ -95,7 +96,7 @@ Lungo.Events.init({
 		Lungo.dom("#moment-form-time").val(default_time);
 
 		window.setTimeout(function() {
-			if (Lungo.dom("#moment-form-location").val() == "") {
+			if (Lungo.dom("#moment-form-location").val() === "") {
 				console.log("Requesting GPS...");
 				// We might want to go with this...
 				// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true
@@ -105,11 +106,16 @@ Lungo.Events.init({
 						var req = {
 							latlng: position.coords.latitude + "," + position.coords.longitude,
 							sensor: "true"
-						}
+						};
 						//alert(url + $$.serializeParameters(req, "?"));
 						$$.get(url, req, function(data) {
-							if (data != undefined && data.results != undefined && data.status == "OK") {
-								Lungo.dom("#moment-form-location").val(data.results[0].formatted_address);
+							if (data !== undefined && data.results !== undefined && data.status == "OK") {
+								var formatted_address = data.results[0].address_components[0].short_name + " " + // Number
+									data.results[0].address_components[1].short_name + ", " + // Street
+									data.results[0].address_components[4].short_name + ", " + // City
+									data.results[0].address_components[5].short_name; // State
+
+								Lungo.dom("#moment-form-location").val(formatted_address);
 							} else {
 								alert(JSON.stringify(data));
 							}
@@ -149,35 +155,58 @@ Lungo.Events.init({
 		App.current_user.logout();
 	},
 
+	'tap #left-sidecar-aside-close': function() {
+		Lungo.Aside.hide();
+	},
+	
+	// TODO: Change the following to a class selector so we don't have to repeat.
 	'tap #moment-form-upload-files': function() {
+		// Pop up a prompt (using confirm) to choose camera or photo library.
 		navigator.notification.confirm(
 			'',
 			function(buttonIndex) {
 				console.log(buttonIndex);
 				switch (buttonIndex) {
 					case 1:
-						console.log("Camera");
+						console.log("Capture from camera.");
 						App.photo.getPhoto();
 						break;
 					case 2:
-						console.log("Library");
+						console.log("Capture from library.");
 						App.photo.getPhoto(pictureSource.PHOTOLIBRARY);
 						break;
 					case 3:
 						return false;
-						break;
 				}
 			},
 			'Upload a photo', // Title?
 			['Take a photo','Choose Existing', 'Cancel']
 		);
-		//App.photo.getPhoto(pictureSource.PHOTOLIBRARY);
-		//Lungo.dom("#moment-form-upload-files").on("change", App.photo.getPics);
-
 	},
-
+	
+	// TODO: Change the following to a class selector so we don't have to repeat.
 	'tap #moment-photos-upload-files': function() {
-		Lungo.dom("#moment-photos-upload-files").on("change", App.photo.getPics);
+		// Pop up a prompt (using confirm) to choose camera or photo library.
+		navigator.notification.confirm(
+			'',
+			function(buttonIndex) {
+				console.log(buttonIndex);
+				switch (buttonIndex) {
+					case 1:
+						console.log("Capture from camera.");
+						App.photo.getPhoto();
+						break;
+					case 2:
+						console.log("Capture from library.");
+						App.photo.getPhoto(pictureSource.PHOTOLIBRARY);
+						break;
+					case 3:
+						return false;
+				}
+			},
+			'Upload a photo', // Title?
+			['Take a photo','Choose Existing', 'Cancel']
+		);
 	},
 
     'load section#notifications': function(event) {
@@ -190,28 +219,29 @@ Lungo.Events.init({
         console.log(2);
         Lungo.dom("#profile-upload-file").on("change", App.photo.getProfilePics);
     },
+
 	// User Settings load event.
 	'load section#settings': function(event) {
 		console.log(App.current_user);
-		if (App.current_user.details.firstName != undefined) {
+		if (App.current_user.details.firstName !== undefined) {
 			Lungo.dom("#settings-firstname").val(App.current_user.details.firstName);
 		}
-		if (App.current_user.details.lastName != undefined) {
+		if (App.current_user.details.lastName !== undefined) {
 			Lungo.dom("#settings-lastname").val(App.current_user.details.lastName);
 		}
-		if (App.current_user.details.email != undefined) {
+		if (App.current_user.details.email !== undefined) {
 			Lungo.dom("#settings-email").val(App.current_user.details.email);
 		}
-		if (App.current_user.details.city != undefined) {
+		if (App.current_user.details.city !== undefined) {
 			Lungo.dom("#settings-city").val(App.current_user.details.city);
 		}
-		if (App.current_user.details.state != undefined) {
+		if (App.current_user.details.state !== undefined) {
 			Lungo.dom("#settings-state").val(App.current_user.details.state);
 		}
-		if (App.current_user.details.country != undefined) {
+		if (App.current_user.details.country !== undefined) {
 			Lungo.dom("#settings-country").val(App.current_user.details.country);
 		}
-		if (App.current_user.details.phone != undefined) {
+		if (App.current_user.details.phone !== undefined) {
 			Lungo.dom("#settings-phonenumber").val(App.current_user.details.phone);
 		}
 	},
@@ -219,67 +249,85 @@ Lungo.Events.init({
 	'load section#profile': function(event) {
 		var username = "";
 		var location = "";
-		if (App.current_user.details.user_image != undefined) {
+		if (App.current_user.details.user_image !== undefined) {
 			Lungo.dom("#profile-user-image").attr("src", App.config.image_prefix + App.current_user.details.user_image);
 		}
-		if (App.current_user.details.firstName != undefined) {
+		if (App.current_user.details.firstName !== undefined) {
 			username += App.current_user.details.firstName + "  ";
 		}
-		if (App.current_user.details.lastName != undefined) {
+		if (App.current_user.details.lastName !== undefined) {
 			username += App.current_user.details.lastName;
 		}
 		Lungo.dom("#profile-username").text(username);
-		if (App.current_user.details.city != undefined) {
+		if (App.current_user.details.city !== undefined) {
 			location = App.current_user.details.city;
 		}
-		if (App.current_user.details.state != undefined) {
+		if (App.current_user.details.state !== undefined) {
 			location += ", " + App.current_user.details.state;
 		}
 		Lungo.dom("#profile-location").text(location);
 		// Get moments from DB.
 		var db = new App.db();
-		db.open();
-		var param = [App.current_user.details.user_id];
-		var query = "SELECT COUNT(*) AS `allmoments` FROM `moment` WHERE `user` = ?";
-		db.db.transaction(
-			function(transaction) {
-				transaction.executeSql(query, param, 
-					function(transaction, results) { Lungo.dom("#profile-stats-allmoments").text(results.rows.item(0).allmoments); },
-					function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
-				);
-			}
-		);
-		delete db;
-		Lungo.dom("#profile-stats-private").text("0");
-		Lungo.dom("#profile-stats-collaborations").text("0");
+        db.open();
+        var my_moment_count = 0;
+        var param = [0]; //[App.current_user.details.user_id];
+        var query = "SELECT COUNT(*) AS `allmoments` FROM `moment` WHERE `user` != ?";
+        db.db.transaction(
+            function(transaction) {
+                transaction.executeSql(query, param,
+                    function(transaction, results) {
+                        my_moment_count = results.rows.item(0).allmoments;
+                        Lungo.dom("#profile-stats-allmoments").text(my_moment_count);
+                    },
+                    function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
+                );
+            }
+        );
+        /*		delete db;
+
+         // Get moments from DB.
+         var db = new App.db();
+         db.open();
+         */
+        var collaborations_count = 0;
+        var param1 = [App.current_user.details.user_id];
+        var query1 = "SELECT COUNT(*) AS `collaboation` FROM moment, moment_user WHERE moment.moment_id=moment_user.moment_id and moment_user.user_id=?";
+        db.db.transaction(
+            function(transaction) {
+                transaction.executeSql(query1, param1,
+                    function(transaction, results) {
+                        collaborations_count = results.rows.item(0).collaboation;
+                        Lungo.dom("#profile-stats-collaborations").text(collaborations_count);
+                    },
+                    function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
+                );
+            }
+        );
+
+        var private_count = 0;
+        var param2 = [0];//[App.current_user.details.user_id];
+        var query2 = "SELECT COUNT(*) AS `collaboation` FROM `moment` WHERE `user` != ?";
+        db.db.transaction(
+            function(transaction) {
+                transaction.executeSql(query2, param2,
+                    function(transaction, results) {
+                        private_count = results.rows.item(0).collaboation - collaborations_count;
+                        Lungo.dom("#profile-stats-private").text(private_count);
+                    },
+                    function(transaction, error) { console.log('Oops.  Error was '+error.message+' (Code '+error.code+')'); }
+                );
+            }
+        );
+        delete db;
+        // var private_count = my_moment_count - collaborations_count;
+        //	Lungo.dom("#profile-stats-private").text(private_count);
+        //	Lungo.dom("#profile-stats-collaborations").text("0");
         
-    Lungo.dom(".moment-item").remove();
+        Lungo.dom(".moment-item").remove();
         
 		var m = new App.moments();
 		m.getMoments("#profile-article");
 	},
-
-	// 'tap #moment-capture-button': function() {
-	// 	try {
-	// 		navigator.camera.getPicture(function(imageData) {
-	// 				// var fs = Lungo.dom("#moment-form-upload-files").get(0).files;
-	// 				// for (var i = 0; i < fs.length; i++) {
-	// 				// 	var chosen_images = "<img style=\"display:inline-block;width:40px;height:40px;margin-right:.3em;margin-bottom:.3em;\" src=\"" + imageData + "\" />";
-	// 				// 	Lungo.dom("#add-moment-selected-images").append(chosen_images);	
-	// 				// }
-	// 			}, 
-	// 			function() {
-	// 				alert("Nooo")
-	// 			}, {
-	// 				quality: 50, 
-	// 				destinationType: Camera.DestinationType.FILE_URI, 
-	// 				sourceType: Camera.PictureSourceType.PHOTOLIBRARY
-	// 			}
-	// 		);
-	// 	} catch (e) {
-	// 		alert(JSON.stringify(e));
-	// 	}
-	// },
 
 	// Reminder frequency panel.
 	'tap #reminder-frequency-article button': function() {
@@ -303,101 +351,112 @@ Lungo.Events.init({
 
 	'tap #moment-form-post-button': function() {
 		rediscovr.currentmoment.curr_image = 0;
-		rediscovr.currentmoment.num_images = Lungo.dom("#moment-form-upload-files").get(0).files.length;
+		//rediscovr.currentmoment.num_images = Lungo.dom("#moment-form-upload-files").get(0).files.length;
+		rediscovr.currentmoment.num_images = Lungo.dom("#add-moment-selected-images").children().length;
 		rediscovr.currentmoment.image_list = [];
 
 		// Resize & Store images
 		var myurl, new_name, imgr;
 		var url_tool = window.webkitURL;
-		var files = Lungo.dom("#moment-form-upload-files").get(0).files;
+		var files = [];
+		for (var i = 0; i < Lungo.dom("#add-moment-selected-images").children().length; i++) {
+			var full_path = Lungo.dom("#add-moment-selected-images").children()[i].src;
+			var path_split = full_path.split("/");
+			var filename = path_split[path_split.length - 1];
+			files.push(filename);
+		}
+		//var files = Lungo.dom("#moment-form-upload-files").get(0).files;
 		if (files.length) {
 			for (var i = 0; i < files.length; i++) {
-				myurl = url_tool.createObjectURL(files[i]);
-				var n = files[i].name.split(".");
+				//myurl = url_tool.createObjectURL(files[i]);
+				//var n = files[i].name.split(".");
+				var n = files[i].split(".");
 				var ext = n[n.length - 1];
-				var new_name = App.generateUid('moment') + "." + ext;
+				//var new_name = App.generateUid('moment') + "." + ext;
 				var types = {
 					video: ["mov", "mp4", "m4v"],
-					image: ["jpg", "jpeg", "png"]
+					image: ["jpg", "jpeg", "png", "gif"]
 				};
 				var is_vid = (types.video.indexOf(ext.toLowerCase()) != -1) ? true : false;
 				var is_img = (types.image.indexOf(ext.toLowerCase()) != -1) ? true : false;
 				var asset_type = (is_img) ? "image" : "video";
+				var file_name = files[i];
 
-				console.log("new_name: " + new_name);
-				var imgr = new App.image();
-				imgr.mode = "cache-new";
-				imgr.cacheNewImage(files[i], new_name, function(res) {
-					data_array = [new_name, 'moment', App.current_user.details.user_id, 0];
-					//console.log(data_array);
-					query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?);";
-					var DB = new App.db();
-					DB.open();
-					DB.db.transaction(function(transaction) {transaction.executeSql(query, data_array, 
-						function(transaction, results) {
-							//console.log(results);
-							console.log("ImageID: " + results.insertId);
-							rediscovr.currentmoment.image_list.push({url_hash: new_name, image_id: results.insertId, d: d});
-						},
-						function(transaction, errors) {
-							console.log(errors);
-						}
-					);});
-					rediscovr.currentmoment.curr_image++;
-					if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
-						if (Lungo.dom("#moment-form-post-button").text() == "Post") {
-							console.log("Last image. Add moment.")
-							// Save moment.
-							var m = new App.moment();
-							m.addMoment();
-						} else if (Lungo.dom("#moment-form-post-button").text() == "Edit") {
-							alert("Editing");
-							var m = new App.moment();
-							m.editMoment();
-						}
+				console.log("new_name: " + file_name);
+				// var imgr = new App.image();
+				// imgr.mode = "cache-new";
+				// imgr.cacheNewImage(files[i], new_name, function(res) {
+				data_array = [file_name, 'moment', asset_type, App.current_user.details.user_id, 0];
+				//console.log(data_array);
+				query = "INSERT OR IGNORE INTO `image` (`name`, `purpose`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?, ?);";
+				var DB = new App.db();
+				DB.open();
+				DB.db.transaction(function(transaction){transaction.executeSql(query, data_array, 
+					function(transaction, results) {
+						//console.log(results);
+						console.log("ImageID: " + results.insertId);
+						rediscovr.currentmoment.image_list.push({url_hash: file_name, image_id: results.insertId});
+						console.log(rediscovr.currentmoment.image_list);
+					},
+					function(transaction, errors) {
+						console.log(errors);
 					}
-				});
+				);});
+				rediscovr.currentmoment.curr_image++;
+				if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
+					if (Lungo.dom("#moment-form-post-button").text() == "Post") {
+						console.log("Last image. Add moment.");
+						// Save moment.
+						var m = new App.moment();
+						m.addMoment();
+					} else if (Lungo.dom("#moment-form-post-button").text() == "Edit") {
+						alert("Editing");
+						var m = new App.moment();
+						m.editMoment();
+					}
+				}
+				//});
 				// imgr = new App.image();
 				// imgr.generateImageBlob(myurl, 4, function(d) {
-				// 	console.log("There should be a blob.");
-				// 	//console.log(d);
-				// 	data_array = [new_name, 'moment', App.current_user.details.user_id, d, 0];
-				// 	//console.log(data_array);
-				// 	query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
-				// 	var DB = new App.db();
-				// 	DB.open();
-				// 	DB.db.transaction(
-				// 		function(transaction) {
-				// 			transaction.executeSql(query, data_array, 
-				// 				function(transaction, results) {
-				// 					//console.log(results);
-				// 					console.log("ImageID: " + results.insertId);
-				// 					rediscovr.currentmoment.image_list.push({url_hash: new_name, image_id: results.insertId, d: d});
-				// 				},
-				// 				function(transaction, errors) {
-				// 					console.log(errors);
-				// 				}
-				// 			);
-				// 		}
-				// 	);
-				// 	rediscovr.currentmoment.curr_image++;
-				// 	if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
-				// 		if (Lungo.dom("#moment-form-post-button").text() == "Post") {
-				// 			console.log("Last image. Add moment.")
-				// 			// Save moment.
-				// 			var m = new App.moment();
-				// 			m.addMoment();
-				// 		} else if (Lungo.dom("#moment-form-post-button").text() == "Edit") {
-				// 			alert("Editing");
-				// 			var m = new App.moment();
-				// 			m.editMoment();
-				// 		}
-				// 	}
+				//	console.log("There should be a blob.");
+				//	//console.log(d);
+				//	data_array = [new_name, 'moment', App.current_user.details.user_id, d, 0];
+				//	//console.log(data_array);
+				//	query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
+				//	var DB = new App.db();
+				//	DB.open();
+				//	DB.db.transaction(
+				//		function(transaction) {
+				//			transaction.executeSql(query, data_array, 
+				//				function(transaction, results) {
+				//					//console.log(results);
+				//					console.log("ImageID: " + results.insertId);
+				//					rediscovr.currentmoment.image_list.push({url_hash: new_name, image_id: results.insertId, d: d});
+				//				},
+				//				function(transaction, errors) {
+				//					console.log(errors);
+				//				}
+				//			);
+				//		}
+				//	);
+				//	rediscovr.currentmoment.curr_image++;
+				//	if (rediscovr.currentmoment.curr_image == rediscovr.currentmoment.num_images) {
+				//		if (Lungo.dom("#moment-form-post-button").text() == "Post") {
+				//			console.log("Last image. Add moment.")
+				//			// Save moment.
+				//			var m = new App.moment();
+				//			m.addMoment();
+				//		} else if (Lungo.dom("#moment-form-post-button").text() == "Edit") {
+				//			alert("Editing");
+				//			var m = new App.moment();
+				//			m.editMoment();
+				//		}
+				//	}
 				// });
 			}
 		} else {
 			if (Lungo.dom("#moment-form-post-button").text() == "Post") {
-				console.log("Last image. Add moment.")
+				console.log("Last image. Add moment.");
 				// Save moment.
 				var m = new App.moment();
 				m.addMoment();
@@ -408,11 +467,7 @@ Lungo.Events.init({
 			}
 		}
 	},
-	'load section#notifications': function(event) {
-		console.log("Load notifications page....");
-		var notifications = new App.notification();
-		notifications.getNotifications();
-	},
+
 	'load section#add-moment-location': function(event) {
 		Lungo.dom("#location-searchbox").on("blur", function() {
 			rediscovr.mapping.query = Lungo.dom("#location-searchbox").get(0).value;
@@ -433,6 +488,7 @@ Lungo.Events.init({
 
 	'tap #add-moment-cancel': function() {
 		Lungo.dom(".selectedphotos").hide();
+		Lungo.dom("#add-moment-file-upload").show();
 		Lungo.dom("#add-moment-selected-images").html("");
 		Lungo.dom("#moment-form-title").val("");
 		Lungo.dom("#moment-form-desc").val("");
@@ -446,10 +502,11 @@ Lungo.Events.init({
 		Lungo.dom("#add-moment-invite").text("Invite Collaborators");
 		// jQuery? Why not..?
 		$("#moment-form-upload-files").replaceWith($("#moment-form-upload-files").clone());
+
 	},
 
 	// 'tap #moment-edit-button': function() {
-	// 	App.database.getMomentForEdit();
+	//	App.database.getMomentForEdit();
 	// },
 
 	'tap #select-contacts-list li': function() {
@@ -462,7 +519,7 @@ Lungo.Events.init({
 
 	'tap #add-moment-select-contacts-done': function() {
 		var txt = "";
-		if (rediscovr.currentmoment.collaborators == undefined) {
+		if (rediscovr.currentmoment.collaborators === undefined) {
 			rediscovr.currentmoment.collaborators = [];
 		}
 
@@ -480,27 +537,27 @@ Lungo.Events.init({
 
 	'load section#add-moment-select-contacts': function(event) {
 		function onSuccess(contacts) {
-		    //alert('Found ' + contacts.length + ' contacts.');
-		    Lungo.dom("#select-contacts-list").html("");
-		    var new_li;
-		    var has_email = true;
-		    var has_image = false;
-		    // Sort contacts alphabetically using function below.
-		    var c = contacts.sort(contactSort);
-		    for (var i = 0; i < c.length; i++) {
-		    	has_email = true;
-		    	has_image = false;
-		    	var user_img = "img/user2-icon@2x.png";
-		    	if (c[i].photos != undefined && c[i].photos != null && c[i].photos.length) {
+			//alert('Found ' + contacts.length + ' contacts.');
+			Lungo.dom("#select-contacts-list").html("");
+			var new_li;
+			var has_email = true;
+			var has_image = false;
+			// Sort contacts alphabetically using function below.
+			var c = contacts.sort(contactSort);
+			for (var i = 0; i < c.length; i++) {
+				has_email = true;
+				has_image = false;
+				var user_img = "img/user2-icon@2x.png";
+				if (c[i].photos != undefined && c[i].photos != null && c[i].photos.length) {
 					for (var j = 0; j < c[i].photos.length; j++) {
-			    		if (c[i].photos[j].pref == true || (j == (c[i].photos.length - 1) && user_img == "img/user2-icon@2x.png")) {
+						if (c[i].photos[j].pref == true || (j == (c[i].photos.length - 1) && user_img == "img/user2-icon@2x.png")) {
 							user_img = c[i].photos[j].value;
 							has_image = true;
 						}
 					}
-		    	}
-		    	new_li = "<li class=\"\">\
-		    		<div class=\"user-avatar avatar-tiny avatar-shadow\">\
+				}
+				new_li = "<li class=\"\">\
+					<div class=\"user-avatar avatar-tiny avatar-shadow\">\
 						<img src=\"" + user_img + "\"/>\
 					</div>\
 					<div class=\"contact-details\">\
@@ -526,13 +583,13 @@ Lungo.Events.init({
 					// } else {
 					Lungo.dom("#select-contacts-list").append(new_li);
 					// }
-			    }
-		    }
-		};
+				}
+			}
+		}
 
 		function onError(contactError) {
-		    alert('onError!');
-		};
+			alert('onError!');
+		}
 
 		var contactSort = function(a, b) {
 			aname = a.name.givenName + ' ' + a.name.familyName;

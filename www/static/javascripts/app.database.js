@@ -1,3 +1,4 @@
+// Class for INSERT UPDATE DELETE to local database.
 App.database = {
 	// DB Stuff
 	shortname: 'moments', 
@@ -44,16 +45,16 @@ App.database = {
 				`reminder_end` TEXT NOT NULL DEFAULT 'Never' \
 			);";
 		// Image table (id = Local, user_id = API ID)
-		var image_definition = "\
-			CREATE TABLE IF NOT EXISTS `image`(\
-				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
-				`image_id` INTEGER UNIQUE NULL, \
-				`name` TEXT UNIQUE NOT NULL, \
-				`type` TEXT NOT NULL DEFAULT 'Moment', \
-				`owner` INTEGER NOT NULL, \
-				`saved` INTEGER NOT NULL DEFAULT 0, \
-				`data64` BLOB NULL \
-			);";
+		var image_definition = "" + 
+			"CREATE TABLE IF NOT EXISTS `image`(" + 
+				"`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " + 
+				"`image_id` INTEGER UNIQUE NULL, " + 
+				"`name` TEXT UNIQUE NOT NULL, " + 
+				"`purpose` TEXT NOT NULL DEFAULT 'Moment', " + 
+				"`type` TEXT NOT NULL DEFAULT 'image', " + 
+				"`owner` INTEGER NOT NULL, " + 
+				"`saved` INTEGER NOT NULL DEFAULT 0 " + 
+			");";
 		// Moment/Image map table.
 		var moment_image_definition = "\
 			CREATE TABLE IF NOT EXISTS `moment_image`(\
@@ -147,6 +148,25 @@ App.database = {
 		);
 	},
 
+	flagImageSaved: function(filename) {
+		this.open();
+		var data_array = [filename];
+		var query = "UPDATE `image` SET `saved` = 1 WHERE `name` = ?";
+		this.db.transaction(
+			function(transaction) {
+				transaction.executeSql(query, data_array, 
+					function(transaction, results) {
+						console.log("Image updated.");
+					},
+					function(transaction, errors) {
+						console.log("Flag image saved error:");
+						console.log(errors);
+					}
+				);
+			}
+		);
+	},
+
 	associateImage: function(d) {
 		var data_array = [d.moment_id, d.image_id, d.primary];
 		var query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) \
@@ -171,12 +191,13 @@ App.database = {
 
 	getMoments: function(owner, order, limit, ref) {
 		console.log("Running DB getMoments");
+		this.myref = ref;
 		var wheres = [{sql: "`title` IS NOT NULL", param: null}];
 		var _limit = '';
 		var _order = '';
 		var _data = [];
 		var _this = this;
-		this.myref = ref;
+
 		if (owner != undefined) {
 			wheres.push({sql: "`owner` = ?", param: owner});
 		}
@@ -219,7 +240,8 @@ App.database = {
 							for (var i=0; i < results.rows.length; i++) {
 								var m = results.rows.item(i);
 								var moment = new App.moment();
-								moment.domnode = ref.domnode;
+								console.log(_this.myref);
+								moment.domnode = _this.myref.domnode;
 								moment.details.moment_id = m.id;
 								moment.details.api_id = m.moment_id;
 								moment.details.user = m.user_id;

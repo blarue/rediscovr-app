@@ -12,6 +12,7 @@ App.moment = function() {
 		},
 
 		errors: [],
+		domnode: null,
 
 		editMoment: function() {
 			console.log("Running editMoment from app.moment.js");
@@ -26,14 +27,14 @@ App.moment = function() {
 			var m = this.details;
 			m.moment_id = Lungo.dom("#moment-form-moment-id").val();
 			var m_data_array = [m.title, m.text, m.date, m.location, m.moment_id];
-			var m_query = "UPDATE `moment` SET `title` = ?, `text` = ?, `date` = ?, `location` = ? \
-				WHERE `moment_id` = ?";
+			var m_query = "UPDATE `moment` SET `title` = ?, `text` = ?, `date` = ?, `location` = ? " +
+				"WHERE `moment_id` = ?";
 			console.log(m_query + " " + m_data_array);
 			DB.db.transaction(
 				function(transaction) {
 					transaction.executeSql(m_query, m_data_array, 
 						function(transaction, results) {
-							if (_this.details.collaborators != undefined && _this.details.collaborators.length) {
+							if (_this.details.collaborators !== undefined && _this.details.collaborators.length) {
 								for (var j = 0; j < _this.details.collaborators.length; j++) {
 									var u = new App.user();
 									u.details.email = _this.details.collaborators[j].email;
@@ -49,7 +50,7 @@ App.moment = function() {
 								for (var i = 0; i < rediscovr.currentmoment.image_list.length; i++) {
 									console.log("i: " + i);
 									var p = [_this.details.id, rediscovr.currentmoment.image_list[i].image_id];
-									if (_this.details.images == undefined) {
+									if (_this.details.images === undefined) {
 										_this.details.images = [];	
 									}
 									console.log("i: " + i);
@@ -104,78 +105,88 @@ App.moment = function() {
 			this.gatherDetails();
 			var m = this.details;
 			var m_data_array = [m.title, m.text, m.date, App.current_user.details.user_id, m.location];
-			var m_query = "INSERT OR IGNORE INTO `moment` \
-						(`title`, `text`, `date`, `user`, `location`) \
-						VALUES (?, ?, ?, ?, ?);";
-			DB.db.transaction(
-				function(transaction) {
-					transaction.executeSql(m_query, m_data_array, 
-						function(transaction, results) {
-							_this.details.id = results.insertId;
+			var m_query = "INSERT OR IGNORE INTO `moment` " +
+				"(`title`, `text`, `date`, `user`, `location`) " +
+				"VALUES (?, ?, ?, ?, ?);";
+			DB.db.transaction(function(transaction){transaction.executeSql(m_query, m_data_array, 
+				function(transaction, results) {
+					_this.details.id = results.insertId;
+					console.log("MomentID: " + _this.details.id);
 
-							if (_this.details.collaborators.length) {
-								for (var j = 0; j < _this.details.collaborators.length; j++) {
-									var u = new App.user();
-									u.details.email = _this.details.collaborators[j].email;
-									u.details.first_name = _this.details.collaborators[j].name;
-									u.details.first_last = _this.details.collaborators[j].name;
-									u.details.phone = '';
-									u.addCollaborator(_this.details.id);
-								}
-							}
-
-							if (rediscovr.currentmoment.image_list.length) {
-								var q = "INSERT INTO `moment_image` (`moment_id`, `image_id`) VALUES (?, ?)";
-								for (var i = 0; i < rediscovr.currentmoment.image_list.length; i++) {
-									console.log("i: " + i);
-									var p = [_this.details.id, rediscovr.currentmoment.image_list[i].image_id];
-									if (_this.details.images == undefined) {
-										_this.details.images = [];	
-									}
-									console.log("i: " + i);
-									_this.details.images.push(rediscovr.currentmoment.image_list[i].d);
-									console.log("i: " + i);
-									// Keep i set after we enter this function.
-									var _i = i;
-									DB.db.transaction(
-										function(transaction) {
-											console.log("_i: " + _i);
-											transaction.executeSql(q, p, 
-												function(transaction, results) {
-													console.log("_i: " + _i);
-													if (_i == rediscovr.currentmoment.image_list.length - 1) {
-														var api = new App.api();
-														api.addMoment(_this);
-														_this.showMoment("prepend");
-													}
-												},
-												function(transaction, results) {
-													console.log(results);
-												}
-											);
-										}
-									);
-								}
-							} else {
-								var api = new App.api();
-								api.addMoment(_this);
-								_this.showMoment("prepend");
-							}
-						}, 
-						function(transaction, results) {
-							//console.log(results);
+					if (_this.details.collaborators.length) {
+						console.log("collaborators: " + _this.details.collaborators.length);
+						for (var j = 0; j < _this.details.collaborators.length; j++) {
+							var u = new App.user();
+							u.details.email = _this.details.collaborators[j].email;
+							u.details.first_name = _this.details.collaborators[j].name;
+							u.details.first_last = _this.details.collaborators[j].name;
+							u.details.phone = '';
+							u.addCollaborator(_this.details.id);
 						}
-					);
+					}
+					//Associate the moment and image.
+					console.log("Associate the moment and image: " + rediscovr.currentmoment.image_list.length);
+					if (rediscovr.currentmoment.image_list.length) {
+						var q = "INSERT INTO `moment_image` (`moment_id`, `image_id`) VALUES (?, ?)";
+						for (var i = 0; i < rediscovr.currentmoment.image_list.length; i++) {
+							var p = [_this.details.id, rediscovr.currentmoment.image_list[i].image_id];
+							if (_this.details.images === undefined) {
+								_this.details.images = [];	
+							}
+							console.log(rediscovr.currentmoment.image_list[i].url_hash);
+							_this.details.images.push(rediscovr.currentmoment.image_list[i].url_hash);
+							console.log("i: " + _this.details.images);
+							// Keep i set after we enter this function.
+							var _i = i;
+							DB.db.transaction(function(transaction){transaction.executeSql(q, p, 
+								function(transaction, results) {
+									console.log("_i: " + _i + ", rediscovr.currentmoment.image_list.length: " + rediscovr.currentmoment.image_list.length);
+									if (_i == rediscovr.currentmoment.image_list.length - 1) {
+										var api = new App.api();
+										api.addMoment(_this);
+										_this.showMoment("prepend");
+									}
+								},
+								function(transaction, results) {
+									console.log(results);
+								}
+							);});
+						}
+					} else {
+						var api = new App.api();
+						api.addMoment(_this);
+						_this.showMoment("prepend");
+					}
+				}, 
+				function(transaction, results) {
+					console.log(results);
 				}
-			);
+			);});
 		},
 
 		showMoment: function(placement) {
-			if (placement == null) {
+			if (placement === null) {
 				placement = "append";
 			}
 			console.log("Running showMoment.");
+			console.log(this.domnode);
 			var _this = this;
+			if (_this.domnode != "#moments-months-article" && _this.domnode != "#moments-years-article" && this.details.images.length > 0) {
+				this.details.images_tmp = [];
+				
+				if (this.details.images[0].full !== undefined) {
+					for (var j=0; j < this.details.images.length; j++) {
+						//console.log(_this);
+						this.details.images_tmp.push(this.details.images[j].full);
+					}
+					this.details.images = this.details.images_tmp;
+				}
+
+				if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
+					return _this.renderMonthYearMoment();
+				}
+				return _this.renderMoment(placement);
+			}
 			// Start DB.
 			var DB = new App.db();
 			DB.open();
@@ -185,7 +196,7 @@ App.moment = function() {
 				function(transaction) {
 					transaction.executeSql(q, p, 
 						function(transaction, results) {
-							if (results.rows != undefined && results.rows.length) {
+							if (results.rows !== undefined && results.rows.length) {
 								for (var j=0; j < results.rows.length; j++) {
 									//console.log(_this);
 									_this.details.images.push(results.rows.item(j).name);
@@ -208,18 +219,20 @@ App.moment = function() {
 		},
 
 		renderMonthYearMoment: function() {
-			console.log("Running renderMoment.");
+			console.log("Running renderMonthYearMoment.");
+			console.log(this.details);
 			var _this = this;
 			var imgdiv_class = "month-year";
+			var divdom, divdom_text;
 			// Make sure the temporal separator exists (Bar that says "January 2014").
 			if (this.domnode == "#moments-months-article") {
 				// Process date format. Uses moment.js (no relation)
-				var divdom = this.domnode + momentjs(this.details.date).format("-YYYYMM");
-				var divdom_text = momentjs(this.details.date).format("MMMM YYYY").toUpperCase();
+				divdom = this.domnode + momentjs(this.details.date).format("-YYYYMM");
+				divdom_text = momentjs(this.details.date).format("MMMM YYYY").toUpperCase();
 			} else if (this.domnode == "#moments-years-article") {
 				// Process date format. Uses moment.js (no relation)
-				var divdom = this.domnode + momentjs(this.details.date).format("-YYYY");
-				var divdom_text = momentjs(this.details.date).format("YYYY");
+				divdom = this.domnode + momentjs(this.details.date).format("-YYYY");
+				divdom_text = momentjs(this.details.date).format("YYYY");
 			}
 			if (!Lungo.dom(divdom).length) {
 				console.log("Should be adding separator.");
@@ -238,7 +251,7 @@ App.moment = function() {
 			for (var img = 0; img < this.details.images.length; img++) {
 				var img_src;
 				if (this.details.images[img].substr(0, 4) === "data") {
-					img_src = this.details.images[img]
+					img_src = this.details.images[img];
 				} else {
 					img_src = App.config.image_prefix + this.details.images[img];
 				}
@@ -265,17 +278,14 @@ App.moment = function() {
 				Lungo.dom(moment_imgdiv).append(moment_imgimg);
 				// Add div to article.
 				Lungo.dom(_this.domnode).append(moment_imgdiv);
-				delete moment_imgdiv;
-				delete moment_imgimg;
 			}
-
 		},
 
 		renderMoment: function(placement) {
 			console.log("Running renderMoment.");
 			var _this = this;
 			var imgdiv_class = "";
-			if (this.details.images != undefined) {
+			if (this.details.images !== undefined) {
 				switch (this.details.images.length) {
 					case 1:
 						imgdiv_class = "one-image";
@@ -287,9 +297,10 @@ App.moment = function() {
 						imgdiv_class = "one-third";
 						break;
 					case 4:
-					default:
 						imgdiv_class = "one-fourth";
 						break;
+					default:
+						imgdiv_class = "one-image";
 				}
 			}
 
@@ -313,14 +324,14 @@ App.moment = function() {
 				Lungo.Router.section("one-moment");
 			});
 
-			var moment_header_html = "<div class=\"user-avatar avatar-small\">\
-						<img src=\"" + App.config.image_prefix + this.details.creator.user_image + "\"/>\
-					</div>\
-					<div class=\"moment-header\">\
-						<span class=\"moment-title\">" + this.details.title + "</span>\
-						<span class=\"moment-location\">" + this.details.location + "</span>\
-					</div>\
-					<div class=\"clearfix\">&nbsp;</div>";
+			var moment_header_html = "<div class=\"user-avatar avatar-small\">" +
+					"<img src=\"" + App.config.image_prefix + this.details.creator.user_image + "\"/>" +
+				"</div>" +
+				"<div class=\"moment-header\">" +
+					"<span class=\"moment-title\">" + this.details.title + "</span>" +
+					"<span class=\"moment-location\">" + this.details.location + "</span>" +
+				"</div>" +
+				"<div class=\"clearfix\">&nbsp;</div>";
 			Lungo.dom(moment_header).html(moment_header_html);
 			Lungo.dom(moment_item).append(moment_header);
 
@@ -328,7 +339,7 @@ App.moment = function() {
 			for (var img = 0; img < this.details.images.length; img++) {
 				var img_src;
 				if (this.details.images[img].substr(0, 4) === "data") {
-					img_src = this.details.images[img]
+					img_src = this.details.images[img];
 				} else if (this.details.images[img].substr(0, 6) === "moment") {
 					img_src = App.config.local_prefix + this.details.images[img];
 				} else {
@@ -354,11 +365,7 @@ App.moment = function() {
 				Lungo.dom(moment_imgdiv).append(moment_anchor);
 				// Add div to moment.
 				Lungo.dom(moment_item).append(moment_imgdiv);
-				delete moment_imgdiv;
-				delete moment_anchor;
-				delete moment_imgimg;
 			}
-			delete moment_img;
 
 			// Create desc div.
 			var moment_descdiv = document.createElement("div");
@@ -381,12 +388,12 @@ App.moment = function() {
 			var moment_datespan = document.createElement("span");
 			Lungo.dom(moment_datespan).text(ds);
 			// Add text to div.
-			Lungo.dom(moment_datediv).append(moment_datespan)
+			Lungo.dom(moment_datediv).append(moment_datespan);
 			// Add date div to moment item.
 			Lungo.dom(moment_item).append(moment_datediv);
 
 			// Set default domnode if not set.
-			if (this.domnode == undefined) {
+			if (this.domnode === undefined) {
 				this.domnode = "#moments-article-container";
 			}
 
@@ -410,13 +417,11 @@ App.moment = function() {
 
 			$(".fancybox").fancybox({
 				fitToView: false,
-			    autoSize: false,
-			    afterLoad: function () {
-			        this.width = 320;
-			    }
+				autoSize: false,
+				afterLoad: function () {
+					this.width = 320;
+				}
 			});
-
-			delete moment_item;
 		},
 
 		cacheMoment: function() {
@@ -432,9 +437,9 @@ App.moment = function() {
 			var c = _this.details.creator;
 			c.current_user = (c.id == App.current_user.details.user_id) ? 1 : 0;
 			var c_data_array = [c.id, c.email, c.first_name, c.last_name, c.city, c.state, c.country, c.user_image, c.current_user];
-			var c_query = "INSERT OR IGNORE INTO `user` \
-						(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+			var c_query = "INSERT OR IGNORE INTO `user` " +
+				"(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) " +
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 			console.log(c_data_array + " " + c_query);
 			DB.db.transaction(
 				function(transaction) {
@@ -454,9 +459,9 @@ App.moment = function() {
 			var m = _this.details;
 			//console.log(JSON.stringify(_this.details));
 			var m_data_array = [m.moment_id, m.title, m.text, m.date, m.creator.id, m.location];
-			var m_query = "INSERT OR IGNORE INTO `moment` \
-						(`moment_id`, `title`, `text`, `date`, `user`, `location`) \
-						VALUES (?, ?, ?, ?, ?, ?);";
+			var m_query = "INSERT OR IGNORE INTO `moment` " +
+				"(`moment_id`, `title`, `text`, `date`, `user`, `location`) " +
+				"VALUES (?, ?, ?, ?, ?, ?);";
 			DB.db.transaction(
 				function(transaction) {
 					transaction.executeSql(m_query, m_data_array, 
@@ -473,13 +478,13 @@ App.moment = function() {
 
 			// Add collaborators as user to local DB.
 			//console.log("Attempting to collaborators to moment.");
-			if (_this.details.collaborators != undefined && _this.details.collaborators.length) {
+			if (_this.details.collaborators !== undefined && _this.details.collaborators.length) {
 				for (var j = 0; j < _this.details.collaborators.length; j++) {
 					var cc = _this.details.collaborators[j];
 					var cc_data_array = [cc.id, cc.email, (cc.first_name || ''), (cc.last_name || ''), (cc.city || ''), (cc.state || ''), (cc.country || ''), (cc.user_image || ''), 0];
-					var cc_query = "INSERT OR IGNORE INTO `user` \
-						(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+					var cc_query = "INSERT OR IGNORE INTO `user` " +
+						"(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) " +
+						"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 					console.log(cc_query + cc_data_array);
 					DB.db.transaction(
 						function(transaction) {
@@ -487,9 +492,9 @@ App.moment = function() {
 								function(transaction, results) {
 									//console.log(results);
 									var mu_data_array = [cc.id, _this.details.moment_id];
-									var mu_query = "INSERT OR IGNORE INTO `moment_user` \
-										(`user_id`, `moment_id`) \
-										VALUES (?, ?);";
+									var mu_query = "INSERT OR IGNORE INTO `moment_user` " +
+										"(`user_id`, `moment_id`) " +
+										"VALUES (?, ?);";
 									DB.db.transaction(
 										function(transaction) {
 											transaction.executeSql(mu_query, mu_data_array, 
@@ -514,14 +519,24 @@ App.moment = function() {
 
 			// Add images to local DB.
 			//console.log("Attempting to images to moment.");
-			if (_this.details.images != undefined && _this.details.images.length) {
+			if (_this.details.images !== undefined && _this.details.images.length) {
+				var types = {
+					video: ["mov", "mp4", "m4v"],
+					image: ["jpg", "jpeg", "png", "gif"]
+				};
+
 				for (var j = 0; j < _this.details.images.length; j++) {
-					var image = _this.details.images[j];
+					var image = _this.details.images[j].full;
+					var ext = image.split(".")[image.split(".").length - 1];
+					var asset_type = (types.image.indexOf(ext.toLowerCase()) != -1) ? "image" : "video";
+
 					console.log(JSON.stringify(image));
 					var imgr = new App.image();
 					imgr.cacheLocally(image, function(res) {
-						var i_data_array = [image, 'moment', _this.details.creator.id, 1];
-						var i_query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?);";
+						var i_data_array = [image, 'moment', asset_type, _this.details.creator.id, 1];
+						console.log(i_data_array);
+						var i_query = "INSERT OR IGNORE INTO `image` (`name`, `purpose`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?, ?);";
+						console.log(i_query);
 						DB.db.transaction(function(transaction){transaction.executeSql(i_query, i_data_array, 
 							function(transaction, results) {
 								var im_data_array = [_this.details.id, results.insertId, 1];
@@ -534,52 +549,20 @@ App.moment = function() {
 										console.log("errors" + errors);
 									}
 								);});
-							}, function(transaction, results) {
-
+							}, 
+							function(transaction, errors) {
+								console.log("Image Add (cache) Error:");
+								console.log(errors);
 							}
-						)});
+						);});
 					});
-					// imgr.generateImageBlob(image, 4, function(d) {
-					// 	console.log("There should be a blob.");
-					// 	//console.log(d);
-					// 	var i_data_array = [image, 'moment', _this.details.creator.id, d, 1];
-					// 	//console.log(i_data_array);
-					// 	var i_query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `data64`, `saved`) VALUES (?, ?, ?, ?, ?);";
-					// 	DB.db.transaction(
-					// 		function(transaction) {
-					// 			transaction.executeSql(i_query, i_data_array, 
-					// 				function(transaction, results) {
-					// 					console.log(results);
-					// 					console.log("ImageID: " + results.insertId);
-					// 					console.log("MomentID: " + _this.details.id);
-					// 					var im_data_array = [_this.details.id, results.insertId, 1];
-					// 					var im_query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) VALUES (?, ?, ?);";
-					// 					DB.db.transaction(
-					// 						function(transaction) {
-					// 							transaction.executeSql(im_query, im_data_array, 
-					// 								function(transaction, results) {
-					// 									console.log(results);
-					// 								}, 
-					// 								function(transaction, errors) {
-					// 									console.log("errors" + errors);
-					// 								}
-					// 							);
-					// 						}
-					// 					);
-					// 				}, function(transaction, results) {
-					// 					//console.log(results);
-					// 				}
-					// 			);
-					// 		}
-					// 	);
-					// });
 				}
 			}
 		},
 
 		handleAdd: function(data) {
 			console.log("API: " + data.message);
-			if (data.moment_id != undefined && data.moment_id != null) {
+			if (data.moment_id !== undefined && data.moment_id !== null) {
 				this.details.moment_id = data.moment_id;
 				// Do something to show moment added.
 				this.post();
@@ -592,7 +575,7 @@ App.moment = function() {
 
 		gatherDetails: function() {
 			// Pull values from form to details object.
-			this.details.user = App.current_user.details.user_id,
+			this.details.user = App.current_user.details.user_id;
 			this.details.title = rediscovr.currentmoment.moment_title = Lungo.dom("#moment-form-title").val();
 			this.details.text = rediscovr.currentmoment.moment_desc = Lungo.dom("#moment-form-desc").val();
 			this.details.location = rediscovr.currentmoment.moment_location = Lungo.dom("#moment-form-location").val();
@@ -606,7 +589,7 @@ App.moment = function() {
 
 		post: function() {
 			var post_data = {
-				user: this.details.user,
+				//user: this.details.user,
 				title: this.details.title,
 				text: this.details.text,
 				user: App.current_user.details.user_id,
@@ -621,22 +604,22 @@ App.moment = function() {
 		},
 
 		validate: function() {
-			if (this.details.user == null) {
+			if (this.details.user === null) {
 				this.errors.push("User missing.");
 			}
-			if (this.details.title == null) {
+			if (this.details.title === null) {
 				this.errors.push("Title missing.");
 			}
-			if (this.details.text == null) {
+			if (this.details.text === null) {
 				this.errors.push("Description (text) missing.");
 			}
-			if (this.details.location == null) {
+			if (this.details.location === null) {
 				this.errors.push("Location missing.");
 			}
-			if (this.details.date == null) {
+			if (this.details.date === null) {
 				this.errors.push("Date missing.");
 			}
-			if (this.details.images == undefined || !this.details.images.length) {
+			if (this.details.images === undefined || !this.details.images.length) {
 				this.errors.push("Images empty.");
 			}
 
@@ -650,5 +633,5 @@ App.moment = function() {
 				return true;
 			}
 		}
-	}
-}
+	};
+};

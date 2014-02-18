@@ -23,17 +23,18 @@
 		};
 
 		function S3Upload(options) {
-			if (options == null) options = {};
-			for (option in options) {
+			console.log("Running S3Upload from s3upload.");
+			if (options === null) options = {};
+			for (var option in options) {
 				this[option] = options[option];
 			}
-			this.handleFileSelect(document.getElementById(this.file_dom_selector));
+			this.handleFileSelect(App.upload_images);
 		}
 
-		S3Upload.prototype.handleFileSelect = function(file_element) {
-			var f, files, output, _i, _len, _results;
+		S3Upload.prototype.handleFileSelect = function(files) {
+			console.log("Running handleFileSelect from s3upload.");
+			var f, output, _i, _len, _results;
 			this.onProgress(0, 'Upload started.');
-			files = file_element.files;
 			output = [];
 			_results = [];
 			for (_i = 0, _len = files.length; _i < _len; _i++) {
@@ -46,7 +47,7 @@
 		S3Upload.prototype.createCORSRequest = function(method, url) {
 			var xhr;
 			xhr = new XMLHttpRequest();
-			if (xhr.withCredentials != null) {
+			if (xhr.withCredentials !== null) {
 				xhr.open(method, url, true);
 			} else if (typeof XDomainRequest !== "undefined") {
 				xhr = new XDomainRequest();

@@ -189,7 +189,7 @@ body > section#settings fieldset.fieldsection label { width: 100%; }
 body > section#settings fieldset.fieldsection { border-top: 1px solid #bbbbbb; }
 body > section#settings label.dark { color: #666666;}
 
-body > section.editmoment > article { background-color: #e5e5e5; padding-bottom:125px; font-size:.9em; }
+body > section.editmoment > article { background-color: #e5e5e5; padding-bottom:125px; font-size:.93em; }
 body > section.editmoment > article > div > img.userimg { width:116px; }
 body > section.editmoment > article > div.moment-form { margin-top:25px; }
 body > section.editmoment > article > div > fieldset { padding: .7em .5em; margin-left:20px; margin-right:20px; }

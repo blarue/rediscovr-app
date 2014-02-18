@@ -77,15 +77,15 @@ App.image = function() {
 					var ft = new FileTransfer();
 					var save_path = this.DATADIR.fullPath + "/" + this.image;
 
-					ft.download(App.config.image_prefix + escape(this.image), save_path, function(file_dl) {
+					ft.download(App.config.image_prefix + "preview-full/" + escape(this.image), save_path, function(file_dl) {
 						_this.file_msg += "Success: " + file_dl.toURL() + "\n";
-						console.log("Success: " + file_dl.toURL());						
+						console.log("Success: " + file_dl.toURL());
 						_this.cb("Success");
 					}, this.imageError);
 					break;
 				case "cache-new":
 					console.log(_this.image.name);
-					this.DATADIR.getFile(this.newName, {create: true, exclusive: false}, 
+					this.DATADIR.getFile(this.newName, {create: true, exclusive: false},
 						function(fileEntry) {
 							console.log("getFile success");
 							fileEntry.createWriter(
@@ -101,12 +101,12 @@ App.image = function() {
 										_this.writer.write(evt.target.result);
 									};
 									_this.reader.readAsArrayBuffer(_this.image);
-								}, 
+								},
 								function() {
 									console.log("createWriter fail");
 								}
 							);
-						}, 
+						},
 						function() {
 							console.log("getFile fail");
 						}
@@ -114,9 +114,27 @@ App.image = function() {
 					break;
 			}
 		},
-
+        setImageBlob: function(image, steps, cb) {
+            if (steps == null) {
+                steps = 4;
+            }
+            console.log("Running generate blob.");
+            this.orig = new Image();
+            var _this = this;
+            this.orig.addEventListener("load", function(event) {
+                //console.log("Original Width: " + _this.orig.width);
+                //console.log("Original Height: " + _this.orig.height);
+            }, false);
+            if (image.substr(0, 1) == "/") {
+                this.orig.src = image;
+            } else if (image.substr(0, 4) == "blob") {
+                this.orig.src = image;
+            } else {
+                this.orig.src = App.config.image_prefix + image;
+            }
+        },
 		generateImageBlob: function(image, steps, cb) {
-			if (steps == null) {
+			if (steps === null) {
 				steps = 4;
 			}
 			console.log("Running generate blob.");
@@ -143,7 +161,7 @@ App.image = function() {
 		},
 
 		resizeImage: function(steps, cb) {
-			if (steps == null) {
+			if (steps === null) {
 				steps = 4;
 			}
 			console.log("Running resize image.");
@@ -173,7 +191,7 @@ App.image = function() {
 				// console.log("tmp[" + i + "].width: " + tmp[i].width);
 				// console.log("tmp[" + i + "].height: " + tmp[i].height);
 				if (i === 0) {
-					tmpctx[i].drawImage(this.orig, 0, 0, curr_w, curr_h, 0, 0, tmp[i].width, tmp[i].height);	
+					tmpctx[i].drawImage(this.orig, 0, 0, curr_w, curr_h, 0, 0, tmp[i].width, tmp[i].height);
 				} else {
 					tmpctx[i].drawImage(tmp[i - 1], 0, 0, curr_w, curr_h, 0, 0, tmp[i].width, tmp[i].height);
 				}
@@ -201,5 +219,5 @@ App.image = function() {
 			this.data64 = c.toDataURL("image/jpeg", 0.9);
 			cb(this.data64);
 		}
-	}
-}
+	};
+};
