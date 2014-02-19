@@ -236,7 +236,7 @@ App.database = {
 								moment.details.creator.state = m.state;
 								moment.details.creator.user_image = m.user_image;
 								moment.showMoment("append");
-								if (Lungo.Router.history != "moments") {
+ 								if (Lungo.Router.history != "moments") {
 									Lungo.Router.section("moments");
 								}
 							}

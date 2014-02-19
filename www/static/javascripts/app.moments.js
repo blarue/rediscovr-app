@@ -21,7 +21,7 @@ App.moments = function() {
 			this.gatherDetails();
 			if (!this.details.since) {
 				if (App.current_user.details.last_sync) {
-					this.details.since = App.current_user.details.last_sync;
+					this.details.since = 1300000000;//App.current_user.details.last_sync;
 				} else {
 					this.details.since = null;
 				}
@@ -50,9 +50,9 @@ App.moments = function() {
 			}
 			Lungo.dom(this.domnode).html("");
 			// Find locally cached moments.
-			App.database.getMoments(null, 'date DESC', null, this);
+			App.database.getMoments(null, 'date DESC', 3, this);
 		},
-
+        
 		handleGet: function(data) {
 			if (data.server_time != undefined) {
 				App.current_user.details.last_sync = data.server_time;
@@ -76,7 +76,7 @@ App.moments = function() {
 					// Add Tap on header for moment view.
 					Lungo.dom(".moment-item-header").each(function() { 
 						Lungo.dom(this).tap(function() { 
-							alert(Lungo.dom(this).data("momentid"));
+							console.log("momentid : " + Lungo.dom(this).data("momentid"));
 						});
 					});
 				}

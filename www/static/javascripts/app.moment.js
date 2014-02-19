@@ -187,6 +187,7 @@ App.moment = function() {
 						function(transaction, results) {
 							if (results.rows != undefined && results.rows.length) {
 								for (var j=0; j < results.rows.length; j++) {
+                                           
 									//console.log(_this);
 									_this.details.images.push(results.rows.item(j).name);
 								}
@@ -196,7 +197,7 @@ App.moment = function() {
 								return _this.renderMoment(placement);
 							} else {
 								if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
-									return false;
+									//return false;
 								}
 								return _this.renderMoment(placement);
 							}
@@ -208,7 +209,7 @@ App.moment = function() {
 		},
 
 		renderMonthYearMoment: function() {
-			console.log("Running renderMoment.");
+			//console.log("Running renderMoment.");
 			var _this = this;
 			var imgdiv_class = "month-year";
 			// Make sure the temporal separator exists (Bar that says "January 2014").
@@ -432,10 +433,8 @@ App.moment = function() {
 			var c = _this.details.creator;
 			c.current_user = (c.id == App.current_user.details.user_id) ? 1 : 0;
 			var c_data_array = [c.id, c.email, c.first_name, c.last_name, c.city, c.state, c.country, c.user_image, c.current_user];
-			var c_query = "INSERT OR IGNORE INTO `user` \
-						(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-			console.log(c_data_array + " " + c_query);
+			var c_query = "INSERT OR IGNORE INTO `user` \ (`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+			//console.log(c_data_array + " " + c_query);
 			DB.db.transaction(
 				function(transaction) {
 					transaction.executeSql(c_query, c_data_array, 
@@ -461,7 +460,7 @@ App.moment = function() {
 				function(transaction) {
 					transaction.executeSql(m_query, m_data_array, 
 						function(transaction, results) {
-							console.log("Moment Insert ID: " + results.insertId);
+						console.log("Moment Insert ID: " + results.insertId);
 							_this.details.id = results.insertId;
 						}, 
 						function(transaction, errors) {
@@ -513,19 +512,21 @@ App.moment = function() {
 			}
 
 			// Add images to local DB.
-			//console.log("Attempting to images to moment.");
 			if (_this.details.images != undefined && _this.details.images.length) {
 				for (var j = 0; j < _this.details.images.length; j++) {
 					var image = _this.details.images[j];
-					console.log(JSON.stringify(image));
+                    
 					var imgr = new App.image();
-					imgr.cacheLocally(image, function(res) {
+ 					imgr.cacheLocally(image, function(res) {
 						var i_data_array = [image, 'moment', _this.details.creator.id, 1];
 						var i_query = "INSERT OR IGNORE INTO `image` (`name`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?);";
+
 						DB.db.transaction(function(transaction){transaction.executeSql(i_query, i_data_array, 
 							function(transaction, results) {
 								var im_data_array = [_this.details.id, results.insertId, 1];
 								var im_query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) VALUES (?, ?, ?);";
+                                                                                       
+                 
 								DB.db.transaction(function(transaction){transaction.executeSql(im_query, im_data_array, 
 									function(transaction, results) {
 										console.log(results);
@@ -539,6 +540,8 @@ App.moment = function() {
 							}
 						)});
 					});
+
+                 
 					// imgr.generateImageBlob(image, 4, function(d) {
 					// 	console.log("There should be a blob.");
 					// 	//console.log(d);

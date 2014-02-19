@@ -24,15 +24,17 @@ App.image = function() {
 		},
 
 		cacheLocally: function(image, cb) {
+            
 			var _this = this;
 			this.image = image;
 			this.cb = cb;
 			// Get FS.
-			window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {_this.onFileSystemSuccess(fs);}, this.onFileSystemFail);
+            
+			window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, this.onFileSystemSuccess, this.onFileSystemFail);
 		},
 
 		onFileSystemSuccess: function(fs) {
-			console.log("FS Success");
+		//	console.log("FS Success");
 			var _this = this;
 			fs.root.getDirectory("momentimg", {create:true}, function(d) {_this.gotDir(d);}, this.onGetDirError);
 		},
@@ -114,7 +116,25 @@ App.image = function() {
 					break;
 			}
 		},
-
+		setImageBlob:function(image, steps, cb) {
+        	if (steps == null) {
+            	steps = 4;
+       		}
+        	console.log("Running generate blob.");
+        	this.orig = new Image();
+        	var _this = this;
+        	this.orig.addEventListener("load", function(event) {
+                  //console.log("Original Width: " + _this.orig.width);
+                  //console.log("Original Height: " + _this.orig.height);
+            }, false);
+        	if (image.substr(0, 1) == "/") {
+            	this.orig.src = image;
+        	} else if (image.substr(0, 4) == "blob") {
+           	 	this.orig.src = image;
+       	 	} else {
+            	this.orig.src = App.config.image_prefix + image;
+        	}
+    	},
 		generateImageBlob: function(image, steps, cb) {
 			if (steps == null) {
 				steps = 4;

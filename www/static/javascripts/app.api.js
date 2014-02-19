@@ -65,7 +65,7 @@ App.api = function() {
 			// }
 		},
 
-		handleAddImages: function(ref) {
+        handleAddImages: function(ref) {
 			if (ref.validate() === true) {
 				console.log("Validates. " + config.url + "moment  " + JSON.stringify(ref.details));
 				$$.post(config.url + "moment", JSON.stringify(ref.details), function(data) {
@@ -78,29 +78,30 @@ App.api = function() {
 		},
 
 		getMoments: function(ref) {
-			console.log("Running getMoments");
-			console.log(config.url + "moment" + $$.serializeParameters(ref.details, "?"));
+           // console.log("Running getMoments");
+           // console.log(config.url + "moment" + $$.serializeParameters(ref.details, "?"));
 			$$.get(config.url + "moment", ref.details, function(data) {
 				ref.handleGet(data);
-			}, "json");
+            },"json");
 		},
 
 		getCollaborators: function(ref) {
 			console.log("Running getCollaborators");
-			console.log(config.url + "collaborator" + $$.serializeParameters(ref.details, "?"));
+		//	console.log(config.url + "collaborator" + $$.serializeParameters(ref.details, "?"));
 			$$.get(config.url + "collaborator", ref.details, function(data) {
 				ref.handleGetCollaborators(data);
 			}, "json");	
 		},
-
-		getNotifications: function(ref) {
-			console.log("Running getNotifications");
-		
-			$$.get(config.url + "notification", ref.details, function(data) {
-			  ref.handleGetNotifications(data);
-			}, "json");	
-		},
-		
+   		
+   		getNotifications: function(ref) {
+        	console.log("Running getNotifications");
+        
+        	$$.get(config.url + "notification", ref.details, function(data) {
+            	ref.handleGetNotifications(data);
+            }, "json"); 
+        
+        },
+        
 		uploadImages: function(ref) {
 			//Upload images.
 			var _this = this;
