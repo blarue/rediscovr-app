@@ -82,8 +82,20 @@ Lungo.ready(function() {
 
 	pushNotification = window.plugins.pushNotification;
             
-    $('#spnTop').on("click",function(){
-       $("#moments-article").animate({ scrollTop: 0 }, "slow");
+    $('#topBar').on("click",function(){
+       $("#moments-article").animate({ scrollTop: 0 }, "fast");
+    });
+    
+    var pull_moments = new Lungo.Element.Pull("#moments-article", {
+      	onPull:"pull down to refresh",
+       	onRelease:"Release to get new data",
+       	onRefresh:"Refreshing.....",
+       	callback:function(){
+             console.log("Pull & refresh completed!");
+             var m = new App.moments();
+             m.getMoments("moments-article");
+        	 pull_moments.hide();
+       	}
     });
 });
 
@@ -449,32 +461,7 @@ Lungo.Events.init({
 		Lungo.dom("#add-moment-invite").text(txt.substr(0, txt.length - 2));
 		Lungo.Router.back();
 	},
-	
-	'load article#moments-article': function(event) {
-        // console.log("======================");
-  		//var m = new App.moments();
- 		//m.getMoments("moments-article");
-	},
-    'load article#moments-months-article': function(event) {
 
-    },
- 	'load article#moments-years-article': function(event) {
-        console.log("++++++++++++");
-        var pull_example = new Lungo.Element.Pull("#moments-years-article", {
-        	onPull:"pull down to refresh",
-        	onRelease:"Release to get new data",
-        	onRefresh:"Refreshing.....",
-        	callback:function(){
-              console.log("Pull & refresh completed!");
-                       var m = new App.moments();
-                       m.getMomentsMonths();
-        		pull_example.hide();
-        	}
-        });
-  		//var m = new App.moments();
- 		//m.getMoments("moments-article");
-	},
-	
 	'load section#add-moment-select-contacts': function(event) {
 		function onSuccess(contacts) {
 		    //alert('Found ' + contacts.length + ' contacts.');

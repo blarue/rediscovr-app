@@ -21,7 +21,7 @@ App.moments = function() {
 			this.gatherDetails();
 			if (!this.details.since) {
 				if (App.current_user.details.last_sync) {
-					this.details.since = 1300000000;//App.current_user.details.last_sync;
+					this.details.since = App.current_user.details.last_sync;
 				} else {
 					this.details.since = null;
 				}
