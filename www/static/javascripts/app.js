@@ -146,13 +146,16 @@ Lungo.Events.init({
 
 	// Login
 	'tap #login-done': function() {
+        $(document.activeElement).blur();
 		App.current_user.loginUser();
 	},
 
 	// Signup
 	'tap #signup-done': function() {
+        $(document.activeElement).blur();
 		if(!ValidationSignForm())
 			return false;
+        
 		App.current_user.addUser();
 	},
 
