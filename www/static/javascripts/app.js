@@ -92,8 +92,9 @@ Lungo.ready(function() {
        	onRefresh:"Refreshing.....",
        	callback:function(){
              console.log("Pull & refresh completed!");
+             Lungo.dom("#moments-article").empty();
              var m = new App.moments();
-             m.getMoments("moments-article");
+             m.getMoments();
         	 pull_moments.hide();
        	}
     });

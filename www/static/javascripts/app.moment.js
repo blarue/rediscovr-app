@@ -174,7 +174,7 @@ App.moment = function() {
 			if (placement == null) {
 				placement = "append";
 			}
-			console.log("Running showMoment.");
+			//console.log("Running showMoment.");
 			var _this = this;
 			// Start DB.
 			var DB = new App.db();
@@ -273,7 +273,7 @@ App.moment = function() {
 		},
 
 		renderMoment: function(placement) {
-			console.log("Running renderMoment.");
+			//console.log("Running renderMoment.");
 			var _this = this;
 			var imgdiv_class = "";
 			if (this.details.images != undefined) {
