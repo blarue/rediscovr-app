@@ -101,6 +101,12 @@ Lungo.ready(function() {
 });
 
 Lungo.Events.init({
+	'load section#moments': function(event) {
+          var m = new App.moments();
+          m.getMoments();
+          Lungo.dom("#moments-article").empty();
+          m.getMoments();
+    },
 
 	'load section#add-moment': function(event) {
 		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true
