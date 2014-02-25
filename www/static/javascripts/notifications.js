@@ -29,20 +29,17 @@ App.notification = function() {
             Lungo.dom("#notifications-article #notifications_list").empty();
             $.each(notificationArray, function(i, notificaiton){
                 var row = notificationArray[i];
-
+                console.log(row);
                 if(row.id != undefined && row.id != null)
-                    Lungo.dom("#notifications-article #notifications_list").append('<li class=\"arrow\" onclick=\"gotoPersonDetail(\''+row.first_name+'\'\,\''+row.last_name+'\'\,\''+row.city+'\'\,\''+row.state+'\'\,\''+row.images+'\');\"><div class=\"user-avatar avatar-medium avatar-shadow\"><img src=\"'+row.user_image+'\"/></div><div><span class=\"text\">'+row.first_name+' '+ row.last_name+' has added <span class=\"hilite\">'+row.images+' photos</span> from today</span></div><div style=\"clear:both;\"></div></li>');
+                    Lungo.dom("#notifications-article #notifications_list").append('<li class=\"arrow\" id=\"m_'+row.id+'\" onclick=\"gotoPersonDetail(\''+row.id+'\');\"><div class=\"user-avatar avatar-medium avatar-shadow\"><img src=\"'+row.user_image+'\"/></div><div><span class=\"text\">'+row.first_name+' '+ row.last_name+' has added <span class=\"hilite\">'+row.images+' photos</span> from today</span></div><div style=\"clear:both;\"></div></li>');
             });
             //	App.notificaitonLastSyncTime = results.server_time;
-        },
+        }
     }
 }
 
-function gotoPersonDetail(first_name, last_name, city, state, images)
+function gotoPersonDetail(id)
 {
-    Lungo.dom(".profile-detail .username").html(first_name +" " +last_name);
-    Lungo.dom(".profile-detail .userloc").html(city +", " +state);
-    Lungo.dom(".profile-detail .num-collaborations-num").html(images + " collaborations");
-    Lungo.dom("#person_detail_title").html(first_name +" " +last_name);
-    Lungo.Router.section("person");
+    Lungo.dom("#notifications-article #notifications_list #m_"+id).remove();
+    Lungo.dom("#notifications-article #notifications_list").listview('refresh');
 }

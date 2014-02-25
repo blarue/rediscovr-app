@@ -96,8 +96,8 @@ App.api = function() {
 		},
 
 		getMoments: function(ref) {
-			console.log("Running getMoments");
-			console.log(config.url + "moment" + $$.serializeParameters(ref.details, "?"));
+//			console.log("Running getMoments");
+//			console.log(config.url + "moment" + $$.serializeParameters(ref.details, "?"));
 			$$.get(config.url + "moment", ref.details, function(data) {
 				ref.handleGet(data);
 			}, "json");
@@ -105,11 +105,32 @@ App.api = function() {
 
 		getCollaborators: function(ref) {
 			console.log("Running getCollaborators");
-			console.log(config.url + "collaborator" + $$.serializeParameters(ref.details, "?"));
+//			console.log(config.url + "collaborator" + $$.serializeParameters(ref.details, "?"));
 			$$.get(config.url + "collaborator", ref.details, function(data) {
 				ref.handleGetCollaborators(data);
 			}, "json");	
 		},
+
+        getGroups: function(ref) {
+            console.log("Running getGroups");
+            console.log(config.url + "group" + $$.serializeParameters(ref.details, "?"));
+            $$.get(config.url + "group", ref.details, function(data) {
+                ref.handleGetGroups(data);
+            }, "json");
+        },
+
+        addGroup: function(ref) {
+            console.log("Running addGroup");
+            if (ref.validate("new") === true) {
+                console.log("Validates. " + config.url + "group  " + JSON.stringify(ref.details));
+                $$.post(config.url + "group", JSON.stringify(ref.details), function(data) {
+                    ref.handleAddGroup(data);
+                }, "json");
+            } else {
+                console.log("Group doesn't validate.");
+            }
+        },
+
 
         getNotifications: function(ref) {
             console.log("Running getNotifications");

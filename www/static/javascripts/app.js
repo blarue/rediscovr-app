@@ -82,9 +82,31 @@ Lungo.ready(function() {
 	momentjs = moment;
 
 	pushNotification = window.plugins.pushNotification;
+
+    $('#topBar').on("click",function(){
+        $("#moments-article").animate({ scrollTop: 0 }, "fast");
+        });
+
+    var pull_moments = new Lungo.Element.Pull("#moments-article", {
+        onPull:"pull down to refresh",
+        onRelease:"Release to get new data",
+        onRefresh:"Refreshing.....",
+        callback:function(){
+            console.log("Pull & refresh completed!");
+            var m = new App.moments();
+            m.getMoments("moments-article");
+            pull_moments.hide();
+        }
+    });
 });
 
 Lungo.Events.init({
+    'load section#moments': function(event) {
+        var m = new App.moments();
+        m.getMoments();
+        Lungo.dom("#moments-article").empty();
+        m.getMoments();
+    },
 
 	'load section#add-moment': function(event) {
 		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true
@@ -132,17 +154,48 @@ Lungo.Events.init({
 		c.getCollaborators();
 	},
 
-	'load section#person': App.sectionTrigger,
+	'tap .people-list-item': function(event) {
+		console.log(this.id);
+		var user_id = this.id.split("-")[this.id.split("-").length - 1];
+		var c = new App.user();
+		c.getUserMoments(user_id);
+	},
 
 	// Login
 	'tap #login-done': function() {
+        $(document.activeElement).blur();
 		App.current_user.loginUser();
 	},
 
-	// Signup
+    // Groups
+    'load section#groups': function(event) {
+//        var c = new App.user();
+        App.current_user.getGroups();
+
+        $('#add-new-group-input').focus(function() {
+            Lungo.dom("#add-new-group-img").hide();
+            Lungo.dom("#add-new-group-img").removeClass('tag');
+            Lungo.dom("#add-new-group-btn").show();
+            Lungo.dom("#add-new-group-btn").addClass('tag');
+        });
+
+        $('#add-new-group-input').blur(function() {
+            if(Lungo.dom('#add-new-group-input').val() === "") {
+                Lungo.dom("#add-new-group-img").show();
+                Lungo.dom("#add-new-group-img").addClass('tag');
+                Lungo.dom("#add-new-group-btn").hide();
+                Lungo.dom("#add-new-group-btn").removeClass('tag');
+            }
+        });
+
+    },
+
+    // Signup
 	'tap #signup-done': function() {
+        $(document.activeElement).blur();
 		if(!ValidationSignForm())
 			return false;
+
 		App.current_user.addUser();
 	},
 
@@ -208,6 +261,17 @@ Lungo.Events.init({
 			['Take a photo','Choose Existing', 'Cancel']
 		);
 	},
+
+    'load section#notifications': function(event) {
+        console.log("Load notifications page....");
+        var notifications = new App.notification();
+        notifications.getNotifications();
+    },
+
+    'tap #profile-upload-file': function() {
+        console.log(2);
+        Lungo.dom("#profile-upload-file").on("change", App.photo.getProfilePics);
+    },
 
     'load section#notifications': function(event) {
         console.log("Load notifications page....");
@@ -517,7 +581,33 @@ Lungo.Events.init({
 		}
 	},
 
-	'tap #add-moment-select-contacts-done': function() {
+    'load article#moments-article': function(event) {
+        // console.log("======================");
+        //var m = new App.moments();
+        //m.getMoments("moments-article");
+    },
+    'load article#moments-months-article': function(event) {
+
+    },
+    'load article#moments-years-article': function(event) {
+        console.log("++++++++++++");
+        var pull_example = new Lungo.Element.Pull("#moments-years-article", {
+            onPull:"pull down to refresh",
+            onRelease:"Release to get new data",
+            onRefresh:"Refreshing.....",
+            callback:function(){
+                console.log("Pull & refresh completed!");
+                Lungo.dom("#moments-article").empty();
+                var m = new App.moments();
+                m.getMoments();
+                pull_example.hide();
+            }
+        });
+        //var m = new App.moments();
+        //m.getMoments("moments-article");
+    },
+
+    'tap #add-moment-select-contacts-done': function() {
 		var txt = "";
 		if (rediscovr.currentmoment.collaborators === undefined) {
 			rediscovr.currentmoment.collaborators = [];

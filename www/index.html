@@ -50,9 +50,15 @@
 			pictureSource = navigator.camera.PictureSourceType;
 			destinationType = navigator.camera.DestinationType;
 			// Change webview background color (dropdowns etc) from PhoneGap default (black) to white.
-			if (window.plugins != undefined && window.plugins.webviewcolor != undefined) {
+			if (window.plugins !== undefined && window.plugins.webviewcolor !== undefined) {
 				window.plugins.webviewcolor.change('#ffffff');
 			}
+			
+			// Black status bar.
+			StatusBar.backgroundColorByHexString("#000000");
+			// White text on status bar.
+			StatusBar.styleLightContent();
+
 			window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, onFileSystemFail);
 			window.verbosity = true;
 			checkConnection();
@@ -74,8 +80,8 @@
 			file_msg += App.config.local_prefix + "\n\n";
 			var reader = DATADIR.createReader();
 			reader.readEntries(function(d) {
-			    FS_gotFiles(d);
-			    FS_appReady();
+				FS_gotFiles(d);
+				FS_appReady();
 			}, FS_onError);
 		}
 		//Result of reading my directory
@@ -124,48 +130,50 @@
 
 		// Called when a photo is successfully retrieved
 		function onPhotoDataSuccess(imageData) {
-		  // Uncomment to view the base64-encoded image data
-		  // console.log(imageData);
+			// Uncomment to view the base64-encoded image data
+			// console.log(imageData);
 
-		  // Get image handle
-		  var smallImage = document.getElementById('smallImage');
+			// Get image handle
+			var smallImage = document.getElementById('smallImage');
 
-		  // Unhide image elements
-		  smallImage.style.display = 'block';
+			// Unhide image elements
+			smallImage.style.display = 'block';
 
-		  // Show the captured photo
-		  // The in-line CSS rules are used to resize the image
-		  smallImage.src = "data:image/jpeg;base64," + imageData;
+			// Show the captured photo
+			// The in-line CSS rules are used to resize the image
+			smallImage.src = "data:image/jpeg;base64," + imageData;
 		}
 
 		// Called when a photo is successfully retrieved
 		function onPhotoURISuccess(imageURI) {
-		  // Uncomment to view the image file URI
-		  // console.log(imageURI);
+			// Uncomment to view the image file URI
+			// console.log(imageURI);
 
-		  // Get image handle
-		  var largeImage = document.getElementById('largeImage');
+			// Get image handle
+			var largeImage = document.getElementById('largeImage');
 
-		  // Unhide image elements
-		  largeImage.style.display = 'block';
+			// Unhide image elements
+			largeImage.style.display = 'block';
 
-		  // Show the captured photo
-		  // The in-line CSS rules are used to resize the image
-		  largeImage.src = imageURI;
+			// Show the captured photo
+			// The in-line CSS rules are used to resize the image
+			largeImage.src = imageURI;
 		}
 
 		// A button will call this function
 		function capturePhoto() {
-		  // Take picture using device camera and retrieve image as base64-encoded string
-		  navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
-		    destinationType: destinationType.DATA_URL });
+			// Take picture using device camera and retrieve image as base64-encoded string
+			navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
+				destinationType: destinationType.DATA_URL
+			});
 		}
 
 		// A button will call this function
 		function capturePhotoEdit() {
-		  // Take picture using device camera, allow edit, and retrieve image as base64-encoded string
-		  navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
-		    destinationType: destinationType.DATA_URL });
+			// Take picture using device camera, allow edit, and retrieve image as base64-encoded string
+			navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+				destinationType: destinationType.DATA_URL
+			});
 		}
 
 		// A button will call this function
@@ -181,7 +189,7 @@
 
 		// Called if something bad happens.
 		function onFail(message) {
-		  alert('Failed because: ' + message);
+			alert('Failed because: ' + message);
 		}
 
 	</script>
@@ -191,21 +199,16 @@
 	<section id="main" data-transition="slide">
 		<article id="main-article" class="signup scroll">
 			<div class='splash'>
-<!--
-<button style="color:#ffffff" onclick="capturePhoto();">Capture Photo</button> <br>
-<button style="color:#ffffff" onclick="capturePhotoEdit();">Capture Editable Photo</button> <br>
-<button style="color:#ffffff" onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
-<button style="color:#ffffff" onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button><br>
-<img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
-<img style="display:none;" id="largeImage" src="" />
--->
 				<img src='img/splash-logo@2x.png' class="splash logo centered"/>
-				<div class='splash subtitle'>your favorite moments</div>
-				<a href="#" data-view-section="signup-google"><img src='img/connect-with-google@2x.png' class="splash connect centered"/></a>
-				<div class="splash privacy">
-			<div style='text-align:center;font-size:12px;'><img src='img/lock-icon@2x.png'/> &nbsp; Rediscovr is 100% private. People only see what you specifically share with them.</div>
-				</div>
-		<div class='splash links'><a href='#' data-view-section="signup-email" class='link'>Sign Up</a> or <a href='#' data-view-section="login" class='link'>Log In</a> with email instead.</div>
+                <a href="#" data-view-section="signup-google">
+                    <div class="splash google"><p>Sign up with Google</p><p class="sub">Integrates with calendar</p></div>
+                </a>
+                <a href='#' data-view-section="signup-email" class='link'>
+                    <div class="splash signup"><p>Sign up with email</p></div>
+                </a>
+                <a href='#' data-view-section="login" class='link'>
+                    <div class="splash login"><p>Log In</p></div>
+                </a>
 			</div>
 		</article>
 	</section>
@@ -229,23 +232,14 @@
 	</section>
 
 	<section id="walkthrough-retain" data-transition="slide" data-aside="features" class="drag walkthrough">
-		<header data-title="Welcome">
-			<nav class="on-right" data-view-section="walkthrough-remember">
-				<img src="img/done-button@2x.png" />
-			</nav>
-		</header>
+        <header data-title="Welcome">
+            <nav class="on-right" data-view-section="home">
+                <img src="img/done-button@2x.png" />
+            </nav>
+        </header>
         <article ></article>
-	</section>
-    
-    <section id="walkthrough-remember" data-transition="slide" data-aside="features" class="drag walkthrough">
-		<header data-title="Welcome">
-			<nav class="on-right" data-view-section="home">
-				<img src="img/done-button@2x.png" />
-			</nav>
-		</header>
-        <article ></article>
-	</section>
-    
+    </section>
+
 		<script type="text/javascript" src="cordova.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
 
@@ -267,6 +261,8 @@
                     'static/sections/profile_image.html',
 					'static/sections/people.html',
 					'static/sections/person.html',
+                    'static/sections/groups.html',
+                    'static/sections/group.html',
 					'static/sections/notifications.html',
 					'static/sections/settings.html',
 					'static/sections/add-moment.html',

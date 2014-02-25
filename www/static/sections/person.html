@@ -1,37 +1,22 @@
 <section id="person" data-transition="slide" data-aside="features" class="drag mine">
-	<header>
+	<header id="person-header" data-title="">
 		<nav class="on-left" data-view-section="back">
 			<img src="img/back-button@2x.png" />
 		</nav>
-        <h3 id="person_detail_title" style="margin-left:100px !important;"></h3>
 	</header>
 	<article id="person-article" class="indented scroll moments">
 		<div class='profile-img user-avatar avatar-large avatar-shadow'>
-			<img src='img/mockup/nick-crawford.jpg' class="userimg"/>
+			<img id="person-user-image" src='img/default-upload-icon@2x.png' class="userimg"/>
 		</div>
 		<div class='profile-detail'>
-			<span class="username">Nick Crawford</span><br/>
-			<span class="userloc">San Francisco, CA</span><br/>
-			<span class="num-collaborations-num">32</span> 
-			<!--<span class="num-collaborations-num"> collaborations</span> -->
+			<span id="person-username" class="username"></span><br/>
+			<span id="person-location" class="userloc"></span><br/>
+			<span id="person-collaborations-num" class="num-collaborations-num"></span> 
+			<span class="num-collaborations-num"> collaborations</span>
 		</div>
 		<div class="moment-day">
-			<div class="on-left hilite">Today</div>
+			<div class="on-left hilite">Moments</div>
 		</div>
-		<div class="moment-item">
-			<div class="moment-item-header">
-				<div class="user-avatar">
-					<img src="img/mockup/nick-crawford.jpg"/>
-				</div>
-				<div class="moment-header">
-					<span class="moment-title">Being Adorable</span>
-					<span class="moment-location">Outer Sunset, San Francisco, CA</span>
-				</div>
-				<div style="clear:both;">&nbsp;</div>
-			</div>
-			<div class="moment-image">
-				<img src="img/mockup/girl-with-glasses.jpg"/>
-			</div>
-		</div>
+		<div id="person-moments-container" style="margin:0;padding:0;display:inline-block;"></div>
 	</article>
 </section>

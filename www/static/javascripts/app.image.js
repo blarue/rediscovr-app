@@ -28,11 +28,11 @@ App.image = function() {
 			this.image = image;
 			this.cb = cb;
 			// Get FS.
-			window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fs) {_this.onFileSystemSuccess(fs);}, this.onFileSystemFail);
+            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, this.onFileSystemSuccess, this.onFileSystemFail);
 		},
 
 		onFileSystemSuccess: function(fs) {
-			console.log("FS Success");
+//			console.log("FS Success");
 			var _this = this;
 			fs.root.getDirectory("momentimg", {create:true}, function(d) {_this.gotDir(d);}, this.onGetDirError);
 		},

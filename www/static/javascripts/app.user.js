@@ -32,7 +32,7 @@ App.user = function() {
 				function(transaction) {
 					transaction.executeSql(q, p, 
 						function(transaction, results) {
-							if (results.insertId != undefined) {
+							if (results.insertId !== undefined) {
 								console.log("Collaborator: " + results.insertId);
 							}
 						}, 
@@ -67,7 +67,7 @@ App.user = function() {
 					var m = new App.moments();
 					m.getMoments();
 
-					//Lungo.Router.section("home");
+					Lungo.Router.section("home");
 				});
 			} else if (data.Error != undefined) {
 				Lungo.Notification.error('Error', data.Error, 'remove', 3);
@@ -86,7 +86,7 @@ App.user = function() {
 		handleGetUserDB: function(transaction, results) {
 			var data = results.rows.item(0);
 			console.log(data);
-			if (data.id != undefined && data.id != null) {
+			if (data.id !== undefined && data.id !== null) {
 				console.log(App.current_user);
 				App.current_user.details.current_user = 1;
 				App.current_user.details.user_id = data.user_id;
@@ -126,15 +126,15 @@ App.user = function() {
 			this.details = {
 				email: Lungo.dom("#login-email").val(),
 				password: Lungo.dom("#login-password").val()
-			}
+			};
 		},
 
 		validateLogin: function() {
-			console.log("Validating.")
-			if (this.details.email == null) {
+			console.log("Validating.");
+			if (this.details.email === null) {
 				this.errors.push("You should have an email.");
 			}
-			if (this.details.password == null) {
+			if (this.details.password === null) {
 				this.errors.push("You should have a password.");
 			}
 
@@ -168,7 +168,7 @@ App.user = function() {
 		handleAdd: function(data) {
 			console.log(data);
 			console.log("API: " + data.message);
-			if (data.user_id != undefined && data.user_id != null) {
+			if (data.user_id !== undefined && data.user_id !== null) {
 				this.details.user_id = data.user_id;
 				this.details.current_user = 1;
 				App.database.addUser(this.details);
@@ -282,7 +282,7 @@ App.user = function() {
 		getCollaborators: function() {
 			this.details = {
 				user: App.current_user.details.user_id
-			}
+			};
 			var api = new App.api();
 			api.getCollaborators(this);
 		},
@@ -290,26 +290,27 @@ App.user = function() {
 		handleGetCollaborators: function(data) {
 			console.log(data);
 			console.log("API: " + data.message);
-			if (data.collaborators != undefined && data.collaborators != null) {
+			if (data.collaborators !== undefined && data.collaborators !== null) {
 				var c = data.collaborators;
 				Lungo.dom("#people-article-ul").html("");
 				for (var i = 0; i < c.length; i++) {
-					var new_li = "<li class=\"arrow\" data-view-section=\"person\">\
-						<div class=\"user-avatar avatar-medium avatar-shadow\">\
-							<img src=\"" + App.config.image_prefix + c[i].user_image + "\"/>\
-						</div>\
-						<div>\
-							<strong class=\"text bold\">" + c[i].first_name + " " + c[i].last_name + "</strong>\
-							<span class=\"text tiny\">" + c[i].city + ", " + c[i].ctate + "</span>\
-							<br/>\
-							<div class=\"num-collaborations\">\
-								<span class=\"num\">" + c[i].collaborations + "</span>\
-								<span> collaborations</span>\
-							</div>\
-						</div>\
-					</li>";
-					Lungo.dom("#people-article-ul").append(new_li);
-					delete new_li;
+					if (c[i].first_name !== '' || c[i].first_name !== '') {
+						var new_li = "<li id=\"person-" + c[i].id + "\" class=\"arrow people-list-item\" data-view-section=\"person\">" + 
+							"<div class=\"user-avatar avatar-medium avatar-shadow\">" + 
+								"<img src=\"" + App.config.image_prefix + c[i].user_image + "\"/>" + 
+							"</div>" + 
+							"<div>" + 
+								"<strong class=\"text bold\">" + c[i].first_name + " " + c[i].last_name + "</strong>" + 
+								"<span class=\"text tiny\">" + c[i].city + ", " + c[i].ctate + "</span>" + 
+								"<br/>" + 
+								"<div class=\"num-collaborations\">" + 
+									"<span class=\"num\">" + c[i].collaborations + "</span>" + 
+									"<span> collaborations</span>" + 
+								"</div>" + 
+							"</div>" + 
+						"</li>";
+						Lungo.dom("#people-article-ul").append(new_li);
+					}
 				}
 				// this.details.user_id = data.user_id;
 				// this.details.current_user = 1;
@@ -318,7 +319,70 @@ App.user = function() {
 				// Do something to show user added.
 				Lungo.Router.section("people");
 			}
-			
-		}
-	}
+		},
+
+		getUserMoments: function(user_id) {
+			var m = new App.moments();
+			m.getCollaboratorsMoments(user_id, "#person-moments-container");
+		},
+
+        //get groups
+        getGroups: function() {
+            this.details = {
+                user: App.current_user.details.user_id
+            };
+
+            Lungo.dom("#groups-article-ul").html("<li>\
+				<div class=\"groupdiv\">\
+					<span id=\"add-new-group-img\"  class=\"user-avatar icon plus addnew on-left tag\"></span>\
+					<input id=\"add-new-group-input\" type=\"text\" placeholder=\"Add New Group\" class=\"addnew\">\
+					<span id=\"add-new-group-btn\" class=\"user-avatar icon ok-sign addnew on-right\" style=\"display:none; float: right;\"></span>\
+				</div>\
+            </li>");
+
+            var api = new App.api();
+            api.getGroups(this);
+        },
+
+        handleGetGroups: function(data) {
+            console.log(data);
+            console.log("API: " + data.message);
+
+            if (data.groups != undefined && data.groups != null) {
+                var c = data.groups;
+
+                for (var i = 0; i < c.length; i++) {
+                    var new_li = document.createElement("li");
+                    Lungo.dom(new_li).addClass("arrow");
+                    //Lungo.dom(new_li).addAttr("data-view-section", "group");
+                    Lungo.dom(new_li).data("groupid", this.details.api_id);
+
+                    // Add action for tap.
+                    Lungo.dom(new_li).tap(function() {
+                        this.details = {
+                            user: App.current_user.details.user_id,
+                            group: Lungo.dom(this).data("groupid")
+                        }
+                        var api = new App.api();
+                        api.getGroupMembers(this);
+                        //Lungo.Router.section("group");
+                    });
+
+                    new_li.html("<div class=\"groupdiv\">\
+                     <span class=\"text hilite\">" + c[i].name + "</span>\
+                    </div>\
+                    <div style=\"clear:both;\"></div>");
+
+                    Lungo.dom("#groups-article-ul").append(new_li);
+                    delete new_li;
+                }
+                // this.details.user_id = data.user_id;
+                // this.details.current_user = 1;
+                // App.database.addUser(this.details);
+
+                // Do something to show user added.
+                Lungo.Router.section("groups");
+            }
+        }
+    }
 }

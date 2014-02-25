@@ -16,20 +16,20 @@ App.database = {
 		console.log("Trying to create table.");
 		console.log(typeof this.db);
 		// User table (id = Local, user_id = API ID)
-		var user_definition = "\
-			CREATE TABLE IF NOT EXISTS `user`(\
-				`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \
-				`user_id` INTEGER UNIQUE NULL, \
-				`first_name` TEXT NULL, \
-				`last_name` TEXT NULL, \
-				`email` TEXT NOT NULL, \
-				`phone` TEXT NULL, \
-				`city` TEXT NULL, \
-				`state` TEXT NULL, \
-				`country` TEXT NULL, \
-				`user_image` TEXT NULL, \
-				`current_user` INTEGER NOT NULL DEFAULT 0 \
-			);";
+		var user_definition = "" + 
+			"CREATE TABLE IF NOT EXISTS `user`(" + 
+				"`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " + 
+				"`user_id` INTEGER UNIQUE NULL, " + 
+				"`first_name` TEXT NULL, " + 
+				"`last_name` TEXT NULL, " + 
+				"`email` TEXT NOT NULL, " + 
+				"`phone` TEXT NULL, " + 
+				"`city` TEXT NULL, " + 
+				"`state` TEXT NULL, " + 
+				"`country` TEXT NULL, " + 
+				"`user_image` TEXT NULL, " + 
+				"`current_user` INTEGER NOT NULL DEFAULT 0 " + 
+			");";
 
 		// Moment table (id = Local, moment_id = API ID)
 		var moment_definition = "\
@@ -199,7 +199,7 @@ App.database = {
 		var _this = this;
 
 		if (owner != undefined) {
-			wheres.push({sql: "`owner` = ?", param: owner});
+			wheres.push({sql: "`user` = ?", param: owner});
 		}
 		if (limit != undefined) {
 			_limit = " LIMIT " + limit;

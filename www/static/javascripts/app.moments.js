@@ -11,7 +11,7 @@ App.moments = function() {
 		errors: [],
 
 		getMoments: function(domnode) {
-			if (domnode !== null) {
+			if (domnode !== null && domnode !== undefined) {
 				this.domnode = domnode;
 			}
 
@@ -29,6 +29,14 @@ App.moments = function() {
 			console.log("last_sync: " + App.current_user.details.last_sync);
 			var api = new App.api();
 			api.getMoments(this);
+		},
+
+		getCollaboratorsMoments: function(user_id, domnode) {
+			if (domnode !== null && domnode !== undefined) {
+				this.domnode = domnode;
+			}
+			// Find locally cached moments.
+			App.database.getMoments(user_id, 'date DESC', 20, this);
 		},
 
 		getMomentsMonths: function(domnode) {
@@ -76,8 +84,8 @@ App.moments = function() {
 
 					// Add Tap on header for moment view.
 					Lungo.dom(".moment-item-header").each(function() { 
-						Lungo.dom(this).tap(function() { 
-							alert(Lungo.dom(this).data("momentid"));
+						Lungo.dom(this).tap(function() {
+                            console.log("momentid : " + Lungo.dom(this).data("momentid"));
 						});
 					});
 				}
