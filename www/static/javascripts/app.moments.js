@@ -11,17 +11,16 @@ App.moments = function() {
 		errors: [],
 
 		getMoments: function(domnode) {
-			if (domnode !== null && domnode !== undefined) {
+			if (domnode != null && domnode != undefined) {
 				this.domnode = domnode;
 			}
-
 			// Find locally cached moments.
 			App.database.getMoments(null, 'date DESC', 20, this);
 
 			this.gatherDetails();
 			if (!this.details.since) {
 				if (App.current_user.details.last_sync) {
-					this.details.since = 1300000000;//App.current_user.details.last_sync;
+					this.details.since = App.current_user.details.last_sync;
 				} else {
 					this.details.since = null;
 				}
@@ -32,7 +31,7 @@ App.moments = function() {
 		},
 
 		getCollaboratorsMoments: function(user_id, domnode) {
-			if (domnode !== null && domnode !== undefined) {
+			if (domnode != null && domnode != undefined) {
 				this.domnode = domnode;
 			}
 			// Find locally cached moments.
@@ -40,7 +39,7 @@ App.moments = function() {
 		},
 
 		getMomentsMonths: function(domnode) {
-			if (domnode !== null && domnode !== undefined) {
+			if (domnode != null && domnode != undefined) {
 				this.domnode = domnode;
 			} else {
 				this.domnode = this.months_domnode;
@@ -51,7 +50,7 @@ App.moments = function() {
 		},
 
 		getMomentsYears: function(domnode) {
-			if (domnode !== null && domnode !== undefined) {
+			if (domnode != null && domnode != undefined) {
 				this.domnode = domnode;
 			} else {
 				this.domnode = this.years_domnode;
@@ -62,7 +61,7 @@ App.moments = function() {
 		},
 
 		handleGet: function(data) {
-			if (data.server_time !== undefined) {
+ 			if (data.server_time != undefined) {
 				App.current_user.details.last_sync = data.server_time;
 				var DB = new App.db();
 				DB.open();
@@ -70,18 +69,19 @@ App.moments = function() {
 				var q = "INSERT INTO `moment_sync` (`servertime`) VALUES (?)";
 				DB.executeQuery(q, p);
 			}
-			if (data.count !== undefined && (data.count + 0) > 0) {
-				if (data.moments !== undefined && data.moments.length == (data.count + 0)) {
+			if (data.count != undefined && (data.count + 0) > 0) {
+				if (data.moments != undefined && data.moments.length == (data.count + 0)) {
 					console.log("API: Returned " + data.count + " moments.");
 					for (var i = 0; i < data.count; i++) {
-                        
 						var moment = new App.moment();
 						moment.domnode = this.domnode;
 						moment.details = data.moments[i];
 						moment.cacheMoment();
 						moment.showMoment("append");
 					}
-					Lungo.Router.section("moments");
+                    
+                    if(this.domnode != "#profile-article")
+                        Lungo.Router.section("moments");
 
 					// Add Tap on header for moment view.
 					Lungo.dom(".moment-item-header").each(function() { 

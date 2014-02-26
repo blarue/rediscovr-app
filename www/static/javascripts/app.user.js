@@ -64,10 +64,11 @@ App.user = function() {
 				Lungo.Notification.success('Success', 'Your login was a great success!', 'ok', 2, function() {
 					Lungo.Notification.hide();
 
-					var m = new App.moments();
-					m.getMoments();
+					//var m = new App.moments();
+					//m.getMoments();
 
-					Lungo.Router.section("home");
+					//Lungo.Router.section("home");
+                    Lungo.Router.section("moments");
 				});
 			} else if (data.Error != undefined) {
 				Lungo.Notification.error('Error', data.Error, 'remove', 3);

@@ -240,10 +240,9 @@ App.database = {
 							for (var i=0; i < results.rows.length; i++) {
 								var m = results.rows.item(i);
 								var moment = new App.moment();
-                                //console.log("------");
-								//console.log(moment);
 								moment.domnode = _this.myref.domnode;
-								moment.details.moment_id = m.id;
+//								moment.details.moment_id = m.id;
+                                moment.details.moment_id = m.moment_id;
 								moment.details.api_id = m.moment_id;
 								moment.details.user = m.user_id;
 								moment.details.title = m.title;
@@ -463,16 +462,16 @@ App.database = {
 		console.log("MomentID: " + results.insertId);
 		rediscovr.currentmoment.moment_id = results.insertId;
 		
-		// if (rediscovr.currentmoment.images.length) {
-		// 	for (var i = 0; i < rediscovr.currentmoment.images.length; i++) {
-		// 		var data_array = {
-		// 			name: rediscovr.currentmoment.images[i],
-		// 			type: 'moment',
-		// 			owner: 'self'
-		// 		}
-		// 		App.database.addImage(data_array);
-		// 	}
-		// }
+		 if (rediscovr.currentmoment.images.length) {
+		 	for (var i = 0; i < rediscovr.currentmoment.images.length; i++) {
+		 		var data_array = {
+		 			name: rediscovr.currentmoment.images[i],
+		 			type: 'moment',
+		 			owner: 'self'
+		 		}
+		 		App.database.addImage(data_array);
+		 	}
+		 }
 		Lungo.Notification.show(
 			"check",                //Icon
 			"Success",              //Title
