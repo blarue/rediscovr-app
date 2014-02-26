@@ -1234,11 +1234,11 @@ exports.mapModules = function(context) {
         var symbolPath = symbolList[i + 2];
         var lastDot = symbolPath.lastIndexOf('.');
         var namespace = symbolPath.substr(0, lastDot);
-        var lastName = symbolPath.substr(lastDot + 1);
+        var last_name = symbolPath.substr(lastDot + 1);
 
         var deprecationMsg = symbolPath in deprecationMap ? 'Access made to deprecated symbol: ' + symbolPath + '. ' + deprecationMsg : null;
         var parentObj = prepareNamespace(namespace, context);
-        var target = parentObj[lastName];
+        var target = parentObj[last_name];
 
         if (strategy == 'm' && target) {
             builder.recursiveMerge(target, module);
@@ -1246,7 +1246,7 @@ exports.mapModules = function(context) {
             if (!(symbolPath in origSymbols)) {
                 origSymbols[symbolPath] = target;
             }
-            builder.assignOrWrapInDeprecateGetter(parentObj, lastName, module, deprecationMsg);
+            builder.assignOrWrapInDeprecateGetter(parentObj, last_name, module, deprecationMsg);
         }
     }
 };

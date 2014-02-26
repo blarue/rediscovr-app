@@ -21,12 +21,12 @@ App.moments = function() {
 			this.gatherDetails();
 			if (!this.details.since) {
 				if (App.current_user.details.last_sync) {
-					this.details.since = 1300000000;//App.current_user.details.last_sync;
+					this.details.since = App.current_user.details.last_sync;
 				} else {
 					this.details.since = null;
 				}
 			}
-			console.log("last_sync  : " + App.current_user.details.last_sync);
+			console.log("last_sync: " + App.current_user.details.last_sync);
 			var api = new App.api();
 			api.getMoments(this);
 		},
@@ -74,7 +74,6 @@ App.moments = function() {
 				if (data.moments !== undefined && data.moments.length == (data.count + 0)) {
 					console.log("API: Returned " + data.count + " moments.");
 					for (var i = 0; i < data.count; i++) {
-                        
 						var moment = new App.moment();
 						moment.domnode = this.domnode;
 						moment.details = data.moments[i];
@@ -86,7 +85,7 @@ App.moments = function() {
 					// Add Tap on header for moment view.
 					Lungo.dom(".moment-item-header").each(function() { 
 						Lungo.dom(this).tap(function() {
-                            //console.log("momentid : " + Lungo.dom(this).data("momentid"));
+                            console.log("momentid : " + Lungo.dom(this).data("momentid"));
 						});
 					});
 				}

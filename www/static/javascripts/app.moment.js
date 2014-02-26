@@ -169,6 +169,7 @@ App.moment = function() {
 				placement = "append";
 			}
 //			console.log("Running showMoment.");
+			console.log(this.domnode);
 			var _this = this;
 			if (_this.domnode != "#moments-months-article" && _this.domnode != "#moments-years-article" && this.details.images.length > 0) {
 				this.details.images_tmp = [];
@@ -344,7 +345,6 @@ App.moment = function() {
 				} else {
 					img_src = App.config.image_prefix + this.details.images[img];
 				}
-                console.log(img_src + "----------------------");
 				// Create div to hold moment image.
 				var moment_imgdiv = document.createElement("div");
 				Lungo.dom(moment_imgdiv).addClass("moment-image");

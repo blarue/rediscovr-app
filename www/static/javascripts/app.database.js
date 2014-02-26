@@ -240,8 +240,7 @@ App.database = {
 							for (var i=0; i < results.rows.length; i++) {
 								var m = results.rows.item(i);
 								var moment = new App.moment();
-                                //console.log("------");
-								//console.log(moment);
+								console.log(_this.myref);
 								moment.domnode = _this.myref.domnode;
 								moment.details.moment_id = m.id;
 								moment.details.api_id = m.moment_id;
