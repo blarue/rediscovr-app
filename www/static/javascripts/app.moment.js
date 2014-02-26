@@ -164,22 +164,18 @@ App.moment = function() {
 			);});
 		},
 
-		showMoment: function(placement) {
-			if (placement === null) {
-				placement = "append";
-			}
-//			console.log("Running showMoment.");
-			console.log(this.domnode);
-			var _this = this;
-			if (_this.domnode != "#moments-months-article" && _this.domnode != "#moments-years-article" && this.details.images.length > 0) {
-				this.details.images_tmp = [];
-				
-				if (this.details.images[0].full !== undefined) {
-					for (var j=0; j < this.details.images.length; j++) {
-						//console.log(_this);
-						this.details.images_tmp.push(this.details.images[j].full);
-					}
-					this.details.images = this.details.images_tmp;
+        showMoment: function(placement) {
+            if (placement === null) {
+                placement = "append";
+            }
+            var _this = this;
+            if (_this.domnode != "#moments-months-article" && _this.domnode != "#moments-years-article" && this.details.images.length > 0) {
+                this.details.images_tmp = [];
+                if (this.details.images[0].full !== undefined) {
+                    for (var j=0; j < this.details.images.length; j++) {
+                        this.details.images_tmp.push(this.details.images[j].full);
+                    }
+                    this.details.images = this.details.images_tmp;
 				}
 
 				if (_this.domnode == "#moments-months-article" || _this.domnode == "#moments-years-article") {
@@ -253,7 +249,8 @@ App.moment = function() {
 				if (this.details.images[img].substr(0, 4) === "data") {
 					img_src = this.details.images[img];
 				} else {
-					img_src = App.config.image_prefix + this.details.images[img];
+//					img_src = App.config.local_prefix + this.details.images[img];
+                    img_src = App.config.image_prefix + this.details.images[img];
 				}
 				// Create div to hold moment image.
 				var moment_imgdiv = document.createElement("div");
@@ -353,7 +350,7 @@ App.moment = function() {
 				var moment_anchor = document.createElement("a");
 				Lungo.dom(moment_anchor).addClass("fancybox");
 				Lungo.dom(moment_anchor).attr("rel", "group");
-				Lungo.dom(moment_anchor).attr("href", "");
+                Lungo.dom(moment_anchor).attr("href", img_src);
 				// Create image.
 				var moment_imgimg = document.createElement("img");
 				Lungo.dom(moment_imgimg).attr("id", "moment-" + this.details.moment_id);
@@ -443,7 +440,7 @@ App.moment = function() {
 				function(transaction) {
 					transaction.executeSql(c_query, c_data_array, 
 						function(transaction, results) {
-							console.log(results);
+//							console.log(results);
 						}, 
 						function(transaction, errors) {
 							console.log(errors);
@@ -535,9 +532,12 @@ App.moment = function() {
 						console.log(i_data_array);
 						var i_query = "INSERT OR IGNORE INTO `image` (`name`, `purpose`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?, ?);";
 						console.log(i_query);
-						DB.db.transaction(function(transaction){transaction.executeSql(i_query, i_data_array, 
+
+                        var _this_details_id =_this.details.id;
+
+                        DB.db.transaction(function(transaction){transaction.executeSql(i_query, i_data_array,
 							function(transaction, results) {
-								var im_data_array = [_this.details.id, results.insertId, 1];
+                                var im_data_array = [_this_details_id, results.insertId, 1];
 								var im_query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) VALUES (?, ?, ?);";
 								DB.db.transaction(function(transaction){transaction.executeSql(im_query, im_data_array, 
 									function(transaction, results) {

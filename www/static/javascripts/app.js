@@ -94,7 +94,8 @@ Lungo.ready(function() {
         callback:function(){
             console.log("Pull & refresh completed!");
             var m = new App.moments();
-            m.getMoments("moments-article");
+            Lungo.dom("#moments-article").empty();
+            m.getMoments("#moments-article");
             pull_moments.hide();
         }
     });
@@ -103,9 +104,8 @@ Lungo.ready(function() {
 Lungo.Events.init({
     'load section#moments': function(event) {
         var m = new App.moments();
-        m.getMoments();
         Lungo.dom("#moments-article").empty();
-        m.getMoments();
+        m.getMoments("#moments-article");
     },
 
 	'load section#add-moment': function(event) {
@@ -154,12 +154,12 @@ Lungo.Events.init({
 		c.getCollaborators();
 	},
 
-	'tap .people-list-item': function(event) {
-		console.log(this.id);
-		var user_id = this.id.split("-")[this.id.split("-").length - 1];
-		var c = new App.user();
-		c.getUserMoments(user_id);
-	},
+	// 'tap .people-list-item': function(event) {
+	// 	console.log(this.id);
+	// 	var user_id = this.id.split("-")[this.id.split("-").length - 1];
+	// 	var c = new App.user();
+	// 	c.getUserMoments(user_id);
+	// },
 
 	// Login
 	'tap #login-done': function() {
@@ -262,36 +262,24 @@ Lungo.Events.init({
 		);
 	},
 
-    'load section#notifications': function(event) {
-        console.log("Load notifications page....");
-        var notifications = new App.notification();
-        notifications.getNotifications();
-    },
-
-    'tap #profile-upload-file': function() {
-        console.log(2);
-        Lungo.dom("#profile-upload-file").on("change", App.photo.getProfilePics);
-    },
-
-    'load section#notifications': function(event) {
-        console.log("Load notifications page....");
-        var notifications = new App.notification();
-        notifications.getNotifications();
-    },
-
-    'tap #profile-upload-file': function() {
-        console.log(2);
-        Lungo.dom("#profile-upload-file").on("change", App.photo.getProfilePics);
-    },
+//    'load section#notifications': function(event) {
+//        console.log("Load notifications page....");
+//        var notifications = new App.notification();
+//        notifications.getNotifications();
+//    },
+//
+//    'tap #profile-upload-file': function() {
+//        Lungo.dom("#profile-upload-file").on("change", App.photo.getProfilePics);
+//    },
 
 	// User Settings load event.
 	'load section#settings': function(event) {
 		console.log(App.current_user);
-		if (App.current_user.details.firstName !== undefined) {
-			Lungo.dom("#settings-firstname").val(App.current_user.details.firstName);
+		if (App.current_user.details.first_name !== undefined) {
+			Lungo.dom("#settings-first_name").val(App.current_user.details.first_name);
 		}
-		if (App.current_user.details.lastName !== undefined) {
-			Lungo.dom("#settings-lastname").val(App.current_user.details.lastName);
+		if (App.current_user.details.last_name !== undefined) {
+			Lungo.dom("#settings-last_name").val(App.current_user.details.last_name);
 		}
 		if (App.current_user.details.email !== undefined) {
 			Lungo.dom("#settings-email").val(App.current_user.details.email);
@@ -316,11 +304,11 @@ Lungo.Events.init({
 		if (App.current_user.details.user_image !== undefined) {
 			Lungo.dom("#profile-user-image").attr("src", App.config.image_prefix + App.current_user.details.user_image);
 		}
-		if (App.current_user.details.firstName !== undefined) {
-			username += App.current_user.details.firstName + "  ";
+		if (App.current_user.details.first_name !== undefined) {
+			username += App.current_user.details.first_name + "  ";
 		}
-		if (App.current_user.details.lastName !== undefined) {
-			username += App.current_user.details.lastName;
+		if (App.current_user.details.last_name !== undefined) {
+			username += App.current_user.details.last_name;
 		}
 		Lungo.dom("#profile-username").text(username);
 		if (App.current_user.details.city !== undefined) {
@@ -582,29 +570,27 @@ Lungo.Events.init({
 	},
 
     'load article#moments-article': function(event) {
-        // console.log("======================");
-        //var m = new App.moments();
-        //m.getMoments("moments-article");
+
     },
     'load article#moments-months-article': function(event) {
 
     },
     'load article#moments-years-article': function(event) {
-        console.log("++++++++++++");
-        var pull_example = new Lungo.Element.Pull("#moments-years-article", {
-            onPull:"pull down to refresh",
-            onRelease:"Release to get new data",
-            onRefresh:"Refreshing.....",
-            callback:function(){
-                console.log("Pull & refresh completed!");
-                Lungo.dom("#moments-article").empty();
-                var m = new App.moments();
-                m.getMoments();
-                pull_example.hide();
-            }
-        });
-        //var m = new App.moments();
-        //m.getMoments("moments-article");
+    //     console.log("++++++++++++");
+    //     var pull_example = new Lungo.Element.Pull("#moments-years-article", {
+    //         onPull:"pull down to refresh",
+    //         onRelease:"Release to get new data",
+    //         onRefresh:"Refreshing.....",
+    //         callback:function(){
+    //             console.log("Pull & refresh completed!");
+    //             Lungo.dom("#moments-article").empty();
+    //             var m = new App.moments();
+    //             m.getMoments();
+    //             pull_example.hide();
+    //         }
+    //     });
+    //     //var m = new App.moments();
+    //     //m.getMoments("moments-article");
     },
 
     'tap #add-moment-select-contacts-done': function() {
