@@ -1,4 +1,5 @@
 cordova.define('cordova/plugin_list', function(require, exports, module) {
+
 module.exports = [
     {
         "file": "plugins/org.apache.cordova.console/www/console-via-logger.js",
