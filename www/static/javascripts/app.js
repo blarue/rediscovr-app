@@ -94,7 +94,8 @@ Lungo.ready(function() {
         callback:function(){
             console.log("Pull & refresh completed!");
             var m = new App.moments();
-            m.getMoments("moments-article");
+            Lungo.dom("#moments-article").empty();
+            m.getMoments("#moments-article");
             pull_moments.hide();
         }
     });
@@ -103,9 +104,8 @@ Lungo.ready(function() {
 Lungo.Events.init({
     'load section#moments': function(event) {
         var m = new App.moments();
-        m.getMoments();
         Lungo.dom("#moments-article").empty();
-        m.getMoments();
+        m.getMoments("#moments-article");
     },
 
 	'load section#add-moment': function(event) {
@@ -269,18 +269,6 @@ Lungo.Events.init({
     },
 
     'tap #profile-upload-file': function() {
-        console.log(2);
-        Lungo.dom("#profile-upload-file").on("change", App.photo.getProfilePics);
-    },
-
-    'load section#notifications': function(event) {
-        console.log("Load notifications page....");
-        var notifications = new App.notification();
-        notifications.getNotifications();
-    },
-
-    'tap #profile-upload-file': function() {
-        console.log(2);
         Lungo.dom("#profile-upload-file").on("change", App.photo.getProfilePics);
     },
 
@@ -581,11 +569,6 @@ Lungo.Events.init({
 		}
 	},
 
-    'load article#moments-article': function(event) {
-        // console.log("======================");
-        //var m = new App.moments();
-        //m.getMoments("moments-article");
-    },
     'load article#moments-months-article': function(event) {
 
     },
