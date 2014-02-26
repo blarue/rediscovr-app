@@ -101,12 +101,12 @@ Lungo.ready(function() {
 });
 
 Lungo.Events.init({
-    'load section#moments': function(event) {
-        var m = new App.moments();
-        m.getMoments();
-        Lungo.dom("#moments-article").empty();
-        m.getMoments();
-    },
+//    'load section#moments': function(event) {
+//        var m = new App.moments();
+//        m.getMoments();
+//        Lungo.dom("#moments-article").empty();
+//        m.getMoments();
+//    },
 
 	'load section#add-moment': function(event) {
 		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true
@@ -589,23 +589,23 @@ Lungo.Events.init({
     'load article#moments-months-article': function(event) {
 
     },
-    'load article#moments-years-article': function(event) {
-        console.log("++++++++++++");
-        var pull_example = new Lungo.Element.Pull("#moments-years-article", {
-            onPull:"pull down to refresh",
-            onRelease:"Release to get new data",
-            onRefresh:"Refreshing.....",
-            callback:function(){
-                console.log("Pull & refresh completed!");
-                Lungo.dom("#moments-article").empty();
-                var m = new App.moments();
-                m.getMoments();
-                pull_example.hide();
-            }
-        });
-        //var m = new App.moments();
-        //m.getMoments("moments-article");
-    },
+//    'load article#moments-years-article': function(event) {
+//        console.log("++++++++++++");
+//        var pull_example = new Lungo.Element.Pull("#moments-years-article", {
+//            onPull:"pull down to refresh",
+//            onRelease:"Release to get new data",
+//            onRefresh:"Refreshing.....",
+//            callback:function(){
+//                console.log("Pull & refresh completed!");
+//                Lungo.dom("#moments-article").empty();
+//                var m = new App.moments();
+//                //m.getMoments();
+//                pull_example.hide();
+//            }
+//        });
+//        //var m = new App.moments();
+//        //m.getMoments("moments-article");
+//    },
 
     'tap #add-moment-select-contacts-done': function() {
 		var txt = "";
