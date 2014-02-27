@@ -6,10 +6,12 @@ App.moments = function() {
 			since: null
 		},
 		domnode: "#moments-article",
+		months_domnode: "#moments-months-article",
+		years_domnode: "#moments-years-article",
 		errors: [],
 
 		getMoments: function(domnode) {
-			if (domnode !== null && domnode !== undefined) {
+			if (domnode != null && domnode != undefined) {
 				this.domnode = domnode;
 			}
 
@@ -29,9 +31,8 @@ App.moments = function() {
 			api.getMoments(this);
 		},
 
-<<<<<<< HEAD
 		getCollaboratorsMoments: function(user_id, domnode) {
-			if (domnode !== null && domnode !== undefined) {
+			if (domnode != null && domnode != undefined) {
 				this.domnode = domnode;
 			}
 			// Find locally cached moments.
@@ -39,7 +40,7 @@ App.moments = function() {
 		},
 
 		getMomentsMonths: function(domnode) {
-			if (domnode !== null && domnode !== undefined) {
+			if (domnode != null && domnode != undefined) {
 				this.domnode = domnode;
 			} else {
 				this.domnode = this.months_domnode;
@@ -50,7 +51,7 @@ App.moments = function() {
 		},
 
 		getMomentsYears: function(domnode) {
-			if (domnode !== null && domnode !== undefined) {
+			if (domnode != null && domnode != undefined) {
 				this.domnode = domnode;
 			} else {
 				this.domnode = this.years_domnode;
@@ -60,10 +61,8 @@ App.moments = function() {
 			App.database.getMoments(null, 'date DESC', null, this);
 		},
 
-=======
->>>>>>> Select Reminder Page fix
 		handleGet: function(data) {
-			if (data.server_time !== undefined) {
+			if (data.server_time != undefined) {
 				App.current_user.details.last_sync = data.server_time;
 				var DB = new App.db();
 				DB.open();
@@ -71,8 +70,8 @@ App.moments = function() {
 				var q = "INSERT INTO `moment_sync` (`servertime`) VALUES (?)";
 				DB.executeQuery(q, p);
 			}
-			if (data.count !== undefined && (data.count + 0) > 0) {
-				if (data.moments !== undefined && data.moments.length == (data.count + 0)) {
+			if (data.count != undefined && (data.count + 0) > 0) {
+				if (data.moments != undefined && data.moments.length == (data.count + 0)) {
 					console.log("API: Returned " + data.count + " moments.");
 					for (var i = 0; i < data.count; i++) {
 						var moment = new App.moment();
@@ -81,7 +80,8 @@ App.moments = function() {
 						moment.cacheMoment();
 						moment.showMoment("append");
 					}
-					Lungo.Router.section("moments");
+					//if(this.domnode != "#profile-article")
+                    //Lungo.Router.section("moments");
 
 					// Add Tap on header for moment view.
 					Lungo.dom(".moment-item-header").each(function() { 

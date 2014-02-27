@@ -246,16 +246,16 @@ body > section#settings fieldset.fieldsection label { width: 100%; }
 body > section#settings fieldset.fieldsection { border-top: 1px solid #bbbbbb; }
 body > section#settings label.dark { color: #666666;}
 
-<<<<<<< HEAD
 body > section.editmoment > article { background-color: #e5e5e5; padding-bottom:125px; font-size:.93em; }
-=======
-body > section.editmoment > article { background-color: #e5e5e5; padding-bottom:125px; }
->>>>>>> Select Reminder Page fix
 body > section.editmoment > article > div > img.userimg { width:116px; }
 body > section.editmoment > article > div.moment-form { margin-top:25px; }
 body > section.editmoment > article > div > fieldset { padding: .7em .5em; margin-left:20px; margin-right:20px; }
+body > section.editmoment > article > div > fieldset.edittext { padding:.2em .5em; margin-left:20px; margin-right:20px; }
+body > section.editmoment > article > div > fieldset.selectedphotos { background-color:#FFFFFF; text-align:center; }
 body > section.editmoment > article > div > fieldset img.formlabel { display: inline; width: 24px; }
+body > section.editmoment > article > div > fieldset.edittext input[type="text"] { width:100%; }
 body > section.editmoment > article > div > fieldset input[type="text"] { width:85%; }
+body > section.editmoment > article > div > fieldset textarea { width:100%;height:5em; }
 body > section.editmoment > article > div > fieldset select option { color:#9a9a9a; }
 body > section.editmoment > article > div > fieldset button { text-align:left; color:#9a9a9a; padding:0; margin:0; }
 

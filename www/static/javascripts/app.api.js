@@ -53,7 +53,6 @@ App.api = function() {
 			this.uploadImages(ref);
 		},
 
-<<<<<<< HEAD
 		editMoment: function(ref) {
 			//if (ref.validate() === true) {
 				console.log("Validates. " + config.url + "moment  " + JSON.stringify(ref.details));
@@ -85,9 +84,6 @@ App.api = function() {
 			}
 			ref.details.images = ref.details.apiimages;
 			ref.details.date += " " + ref.details.time;
-=======
-		handleAddImages: function(ref) {
->>>>>>> Select Reminder Page fix
 			if (ref.validate() === true) {
 				console.log("Validates. " + config.url + "moment  " + JSON.stringify(ref.details));
 				$$.post(config.url + "moment", JSON.stringify(ref.details), function(data) {

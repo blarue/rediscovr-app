@@ -45,7 +45,7 @@ App.user = function() {
 		},
 
 		handleLogin: function(data) {
-			console.log(data);
+			//console.log(data);
 			//console.log("API: " + data.message);
 			if (data.id != undefined && data.id != null) {
 				this.details.current_user = App.current_user.details.current_user = 1;
@@ -63,11 +63,7 @@ App.user = function() {
 				// Do something to show user added.
 				Lungo.Notification.success('Success', 'Your login was a great success!', 'ok', 2, function() {
 					Lungo.Notification.hide();
-
-					var m = new App.moments();
-					m.getMoments();
-
-					Lungo.Router.section("home");
+					Lungo.Router.section("moments");
 				});
 			} else if (data.Error != undefined) {
 				Lungo.Notification.error('Error', data.Error, 'remove', 3);
@@ -89,7 +85,7 @@ App.user = function() {
 			if (data.id !== undefined && data.id !== null) {
 				console.log(App.current_user);
 				App.current_user.details.current_user = 1;
-				App.current_user.details.user_id = data.id;
+				App.current_user.details.user_id = data.user_id;
 				App.current_user.details.email = data.email;
 				App.current_user.details.firstName = data.firstName;
 				App.current_user.details.lastName = data.lastName;
@@ -109,8 +105,7 @@ App.user = function() {
 								console.log(results);
 								console.log(results.rows.item(0));
 								App.current_user.details.last_sync = results.rows.item(0).last_sync	;
-								this.moments = new App.moments();
-								this.moments.getMoments();
+								Lungo.Router.section("moments");
 							},
 							function(transaction, results) {
 								console.log(results);
