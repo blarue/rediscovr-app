@@ -199,7 +199,11 @@ App.database = {
 		var _this = this;
 
 		if (owner != undefined) {
-			wheres.push({sql: "`user` = ?", param: owner});
+			if (owner === "notme") {
+				wheres.push({sql: "`user` != ?", param: App.current_user.details.user_id});
+			} else {
+				wheres.push({sql: "`user` = ?", param: owner});	
+			}
 		}
 		if (limit != undefined) {
 			_limit = " LIMIT " + limit;

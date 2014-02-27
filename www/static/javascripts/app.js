@@ -38,7 +38,7 @@ var pushNotification;
 
 App.config = {
 	image_prefix: "http://s3.amazonaws.com/etch-images/",
-	local_prefix: "http://s3.amazonaws.com/etch-images/"
+	local_prefix: ""
 };
 
 App.upload_images = [];
@@ -102,11 +102,18 @@ Lungo.ready(function() {
 });
 
 Lungo.Events.init({
-    'load section#moments': function(event) {
-       var m = new App.moments();
-       Lungo.dom("#moments-article").empty();
-       m.getMoments("#moments-article");
-    },
+	'load section#moments': function(event) {
+		var m = new App.moments();
+		Lungo.dom("#moments-article").empty();
+		m.getMoments("#moments-article");
+	},
+
+	'load section#shared': function(event) {
+		console.log("Loaded Shared with me section");
+		var m = new App.moments();
+		Lungo.dom("#shared-moments-container").empty();
+		m.getSharedMoments("#shared-moments-container");
+	},
 
 	'load section#add-moment': function(event) {
 		// http://maps.googleapis.com/maps/api/geocode/json?latlng=40.01604211293868,-75.18851826180997&sensor=true

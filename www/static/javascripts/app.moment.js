@@ -168,7 +168,7 @@ App.moment = function() {
 			if (placement === null) {
 				placement = "append";
 			}
-//			console.log("Running showMoment.");
+			console.log("Running showMoment.");
 			//console.log(this.domnode);
 			var _this = this;
 			if (_this.domnode != "#moments-months-article" && _this.domnode != "#moments-years-article" && this.details.images.length > 0) {
@@ -282,7 +282,7 @@ App.moment = function() {
 		},
 
 		renderMoment: function(placement) {
-//			console.log("Running renderMoment.");
+			console.log("Running renderMoment.");
 			var _this = this;
 			var imgdiv_class = "";
 			if (this.details.images !== undefined) {
@@ -437,7 +437,9 @@ App.moment = function() {
 			var c = _this.details.creator;
 			c.current_user = (c.id == App.current_user.details.user_id) ? 1 : 0;
 			var c_data_array = [c.id, c.email, c.first_name, c.last_name, c.city, c.state, c.country, c.user_image, c.current_user];
-            var c_query = "INSERT OR IGNORE INTO `user` \ (`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) \	VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            var c_query = "INSERT OR IGNORE INTO `user` " +
+				"(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) " + 
+				"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
             //console.log(c_data_array + " " + c_query);
 			DB.db.transaction(
 				function(transaction) {
@@ -528,13 +530,13 @@ App.moment = function() {
 					var ext = image.split(".")[image.split(".").length - 1];
 					var asset_type = (types.image.indexOf(ext.toLowerCase()) != -1) ? "image" : "video";
 
-//					console.log(JSON.stringify(image));
+					console.log(JSON.stringify(image));
 					var imgr = new App.image();
 					imgr.cacheLocally(image, function(res) {
 						var i_data_array = [image, 'moment', asset_type, _this.details.creator.id, 1];
-						//console.log(i_data_array);
+						console.log(i_data_array);
 						var i_query = "INSERT OR IGNORE INTO `image` (`name`, `purpose`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?, ?);";
-						//console.log(i_query);
+						console.log(i_query);
                         var _this_details_id =_this.details.id;
 						DB.db.transaction(function(transaction){transaction.executeSql(i_query, i_data_array, 
 							function(transaction, results) {
@@ -542,7 +544,7 @@ App.moment = function() {
 								var im_query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) VALUES (?, ?, ?);";
 								DB.db.transaction(function(transaction){transaction.executeSql(im_query, im_data_array, 
 									function(transaction, results) {
-										//console.log(results);
+										console.log(results);
 									}, 
 									function(transaction, errors) {
 										console.log("errors" + errors);
@@ -573,6 +575,10 @@ App.moment = function() {
 		},
 
 		gatherDetails: function() {
+			// Hack to fix if not set.
+			if (rediscovr.currentmoment.collaborators === undefined) {
+				rediscovr.currentmoment.collaborators = [];
+			}
 			// Pull values from form to details object.
 			this.details.user = App.current_user.details.user_id;
 			this.details.title = rediscovr.currentmoment.moment_title = Lungo.dom("#moment-form-title").val();

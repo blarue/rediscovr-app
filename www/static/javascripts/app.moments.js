@@ -32,11 +32,19 @@ App.moments = function() {
 		},
 
 		getCollaboratorsMoments: function(user_id, domnode) {
-			if (domnode != null && domnode != undefined) {
+			if (domnode !== null && domnode !== undefined) {
 				this.domnode = domnode;
 			}
 			// Find locally cached moments.
 			App.database.getMoments(user_id, 'date DESC', 20, this);
+		},
+
+		getSharedMoments: function(domnode) {
+			if (domnode !== null && domnode !== undefined) {
+				this.domnode = domnode;
+			}
+			// Find locally cached moments.
+			App.database.getMoments('notme', 'date DESC', 20, this);
 		},
 
 		getMomentsMonths: function(domnode) {

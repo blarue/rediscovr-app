@@ -283,6 +283,7 @@ App.user = function() {
 		},
 
 		handleGetCollaborators: function(data) {
+			var _this = this;
 			console.log(data);
 			console.log("API: " + data.message);
 			if (data.collaborators !== undefined && data.collaborators !== null) {
@@ -290,30 +291,58 @@ App.user = function() {
 				Lungo.dom("#people-article-ul").html("");
 				for (var i = 0; i < c.length; i++) {
 					if (c[i].first_name !== '' || c[i].first_name !== '') {
-						var new_li = "<li id=\"person-" + c[i].id + "\" class=\"arrow people-list-item\" data-view-section=\"person\">" + 
+						var person_id = c[i].id;
+						var person_image = App.config.image_prefix + c[i].user_image;
+						var person_name = c[i].first_name + " " + c[i].last_name;
+						var person_location = c[i].city + ", " + c[i].ctate;
+						var person_collaborations = c[i].collaborations;
+
+						var new_li = document.createElement("li");
+						Lungo.dom(new_li).attr("id", "person-" + person_id);
+						Lungo.dom(new_li).addClass("arrow");
+						Lungo.dom(new_li).addClass("people-list-item");
+						var new_li_html = "" + 
 							"<div class=\"user-avatar avatar-medium avatar-shadow\">" + 
-								"<img src=\"" + App.config.image_prefix + c[i].user_image + "\"/>" + 
+								"<img src=\"" + person_image + "\"/>" + 
 							"</div>" + 
 							"<div>" + 
-								"<strong class=\"text bold\">" + c[i].first_name + " " + c[i].last_name + "</strong>" + 
-								"<span class=\"text tiny\">" + c[i].city + ", " + c[i].ctate + "</span>" + 
+								"<strong class=\"text bold people-name\">" + person_name + "</strong>" + 
+								"<span class=\"text tiny people-location\">" + person_location + "</span>" + 
 								"<br/>" + 
 								"<div class=\"num-collaborations\">" + 
-									"<span class=\"num\">" + c[i].collaborations + "</span>" + 
+									"<span class=\"num\">" + person_collaborations + "</span>" + 
 									"<span> collaborations</span>" + 
 								"</div>" + 
-							"</div>" + 
-						"</li>";
+							"</div>";
+						Lungo.dom(new_li).html(new_li_html);
+						Lungo.dom(new_li).tap(function(e) {
+							_this.getOneCollaborator(Lungo.dom(this).attr("id"));
+						});
 						Lungo.dom("#people-article-ul").append(new_li);
 					}
 				}
-				// this.details.user_id = data.user_id;
-				// this.details.current_user = 1;
-				// App.database.addUser(this.details);
 				
 				// Do something to show user added.
 				Lungo.Router.section("people");
 			}
+		},
+
+		getOneCollaborator: function(person_id) {
+			//console.log(person_id);
+			var sel = "#" + person_id;
+			var id = person_id.split("-")[1];
+			Lungo.dom("#person-moments-container").html("");
+			//console.log(Lungo.dom(sel + " > div > img").attr("src"));
+			Lungo.dom("#person-user-image").attr("src", Lungo.dom(sel + " > div > img").attr("src"));
+			//console.log(Lungo.dom(sel + " .people-name").text());
+			Lungo.dom("#person-username").text(Lungo.dom(sel + " .people-name").text());
+			//console.log(Lungo.dom(sel + " .people-location").text());
+			Lungo.dom("#person-location").text(Lungo.dom(sel + " .people-location").text());
+			//console.log(Lungo.dom(sel + " .num").text());
+			Lungo.dom("#person-collaborations-num").text(Lungo.dom(sel + " .num").text());
+			var u = new App.user();
+			u.getUserMoments(id);
+			Lungo.Router.section("person");
 		},
 
 		getUserMoments: function(user_id) {
