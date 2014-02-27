@@ -5,8 +5,8 @@ App.user = function() {
 			logged_in: null,
 			email: null,
 			password: null,
-			firstName: null,
-			lastName: null,
+			first_name: null,
+            last_name: null,
 			city: null,
 			state: null,
 			country: null,
@@ -45,14 +45,14 @@ App.user = function() {
 		},
 
 		handleLogin: function(data) {
-			console.log(data);
+			//console.log(data);
 			//console.log("API: " + data.message);
 			if (data.id != undefined && data.id != null) {
 				this.details.current_user = App.current_user.details.current_user = 1;
 				this.details.id = App.current_user.details.user_id = data.id;
 				this.details.email = App.current_user.details.email = data.email;
-				this.details.first_name = App.current_user.details.firstName = data.first_name;
-				this.details.last_name = App.current_user.details.lastName = data.last_name;
+				this.details.first_name = App.current_user.details.first_name = data.first_name;
+				this.details.last_name = App.current_user.details.last_name = data.last_name;
 				this.details.city = App.current_user.details.city = data.city;
 				this.details.state = App.current_user.details.state = data.state;
 				this.details.country = App.current_user.details.country = data.country;
@@ -63,11 +63,7 @@ App.user = function() {
 				// Do something to show user added.
 				Lungo.Notification.success('Success', 'Your login was a great success!', 'ok', 2, function() {
 					Lungo.Notification.hide();
-
-					var m = new App.moments();
-					m.getMoments();
-
-					Lungo.Router.section("home");
+					Lungo.Router.section("moments");
 				});
 			} else if (data.Error != undefined) {
 				Lungo.Notification.error('Error', data.Error, 'remove', 3);
@@ -91,8 +87,8 @@ App.user = function() {
 				App.current_user.details.current_user = 1;
 				App.current_user.details.user_id = data.user_id;
 				App.current_user.details.email = data.email;
-				App.current_user.details.firstName = data.firstName;
-				App.current_user.details.lastName = data.lastName;
+				App.current_user.details.first_name = data.first_name;
+				App.current_user.details.last_name = data.last_name;
 				App.current_user.details.city = data.city;
 				App.current_user.details.state = data.state;
 				App.current_user.details.country = data.country;
@@ -109,8 +105,7 @@ App.user = function() {
 								console.log(results);
 								console.log(results.rows.item(0));
 								App.current_user.details.last_sync = results.rows.item(0).last_sync	;
-								this.moments = new App.moments();
-								this.moments.getMoments();
+								Lungo.Router.section("moments");
 							},
 							function(transaction, results) {
 								console.log(results);
@@ -188,8 +183,8 @@ App.user = function() {
 			this.details = {
 				email: Lungo.dom("#signup-emailadd").val(),
 				password: Lungo.dom("#signup-password").val(),
-				firstName: Lungo.dom("#signup-firstname").val(),
-				lastName: Lungo.dom("#signup-lastname").val(),
+                first_name: Lungo.dom("#signup-first_name").val(),
+                last_name: Lungo.dom("#signup-last_name").val(),
 				city: Lungo.dom("#signup-city").val(),
 				state: Lungo.dom("#signup-state").val(),
 				country: Lungo.dom("#signup-country").val(),
@@ -205,8 +200,8 @@ App.user = function() {
 			this.details.oldPassword = Lungo.dom("#settings-current-password").val();
 			this.details.newPassword = Lungo.dom("#settings-new-password1").val();
 			this.details.newPassword2 = Lungo.dom("#settings-new-password2").val();
-			this.details.firstName = Lungo.dom("#settings-firstname").val();
-			this.details.lastName = Lungo.dom("#settings-lastname").val();
+			this.details.first_name = Lungo.dom("#settings-first_name").val();
+			this.details.last_name = Lungo.dom("#settings-last_name").val();
 			this.details.city = Lungo.dom("#settings-city").val();
 			this.details.state = Lungo.dom("#settings-state").val();
 			this.details.country = Lungo.dom("#settings-country").val();
@@ -247,11 +242,11 @@ App.user = function() {
 					}
 				}
 			}
-			if (this.details.firstName == null) {
-				this.errors.push("You should have a firstName.");
+			if (this.details.first_name == null) {
+				this.errors.push("You should have a first name.");
 			}
-			if (this.details.lastName == null) {
-				this.errors.push("You should have a lastName.");
+			if (this.details.last_name == null) {
+				this.errors.push("You should have a last name.");
 			}
 			if (this.details.city == null) {
 				this.errors.push("You should have a city.");

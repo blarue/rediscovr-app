@@ -1,7 +1,7 @@
 function ValidationSignForm()
 {
-	var firstname=$("#signup-firstname").val();
-	if (firstname==null || firstname=="")
+	var first_name=$("#signup-first_name").val();
+	if (first_name==null || first_name=="")
 	{
 		$("#err_msg").html("First name must be filled out");
 		$("#err_msg").show(500);
@@ -10,8 +10,8 @@ function ValidationSignForm()
 		$("#err_msg").hide(200);
 	}
 
-	var lastname=$("#signup-lastname").val();
-	if (lastname==null || lastname=="")
+	var last_name=$("#signup-last_name").val();
+	if (last_name==null || last_name=="")
 	{
 		$("#err_msg").html("Last name must be filled out");
 		$("#err_msg").show(500);
@@ -50,30 +50,10 @@ function ValidationSignForm()
 		$("#err_msg").hide(200);
 	}
 
-	var city=$("#signup-city").val();
-	if (city==null || city=="")
-	{
-		$("#err_msg").html("city name must be filled out");
-		$("#err_msg").show(500);
-		return false;
-	}else{
-		$("#err_msg").hide(200);
-	}
-
-	var state =$("#signup-state").val();
-	if (state==null || state=="")
-	{
-		$("#err_msg").html("state must be filled out");
-		$("#err_msg").show(500);
-		return false;
-	}else{
-		$("#err_msg").hide(200);
-	}
-
 	var country =$("#signup-country").val();
 	if (country==null || country=="")
 	{
-		$("#err_msg").html("country must be filled out");
+		$("#err_msg").html("Location must be filled out");
 		$("#err_msg").show(500);
 		return false;
 	}else{

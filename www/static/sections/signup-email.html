@@ -9,48 +9,38 @@
 		</header>
 		<article id="main-article" class="signup indented scroll">
 			<div class="signup-form form">
-				<img src="img/default-upload-icon@2x.png" class="userimg logo centered"/>
+                <div class="fileupload">
+                    <input id="profile-upload-file" type="file" accept="image/*" capture="camera" multiple="false"/>
+                    <span>
+                        <img id="cropped" src="img/user_profile1.png" class="userimg logo centered"/>
+                    </span>
+                    <div id="profile-selected-images" style="margin-top:.3em;"></div>
+                    <canvas id="canvas" style="display:none;"></canvas>
+                </div>
 			</div>
 			
 			<div class="signup-form form"><div id="err_msg"></div>
-				<fieldset class="radius shadow">
-					<img src="img/user-icon@2x.png" class="formlabel"/>
-					<input id="signup-firstname" type="text" placeholder="First Name"/>
+				<fieldset class="radius ">
+                    <div id="d_signup-first_name">
+                        <input id="signup-first_name" type="text" placeholder="First"/>
+                    </div>
+					<div id="d_signup-last_name">
+                        <input id="signup-last_name"  type="text" placeholder="Last"/>
+                    </div>
 				</fieldset>
-				<fieldset class="radius shadow">
-					<img src="img/user-icon@2x.png" class="formlabel"/>
-					<input id="signup-lastname" type="text" placeholder="Last Name"/>
-				</fieldset>
-				<fieldset class="radius shadow">
-					<img src="img/email-icon@2x.png" class="formlabel"/>
+
+				<fieldset>
 					<input id="signup-emailadd" type="email" placeholder="Email Address"/>
 				</fieldset>
-				<fieldset class="radius shadow">
-					<img src="img/password-icon@2x.png" class="formlabel"/>
+				<fieldset class="radius ">
 					<input id="signup-password" type="password" placeholder="Password"/>
 				</fieldset>
-				<fieldset class="radius shadow">
-					<img src="img/location-icon@2x.png" class="formlabel"/>
-					<input id="signup-city" type="text" placeholder="City"/>
+				<fieldset class="radius ">
+					<input id="signup-country" type="text" placeholder="Location"/>
 				</fieldset>
-				<fieldset class="radius shadow">
-					<img src="img/location-icon@2x.png" class="formlabel"/>
-					<input id="signup-state" type="text" placeholder="State"/>
+				<fieldset class="radius ">
+					<input id="signup-phone" type="text" placeholder="Phone Number"/>
 				</fieldset>
-				<fieldset class="radius shadow">
-					<img src="img/location-icon@2x.png" class="formlabel"/>
-					<input id="signup-country" type="text" placeholder="Country"/>
-				</fieldset>
-				<fieldset class="radius shadow">
-					<img src="img/phone-icon@2x.png" class="formlabel"/>
-					<input id="signup-phone" type="text" placeholder="Phone (Optional)"/>
-				</fieldset>
-                <fieldset class="radius shadow" class="formlabel">
-                    <div class="fileupload" style="height:45px; margin-left:-10px;">
-                        <img src='img/image-icon@2x.png' class="formlabel"/>
-                        <span style='color:#6c9dc6;' data-view-section="profile_image_section">Upload Image</span>
-                    </div>
-                </fieldset>
             </div>
 		</article>
 	</section>

@@ -240,9 +240,9 @@ App.database = {
 							for (var i=0; i < results.rows.length; i++) {
 								var m = results.rows.item(i);
 								var moment = new App.moment();
-								console.log(_this.myref);
+								//console.log(_this.myref);
 								moment.domnode = _this.myref.domnode;
-								moment.details.moment_id = m.id;
+								moment.details.moment_id = m.moment_id;
 								moment.details.api_id = m.moment_id;
 								moment.details.user = m.user_id;
 								moment.details.title = m.title;
@@ -280,7 +280,7 @@ App.database = {
 			JOIN `user` ON `user`.`user_id` = `moment`.`user` \
 			WHERE `moment`.`moment_id` = ? \
 			LIMIT 1 ";
-		console.log(_query);
+		//console.log(_query);
 		// Find moments
 		this.db.transaction(function(transaction){transaction.executeSql(_query, [moment_id], 
 			function(transaction, results) {
@@ -304,7 +304,7 @@ App.database = {
 						JOIN `moment_image` `mi` ON `i`.`id` = `mi`.`image_id` \
 						JOIN `moment` `m` ON `mi`.`moment_id` = `m`.`id` \
 						WHERE `m`.`moment_id` = ?";
-					console.log(_q_img);
+					//console.log(_q_img);
 					_this.db.transaction(function(transaction){transaction.executeSql(_q_img, [moment_id],
 						function(transaction, results) {
 							console.log(moment_id);
@@ -390,7 +390,7 @@ App.database = {
 			JOIN `user` ON `user`.`user_id` = `moment`.`user` \
 			WHERE `moment`.`moment_id` = ? \
 			LIMIT 1 ";
-		console.log(_query);
+		//console.log(_query);
 		// Find moments
 		this.db.transaction(
 			function(transaction) {

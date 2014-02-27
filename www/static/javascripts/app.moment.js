@@ -29,7 +29,7 @@ App.moment = function() {
 			var m_data_array = [m.title, m.text, m.date, m.location, m.moment_id];
 			var m_query = "UPDATE `moment` SET `title` = ?, `text` = ?, `date` = ?, `location` = ? " +
 				"WHERE `moment_id` = ?";
-			console.log(m_query + " " + m_data_array);
+		//	console.log(m_query + " " + m_data_array);
 			DB.db.transaction(
 				function(transaction) {
 					transaction.executeSql(m_query, m_data_array, 
@@ -48,22 +48,22 @@ App.moment = function() {
 							if (rediscovr.currentmoment.image_list.length) {
 								var q = "INSERT INTO `moment_image` (`moment_id`, `image_id`) VALUES (?, ?)";
 								for (var i = 0; i < rediscovr.currentmoment.image_list.length; i++) {
-									console.log("i: " + i);
+									//console.log("i: " + i);
 									var p = [_this.details.id, rediscovr.currentmoment.image_list[i].image_id];
 									if (_this.details.images === undefined) {
 										_this.details.images = [];	
 									}
-									console.log("i: " + i);
+									//console.log("i: " + i);
 									_this.details.images.push(rediscovr.currentmoment.image_list[i].d);
-									console.log("i: " + i);
+									//console.log("i: " + i);
 									// Keep i set after we enter this function.
 									var _i = i;
 									DB.db.transaction(
 										function(transaction) {
-											console.log("_i: " + _i);
+											//console.log("_i: " + _i);
 											transaction.executeSql(q, p, 
 												function(transaction, results) {
-													console.log("_i: " + _i);
+												//	console.log("_i: " + _i);
 													if (_i == rediscovr.currentmoment.image_list.length - 1) {
 														var api = new App.api();
 														api.editMoment(_this);
@@ -71,14 +71,14 @@ App.moment = function() {
 													}
 												},
 												function(transaction, results) {
-													console.log(results);
+												//	console.log(results);
 												}
 											);
 										}
 									);
 								}
 							} else {
-								console.log("results: " + results);
+								//console.log("results: " + results);
 								var api = new App.api();
 								api.editMoment(_this);
 							}
@@ -111,10 +111,10 @@ App.moment = function() {
 			DB.db.transaction(function(transaction){transaction.executeSql(m_query, m_data_array, 
 				function(transaction, results) {
 					_this.details.id = results.insertId;
-					console.log("MomentID: " + _this.details.id);
+					//console.log("MomentID: " + _this.details.id);
 
 					if (_this.details.collaborators.length) {
-						console.log("collaborators: " + _this.details.collaborators.length);
+						//console.log("collaborators: " + _this.details.collaborators.length);
 						for (var j = 0; j < _this.details.collaborators.length; j++) {
 							var u = new App.user();
 							u.details.email = _this.details.collaborators[j].email;
@@ -125,7 +125,7 @@ App.moment = function() {
 						}
 					}
 					//Associate the moment and image.
-					console.log("Associate the moment and image: " + rediscovr.currentmoment.image_list.length);
+					//console.log("Associate the moment and image: " + rediscovr.currentmoment.image_list.length);
 					if (rediscovr.currentmoment.image_list.length) {
 						var q = "INSERT INTO `moment_image` (`moment_id`, `image_id`) VALUES (?, ?)";
 						for (var i = 0; i < rediscovr.currentmoment.image_list.length; i++) {
@@ -133,14 +133,14 @@ App.moment = function() {
 							if (_this.details.images === undefined) {
 								_this.details.images = [];	
 							}
-							console.log(rediscovr.currentmoment.image_list[i].url_hash);
+							//console.log(rediscovr.currentmoment.image_list[i].url_hash);
 							_this.details.images.push(rediscovr.currentmoment.image_list[i].url_hash);
-							console.log("i: " + _this.details.images);
+							//console.log("i: " + _this.details.images);
 							// Keep i set after we enter this function.
 							var _i = i;
 							DB.db.transaction(function(transaction){transaction.executeSql(q, p, 
 								function(transaction, results) {
-									console.log("_i: " + _i + ", rediscovr.currentmoment.image_list.length: " + rediscovr.currentmoment.image_list.length);
+									//console.log("_i: " + _i + ", rediscovr.currentmoment.image_list.length: " + rediscovr.currentmoment.image_list.length);
 									if (_i == rediscovr.currentmoment.image_list.length - 1) {
 										var api = new App.api();
 										api.addMoment(_this);
@@ -148,7 +148,7 @@ App.moment = function() {
 									}
 								},
 								function(transaction, results) {
-									console.log(results);
+									//console.log(results);
 								}
 							);});
 						}
@@ -169,7 +169,7 @@ App.moment = function() {
 				placement = "append";
 			}
 //			console.log("Running showMoment.");
-			console.log(this.domnode);
+			//console.log(this.domnode);
 			var _this = this;
 			if (_this.domnode != "#moments-months-article" && _this.domnode != "#moments-years-article" && this.details.images.length > 0) {
 				this.details.images_tmp = [];
@@ -220,7 +220,7 @@ App.moment = function() {
 
 		renderMonthYearMoment: function() {
 			console.log("Running renderMonthYearMoment.");
-			console.log(this.details);
+			//console.log(this.details);
 			var _this = this;
 			var imgdiv_class = "month-year";
 			var divdom, divdom_text;
@@ -353,7 +353,7 @@ App.moment = function() {
 				var moment_anchor = document.createElement("a");
 				Lungo.dom(moment_anchor).addClass("fancybox");
 				Lungo.dom(moment_anchor).attr("rel", "group");
-				Lungo.dom(moment_anchor).attr("href", "");
+				Lungo.dom(moment_anchor).attr("href", img_src);
 				// Create image.
 				var moment_imgimg = document.createElement("img");
 				Lungo.dom(moment_imgimg).attr("id", "moment-" + this.details.moment_id);
@@ -443,7 +443,7 @@ App.moment = function() {
 				function(transaction) {
 					transaction.executeSql(c_query, c_data_array, 
 						function(transaction, results) {
-							console.log(results);
+							//console.log(results);
 						}, 
 						function(transaction, errors) {
 							console.log(errors);
@@ -464,7 +464,7 @@ App.moment = function() {
 				function(transaction) {
 					transaction.executeSql(m_query, m_data_array, 
 						function(transaction, results) {
-							console.log("Moment Insert ID: " + results.insertId);
+							//console.log("Moment Insert ID: " + results.insertId);
 							_this.details.id = results.insertId;
 						}, 
 						function(transaction, errors) {
@@ -483,7 +483,7 @@ App.moment = function() {
 					var cc_query = "INSERT OR IGNORE INTO `user` " +
 						"(`user_id`, `email`, `first_name`, `last_name`, `city`, `state`, `country`, `user_image`, `current_user`) " +
 						"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-					console.log(cc_query + cc_data_array);
+					//console.log(cc_query + cc_data_array);
 					DB.db.transaction(
 						function(transaction) {
 							transaction.executeSql(cc_query, cc_data_array, 
@@ -532,16 +532,17 @@ App.moment = function() {
 					var imgr = new App.image();
 					imgr.cacheLocally(image, function(res) {
 						var i_data_array = [image, 'moment', asset_type, _this.details.creator.id, 1];
-						console.log(i_data_array);
+						//console.log(i_data_array);
 						var i_query = "INSERT OR IGNORE INTO `image` (`name`, `purpose`, `type`, `owner`, `saved`) VALUES (?, ?, ?, ?, ?);";
-						console.log(i_query);
+						//console.log(i_query);
+                        var _this_details_id =_this.details.id;
 						DB.db.transaction(function(transaction){transaction.executeSql(i_query, i_data_array, 
 							function(transaction, results) {
-								var im_data_array = [_this.details.id, results.insertId, 1];
+								var im_data_array = [_this_details_id, results.insertId, 1];
 								var im_query = "INSERT OR IGNORE INTO `moment_image` (`moment_id`, `image_id`, `primary`) VALUES (?, ?, ?);";
 								DB.db.transaction(function(transaction){transaction.executeSql(im_query, im_data_array, 
 									function(transaction, results) {
-										console.log(results);
+										//console.log(results);
 									}, 
 									function(transaction, errors) {
 										console.log("errors" + errors);
