@@ -50,30 +50,10 @@ function ValidationSignForm()
 		$("#err_msg").hide(200);
 	}
 
-	var city=$("#signup-city").val();
-	if (city==null || city=="")
-	{
-		$("#err_msg").html("city name must be filled out");
-		$("#err_msg").show(500);
-		return false;
-	}else{
-		$("#err_msg").hide(200);
-	}
-
-	var state =$("#signup-state").val();
-	if (state==null || state=="")
-	{
-		$("#err_msg").html("state must be filled out");
-		$("#err_msg").show(500);
-		return false;
-	}else{
-		$("#err_msg").hide(200);
-	}
-
 	var country =$("#signup-country").val();
 	if (country==null || country=="")
 	{
-		$("#err_msg").html("country must be filled out");
+		$("#err_msg").html("Location must be filled out");
 		$("#err_msg").show(500);
 		return false;
 	}else{

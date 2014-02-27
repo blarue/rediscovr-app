@@ -164,14 +164,17 @@ body > section > article > div > div.splash.privacy { margin-top:50px; margin-le
 body > section > article > div.splash > div.splash.links { margin-top:40px; margin-left:auto; margin-right:auto; width:90%; text-align:center; font-size:1.1em; }
 body > section > article > div.splash > div.splash.links > a.link { color:#477ca6; }
 
-body > section.signup > article { background-color: #e5e5e5; }
-body > section.signup > article > div > img.userimg { width:116px; }
-body > section.signup > article > div.signup-form { text-align:center;margin-top:25px; }
-body > section.signup > article > div > fieldset { padding: .7em .5em; margin-left:20px; margin-right:20px; }
+body > section.signup > article {  }
+body > section.signup > article > div > .fileupload { height:80px;} 
+body > section.signup > article > div > .fileupload >span >img.userimg { width:80px; height:80px; border-radius: 50%; }
+body > section.signup > article > div.signup-form { text-align:center;margin-top:10px; padding:0px; border:0px;}
+body > section.signup > article > div > fieldset { padding: 0px; margin-top:10px; height:40px; background-color: #EEE;border:0px;}
 body > section.signup > article > div > fieldset > img.formlabel { display: inline; width: 24px; }
 body > section.signup > article > div > fieldset > input[type="text"] { width:85%;}
 body > section.signup > article > div > fieldset > input[type="email"] { width:85%;}
 body > section.signup > article > div > fieldset > input[type="password"] { width:85%;}
+body > section.signup > article > div > fieldset > #d_signup-first_name { width:50%; float:left; padding-left:8%;}
+body > section.signup > article > div > fieldset > #d_signup-last_name { width:50%; float:right; padding-left:8%; border-left:1px solid #FFF;}
 
 body > section#walkthrough-share { background: url('../../img/03 - walkthrough.jpg'); background-size: 100%; }
 body > section#walkthrough-keep { background: url('../../img/04 - walkthrough.jpg'); background-size: 100%; }
@@ -192,6 +195,7 @@ body > section.home > article > div.instructions { font-size:1.6em; text-align:c
 body > section.home > article > div.instructions-2 { font-size:1.6em; text-align:center; margin-top:.5em; padding-left:2.1em; padding-right:2.1em; }
 body > section.home > article > div.instructions-3 { font-size:2.1em; text-align:center; margin-top:50px; padding-left:2.1em; padding-right:2.1em; color:#aaa}
 body > section.home > article > div.instructions-4 { font-size:1.4em; text-align:center; margin-top:.5em; padding-left:2.1em; padding-right:2.1em; color:#999}
+
 body > section.home > article > div.day-header { background-color: #FFFFFF;min-height:24px; }
 body > section.home > article > div.day-header > div.day-name { color: #4174a3; font-size:.95em; margin-top:.3em; margin-left:.7em;}
 body > section.home > article > div.day-header > div.day-alarm {  margin-right:.7em; padding-left:20px; padding-right:10px; border-left:2px solid #eee;}
@@ -249,7 +253,7 @@ body > section#settings fieldset.fieldsection { border-top: 1px solid #bbbbbb; }
 body > section#settings label.dark { color: #666666;}
 
 body > section.editmoment > article { background-color: #e5e5e5; padding-bottom:125px; font-size:.93em; }
-body > section.editmoment > article > div > img.userimg { width:116px; }
+body > section.editmoment > article > div > img.userimg { width:50px; }
 body > section.editmoment > article > div.moment-form { margin-top:25px; }
 body > section.editmoment > article > div > fieldset { padding: .7em .5em; margin-left:20px; margin-right:20px; }
 body > section.editmoment > article > div > fieldset.edittext { padding:.2em .5em; margin-left:20px; margin-right:20px; }
