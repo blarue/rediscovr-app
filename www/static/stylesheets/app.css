@@ -192,7 +192,6 @@ body > section.home > article > div.instructions { font-size:1.6em; text-align:c
 body > section.home > article > div.instructions-2 { font-size:1.6em; text-align:center; margin-top:.5em; padding-left:2.1em; padding-right:2.1em; }
 body > section.home > article > div.instructions-3 { font-size:2.1em; text-align:center; margin-top:50px; padding-left:2.1em; padding-right:2.1em; color:#aaa}
 body > section.home > article > div.instructions-4 { font-size:1.4em; text-align:center; margin-top:.5em; padding-left:2.1em; padding-right:2.1em; color:#999}
-
 body > section.home > article > div.day-header { background-color: #FFFFFF;min-height:24px; }
 body > section.home > article > div.day-header > div.day-name { color: #4174a3; font-size:.95em; margin-top:.3em; margin-left:.7em;}
 body > section.home > article > div.day-header > div.day-alarm {  margin-right:.7em; padding-left:20px; padding-right:10px; border-left:2px solid #eee;}
