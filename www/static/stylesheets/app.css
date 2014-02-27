@@ -167,9 +167,8 @@ body > section > article > div.splash > div.splash.links > a.link { color:#477ca
 body > section.signup > article { background-color: #e5e5e5; }
 body > section.signup > article > div > img.userimg { width:116px; }
 body > section.signup > article > div.signup-form { text-align:center;margin-top:25px; }
-/*body > section.signup > article > div > fieldset { padding: .7em .5em; margin-left:20px; margin-right:20px; }*/
+body > section.signup > article > div > fieldset { padding: .7em .5em; margin-left:20px; margin-right:20px; }
 body > section.signup > article > div > fieldset > img.formlabel { display: inline; width: 24px; }
-body > section.signup > article > div > fieldset.radius.shadow.name { width:40%; margin-left:0px; }
 body > section.signup > article > div > fieldset > input[type="text"] { width:85%;}
 body > section.signup > article > div > fieldset > input[type="email"] { width:85%;}
 body > section.signup > article > div > fieldset > input[type="password"] { width:85%;}

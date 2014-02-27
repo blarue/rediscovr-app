@@ -26,8 +26,7 @@ App.image = function() {
 		cacheLocally: function(image, cb) {
 			var _this = this;
 			this.image = image;
-            //this.cb = cb;
-            cb();
+			this.cb = cb;
 			// Get FS.
             window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, this.onFileSystemSuccess, this.onFileSystemFail);
 		},

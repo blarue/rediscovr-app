@@ -1,7 +1,7 @@
 function ValidationSignForm()
 {
-	var first_name=$("#signup-first_name").val();
-	if (first_name==null || first_name=="")
+	var firstname=$("#signup-firstname").val();
+	if (firstname==null || firstname=="")
 	{
 		$("#err_msg").html("First name must be filled out");
 		$("#err_msg").show(500);
@@ -10,8 +10,8 @@ function ValidationSignForm()
 		$("#err_msg").hide(200);
 	}
 
-	var last_name=$("#signup-last_name").val();
-	if (last_name==null || last_name=="")
+	var lastname=$("#signup-lastname").val();
+	if (lastname==null || lastname=="")
 	{
 		$("#err_msg").html("Last name must be filled out");
 		$("#err_msg").show(500);

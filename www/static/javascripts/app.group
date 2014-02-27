@@ -58,8 +58,8 @@ App.group = function() {
                 this.details.collaborators = null;
             // this.details.newPassword = Lungo.dom("#settings-new-password1").val();
             // this.details.newPassword2 = Lungo.dom("#settings-new-password2").val();
-            // this.details.first_name = Lungo.dom("#settings-first_name").val();
-            // this.details.last_name = Lungo.dom("#settings-last_name").val();
+            // this.details.firstName = Lungo.dom("#settings-firstname").val();
+            // this.details.lastName = Lungo.dom("#settings-lastname").val();
             // this.details.city = Lungo.dom("#settings-city").val();
             // this.details.state = Lungo.dom("#settings-state").val();
             // this.details.country = Lungo.dom("#settings-country").val();
@@ -100,11 +100,11 @@ App.group = function() {
             // }
             // }
             // }
-            // if (this.details.first_name == null) {
-            // this.errors.push("You should have a first name.");
+            // if (this.details.firstName == null) {
+            // this.errors.push("You should have a firstName.");
             // }
-            // if (this.details.last_name == null) {
-            // this.errors.push("You should have a last name.");
+            // if (this.details.lastName == null) {
+            // this.errors.push("You should have a lastName.");
             // }
             // if (this.details.city == null) {
             // this.errors.push("You should have a city.");

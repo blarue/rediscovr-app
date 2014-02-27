@@ -21,9 +21,9 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="format-detection" content="telephone=no" />
-        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+		<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
 		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, target-densitydpi=device-dpi" />
-<!--        <link rel="stylesheet" type="text/css" href="dx.css" /> -->
+<!--        <link rel="stylesheet" type="text/css" href="css/index.css" /> -->
 		<title>Etched</title>
 
 	<link rel="stylesheet" href="js/fancybox/jquery.fancybox.css">
@@ -38,8 +38,6 @@
 	<script src="static/javascripts/mapbox.js"></script>
 	<link rel="stylesheet" href="static/stylesheets/mapbox.css?v=1">
 	<link rel="stylesheet" href="css/index.css">
-    <script type="text/javascript" src="cordova.js"></script>
-    <script type="text/javascript" src="js/gapi.js"></script>
 	<script type="text/javascript">
 		var pictureSource;   // picture source
 		var destinationType; // sets the format of returned value
@@ -202,11 +200,10 @@
 		<article id="main-article" class="signup scroll">
 			<div class='splash'>
 				<img src='img/splash-logo@2x.png' class="splash logo centered"/>
-
-                <a href="javscript:void(none)" data-view-section="" onClick="login();">
+                <a href="#" data-view-section="signup-google">
                     <div class="splash google"><p>Sign up with Google</p><p class="sub">Integrates with calendar</p></div>
                 </a>
-               <a href='#' data-view-section="signup-email" class='link'>
+                <a href='#' data-view-section="signup-email" class='link'>
                     <div class="splash signup"><p>Sign up with email</p></div>
                 </a>
                 <a href='#' data-view-section="login" class='link'>
@@ -243,6 +240,7 @@
         <article ></article>
     </section>
 
+		<script type="text/javascript" src="cordova.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
 
 		<script src="components/quojs/quo.debug.js"></script>

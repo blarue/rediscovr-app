@@ -5,8 +5,8 @@ App.user = function() {
 			logged_in: null,
 			email: null,
 			password: null,
-			first_name: null,
-			last_name: null,
+			firstName: null,
+			lastName: null,
 			city: null,
 			state: null,
 			country: null,
@@ -51,8 +51,8 @@ App.user = function() {
 				this.details.current_user = App.current_user.details.current_user = 1;
 				this.details.id = App.current_user.details.user_id = data.id;
 				this.details.email = App.current_user.details.email = data.email;
-				this.details.first_name = App.current_user.details.first_name = data.first_name;
-				this.details.last_name = App.current_user.details.last_name = data.last_name;
+				this.details.first_name = App.current_user.details.firstName = data.first_name;
+				this.details.last_name = App.current_user.details.lastName = data.last_name;
 				this.details.city = App.current_user.details.city = data.city;
 				this.details.state = App.current_user.details.state = data.state;
 				this.details.country = App.current_user.details.country = data.country;
@@ -64,11 +64,10 @@ App.user = function() {
 				Lungo.Notification.success('Success', 'Your login was a great success!', 'ok', 2, function() {
 					Lungo.Notification.hide();
 
-//					var m = new App.moments();
-//					m.getMoments();
-//
-//					Lungo.Router.section("home");
-                    Lungo.Router.section("moments");
+					var m = new App.moments();
+					m.getMoments();
+
+					Lungo.Router.section("home");
 				});
 			} else if (data.Error != undefined) {
 				Lungo.Notification.error('Error', data.Error, 'remove', 3);
@@ -92,8 +91,8 @@ App.user = function() {
 				App.current_user.details.current_user = 1;
 				App.current_user.details.user_id = data.user_id;
 				App.current_user.details.email = data.email;
-				App.current_user.details.first_name = data.first_name;
-				App.current_user.details.last_name = data.last_name;
+				App.current_user.details.firstName = data.firstName;
+				App.current_user.details.lastName = data.lastName;
 				App.current_user.details.city = data.city;
 				App.current_user.details.state = data.state;
 				App.current_user.details.country = data.country;
@@ -189,8 +188,8 @@ App.user = function() {
 			this.details = {
 				email: Lungo.dom("#signup-emailadd").val(),
 				password: Lungo.dom("#signup-password").val(),
-                first_name: Lungo.dom("#signup-first_name").val(),
-                last_name: Lungo.dom("#signup-last_name").val(),
+				firstName: Lungo.dom("#signup-firstname").val(),
+				lastName: Lungo.dom("#signup-lastname").val(),
 				city: Lungo.dom("#signup-city").val(),
 				state: Lungo.dom("#signup-state").val(),
 				country: Lungo.dom("#signup-country").val(),
@@ -206,8 +205,8 @@ App.user = function() {
 			this.details.oldPassword = Lungo.dom("#settings-current-password").val();
 			this.details.newPassword = Lungo.dom("#settings-new-password1").val();
 			this.details.newPassword2 = Lungo.dom("#settings-new-password2").val();
-			this.details.first_name = Lungo.dom("#settings-first_name").val();
-			this.details.last_name = Lungo.dom("#settings-last_name").val();
+			this.details.firstName = Lungo.dom("#settings-firstname").val();
+			this.details.lastName = Lungo.dom("#settings-lastname").val();
 			this.details.city = Lungo.dom("#settings-city").val();
 			this.details.state = Lungo.dom("#settings-state").val();
 			this.details.country = Lungo.dom("#settings-country").val();
@@ -248,11 +247,11 @@ App.user = function() {
 					}
 				}
 			}
-			if (this.details.first_name == null) {
-				this.errors.push("You should have a first name.");
+			if (this.details.firstName == null) {
+				this.errors.push("You should have a firstName.");
 			}
-			if (this.details.last_name == null) {
-				this.errors.push("You should have a last name.");
+			if (this.details.lastName == null) {
+				this.errors.push("You should have a lastName.");
 			}
 			if (this.details.city == null) {
 				this.errors.push("You should have a city.");
@@ -289,7 +288,6 @@ App.user = function() {
 		},
 
 		handleGetCollaborators: function(data) {
-			var _this = this;
 			console.log(data);
 			console.log("API: " + data.message);
 			if (data.collaborators !== undefined && data.collaborators !== null) {
@@ -297,53 +295,20 @@ App.user = function() {
 				Lungo.dom("#people-article-ul").html("");
 				for (var i = 0; i < c.length; i++) {
 					if (c[i].first_name !== '' || c[i].first_name !== '') {
-						var person_id = c[i].id;
-						var person_image = App.config.image_prefix + c[i].user_image;
-						var person_name = c[i].first_name + " " + c[i].last_name;
-						var person_location = c[i].city + ", " + c[i].ctate;
-						var person_collaborations = c[i].collaborations;
-
-						var new_li = document.createElement("li");
-						Lungo.dom(new_li).attr("id", "person-" + person_id);
-						Lungo.dom(new_li).addClass("arrow");
-						Lungo.dom(new_li).addClass("people-list-item");
-						// var new_div = document.createElement("div");
-						// Lungo.dom(new_div).addClass("user-avatar");
-						// Lungo.dom(new_div).addClass("avatar-medium");
-						// Lungo.dom(new_div).addClass("avatar-shadow");
-						// var new_img = document.createElement("img");
-						// Lungo.dom(new_div).attr("src", App.config.image_prefix + c[i].user_image);
-						var new_li_html = "" + 
+						var new_li = "<li id=\"person-" + c[i].id + "\" class=\"arrow people-list-item\" data-view-section=\"person\">" + 
 							"<div class=\"user-avatar avatar-medium avatar-shadow\">" + 
-								"<img src=\"" + person_image + "\"/>" + 
+								"<img src=\"" + App.config.image_prefix + c[i].user_image + "\"/>" + 
 							"</div>" + 
 							"<div>" + 
-								"<strong class=\"text bold people-name\">" + person_name + "</strong>" + 
-								"<span class=\"text tiny people-location\">" + person_location + "</span>" + 
+								"<strong class=\"text bold\">" + c[i].first_name + " " + c[i].last_name + "</strong>" + 
+								"<span class=\"text tiny\">" + c[i].city + ", " + c[i].ctate + "</span>" + 
 								"<br/>" + 
 								"<div class=\"num-collaborations\">" + 
-									"<span class=\"num\">" + person_collaborations + "</span>" + 
+									"<span class=\"num\">" + c[i].collaborations + "</span>" + 
 									"<span> collaborations</span>" + 
 								"</div>" + 
-							"</div>";
-						Lungo.dom(new_li).html(new_li_html);
-						Lungo.dom(new_li).tap(function(e) {
-							_this.getOneCollaborator(Lungo.dom(this).attr("id"));
-						});
-						// var new_li = "<li id=\"person-" + c[i].id + "\" class=\"arrow people-list-item\" data-view-section=\"person\">" + 
-						//	"<div class=\"user-avatar avatar-medium avatar-shadow\">" + 
-						//		"<img src=\"" + App.config.image_prefix + c[i].user_image + "\"/>" + 
-						//	"</div>" + 
-						//	"<div>" + 
-						//		"<strong class=\"text bold people-name\">" + c[i].first_name + " " + c[i].last_name + "</strong>" + 
-						//		"<span class=\"text tiny people-location\">" + c[i].city + ", " + c[i].ctate + "</span>" + 
-						//		"<br/>" + 
-						//		"<div class=\"num-collaborations\">" + 
-						//			"<span class=\"num\">" + c[i].collaborations + "</span>" + 
-						//			"<span> collaborations</span>" + 
-						//		"</div>" + 
-						//	"</div>" + 
-						// "</li>";
+							"</div>" + 
+						"</li>";
 						Lungo.dom("#people-article-ul").append(new_li);
 					}
 				}
@@ -354,24 +319,6 @@ App.user = function() {
 				// Do something to show user added.
 				Lungo.Router.section("people");
 			}
-		},
-
-		getOneCollaborator: function(person_id) {
-			//console.log(person_id);
-			var sel = "#" + person_id;
-			var id = person_id.split("-")[1];
-			Lungo.dom("#person-moments-container").html("");
-			//console.log(Lungo.dom(sel + " > div > img").attr("src"));
-			Lungo.dom("#person-user-image").attr("src", Lungo.dom(sel + " > div > img").attr("src"));
-			//console.log(Lungo.dom(sel + " .people-name").text());
-			Lungo.dom("#person-username").text(Lungo.dom(sel + " .people-name").text());
-			//console.log(Lungo.dom(sel + " .people-location").text());
-			Lungo.dom("#person-location").text(Lungo.dom(sel + " .people-location").text());
-			//console.log(Lungo.dom(sel + " .num").text());
-			Lungo.dom("#person-collaborations-num").text(Lungo.dom(sel + " .num").text());
-			var u = new App.user();
-			u.getUserMoments(id);
-			Lungo.Router.section("person");
 		},
 
 		getUserMoments: function(user_id) {
